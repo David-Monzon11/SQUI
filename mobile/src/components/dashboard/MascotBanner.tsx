@@ -20,111 +20,264 @@ interface MascotBannerProps {
   healthScore?: number;
 }
 
-// Custom Nutrient Shield Visual for Card 2
-const NutrientShieldVisual: React.FC<{ size?: number }> = ({ size = 95 }) => (
-  <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-    <Svg width={size} height={size} viewBox="0 0 100 100">
-      <Defs>
-        <SvgGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0%" stopColor="#34D399" />
-          <Stop offset="100%" stopColor="#059669" />
-        </SvgGradient>
-        <SvgGradient id="shieldInner" x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0%" stopColor="#065F46" />
-          <Stop offset="100%" stopColor="#064E3B" />
-        </SvgGradient>
-      </Defs>
-      {/* Outer ambient dashed aura */}
-      <Circle
-        cx="50"
-        cy="50"
-        r="44"
-        fill="rgba(16, 185, 129, 0.12)"
-        stroke="rgba(110, 231, 183, 0.4)"
-        strokeWidth="1.5"
-        strokeDasharray="4 3"
-      />
-      {/* Inner glow circle */}
-      <Circle cx="50" cy="50" r="36" fill="rgba(5, 150, 105, 0.25)" />
-      
-      {/* Outer Shield Crest */}
-      <Path
-        d="M50 16 L74 25 C74 54 50 78 50 78 C50 78 26 54 26 25 Z"
-        fill="url(#shieldGrad)"
-        stroke="#6EE7B7"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      {/* Inner Shield Cavity */}
-      <Path
-        d="M50 24 L67 31 C67 52 50 70 50 70 C50 70 33 52 33 31 Z"
-        fill="url(#shieldInner)"
-      />
-      {/* Bold Safety Checkmark */}
-      <Path
-        d="M41 46 L47 52 L59 39"
-        fill="none"
-        stroke="#FFFFFF"
-        strokeWidth="3.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Decorative Sparkles */}
-      <Path d="M78 18 L80 23 L85 25 L80 27 L78 32 L76 27 L71 25 L76 23 Z" fill="#FDE68A" />
-      <Path d="M22 66 L23 69 L26 70 L23 71 L22 74 L21 71 L18 70 L21 69 Z" fill="#6EE7B7" />
-    </Svg>
-  </View>
-);
+// =========================================================================
+// Card 2 Visual: The Acorn Shield (Golden Acorn Nut 🌰 with Protective Crest)
+// =========================================================================
+const AcornShieldVisual: React.FC<{ size?: number }> = ({ size = 105 }) => {
+  const floatAnim = useRef(new Animated.Value(0)).current;
 
-// Custom Hydration Droplet Visual for Card 3
-const HydrationVisual: React.FC<{ size?: number }> = ({ size = 95 }) => (
-  <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-    <Svg width={size} height={size} viewBox="0 0 100 100">
-      <Defs>
-        <SvgGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0%" stopColor="#38BDF8" />
-          <Stop offset="100%" stopColor="#0284C7" />
-        </SvgGradient>
-      </Defs>
-      {/* Outer ambient water glow ring */}
-      <Circle
-        cx="50"
-        cy="50"
-        r="44"
-        fill="rgba(56, 189, 248, 0.12)"
-        stroke="rgba(56, 189, 248, 0.35)"
-        strokeWidth="1.5"
-        strokeDasharray="4 3"
-      />
-      <Circle cx="50" cy="50" r="36" fill="rgba(14, 116, 144, 0.25)" />
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, {
+          toValue: -5,
+          duration: 1200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(floatAnim, {
+          toValue: 0,
+          duration: 1200,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
 
-      {/* Main Hydro Droplet */}
-      <Path
-        d="M50 18 C50 18 28 47 28 62 C28 74.15 37.85 84 50 84 C62.15 84 72 74.15 72 62 C72 47 50 18 50 18 Z"
-        fill="url(#waterGrad)"
-        stroke="#7DD3FC"
-        strokeWidth="2.5"
-      />
-      {/* Translucent Wave Level inside droplet */}
-      <Path
-        d="M31 60 Q40 54 50 60 T69 60 C69 71 60.5 81 50 81 C39.5 81 31 71 31 60 Z"
-        fill="rgba(255, 255, 255, 0.28)"
-      />
-      {/* Highlight reflection */}
-      <Path
-        d="M37 48 C35 55 36 63 38 67"
-        fill="none"
-        stroke="#FFFFFF"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-      {/* Floating Aqua Bubbles */}
-      <Circle cx="76" cy="26" r="4.5" fill="#38BDF8" opacity={0.85} />
-      <Circle cx="21" cy="36" r="3" fill="#7DD3FC" opacity={0.75} />
-      <Circle cx="79" cy="67" r="2.8" fill="#BAE6FD" opacity={0.9} />
-    </Svg>
-  </View>
-);
+  return (
+    <Animated.View
+      style={{
+        width: size,
+        height: size,
+        alignItems: 'center',
+        justifyContent: 'center',
+        transform: [{ translateY: floatAnim }],
+      }}
+    >
+      <Svg width={size} height={size} viewBox="0 0 100 100">
+        <Defs>
+          {/* Ambient Glow Gradient matching squirrel backdrop */}
+          <SvgGradient id="amberGlow" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0%" stopColor="#F59E0B" stopOpacity="0.32" />
+            <Stop offset="100%" stopColor="#B45309" stopOpacity="0.12" />
+          </SvgGradient>
+          {/* Acorn Body Gradient */}
+          <SvgGradient id="acornBodyGrad" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0%" stopColor="#FBBF24" />
+            <Stop offset="45%" stopColor="#F59E0B" />
+            <Stop offset="100%" stopColor="#B45309" />
+          </SvgGradient>
+          {/* Acorn Cap Gradient */}
+          <SvgGradient id="acornCapGrad" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0%" stopColor="#78350F" />
+            <Stop offset="100%" stopColor="#451A03" />
+          </SvgGradient>
+          {/* Shield Core Gradient */}
+          <SvgGradient id="shieldCoreGrad" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0%" stopColor="#10B981" />
+            <Stop offset="100%" stopColor="#047857" />
+          </SvgGradient>
+        </Defs>
+
+        {/* 1. Backdrop Ambient Spotlight (Matching the Squirrel Card Circle!) */}
+        <Circle
+          cx="50"
+          cy="52"
+          r="42"
+          fill="url(#amberGlow)"
+          stroke="rgba(251, 191, 36, 0.4)"
+          strokeWidth="1.5"
+          strokeDasharray="4 3"
+        />
+        <Circle cx="50" cy="52" r="32" fill="rgba(245, 158, 11, 0.16)" />
+
+        {/* 2. Acorn Body (Nut that squirrels eat!) */}
+        <Path
+          d="M32 40 C32 40 28 66 50 84 C72 66 68 40 68 40 Z"
+          fill="url(#acornBodyGrad)"
+          stroke="#451A03"
+          strokeWidth="2.2"
+          strokeLinejoin="round"
+        />
+        {/* Acorn Gloss Reflection */}
+        <Path
+          d="M36 44 C35 52 38 64 43 70"
+          fill="none"
+          stroke="#FEF3C7"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
+
+        {/* 3. Acorn Woody Cap (Hat) with Texture & Stem */}
+        <Path
+          d="M26 40 C26 29 74 29 74 40 C74 42 26 42 26 40 Z"
+          fill="url(#acornCapGrad)"
+          stroke="#451A03"
+          strokeWidth="2.2"
+        />
+        {/* Acorn Cap Stem */}
+        <Path
+          d="M50 31 C50 24 53 17 57 15"
+          fill="none"
+          stroke="#451A03"
+          strokeWidth="3.2"
+          strokeLinecap="round"
+        />
+        {/* Cap Hatch Texture */}
+        <Path d="M34 35 Q40 38 46 35" stroke="#92400E" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        <Path d="M54 35 Q60 38 66 35" stroke="#92400E" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        <Path d="M44 38 Q50 41 56 38" stroke="#92400E" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+
+        {/* 4. Nutrient Shield Crest on the Acorn */}
+        <Path
+          d="M50 47 L62 52 C62 67 50 76 50 76 C50 76 38 67 38 52 Z"
+          fill="url(#shieldCoreGrad)"
+          stroke="#ECFDF5"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        {/* Crisp White Shield Checkmark */}
+        <Path
+          d="M44 60 L48 64 L56 55"
+          fill="none"
+          stroke="#FFFFFF"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* 5. Golden Sparkles */}
+        <Path d="M78 20 L80 24 L84 26 L80 28 L78 32 L76 28 L72 26 L76 24 Z" fill="#FDE68A" />
+        <Path d="M20 62 L21 65 L24 66 L21 67 L20 70 L19 67 L16 66 L19 65 Z" fill="#FDE68A" opacity={0.85} />
+      </Svg>
+    </Animated.View>
+  );
+};
+
+// =========================================================================
+// Card 3 Visual: Forest Blueberries 🫐 & Crystal Dewdrop 💧 (What Squirrels Forage)
+// =========================================================================
+const BerryHydrationVisual: React.FC<{ size?: number }> = ({ size = 105 }) => {
+  const floatAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, {
+          toValue: -5,
+          duration: 1300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(floatAnim, {
+          toValue: 0,
+          duration: 1300,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
+  return (
+    <Animated.View
+      style={{
+        width: size,
+        height: size,
+        alignItems: 'center',
+        justifyContent: 'center',
+        transform: [{ translateY: floatAnim }],
+      }}
+    >
+      <Svg width={size} height={size} viewBox="0 0 100 100">
+        <Defs>
+          {/* Aqua Ambient Glow matching squirrel backdrop */}
+          <SvgGradient id="aquaGlow" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0%" stopColor="#38BDF8" stopOpacity="0.32" />
+            <Stop offset="100%" stopColor="#0284C7" stopOpacity="0.12" />
+          </SvgGradient>
+          {/* Big Dewdrop Gradient */}
+          <SvgGradient id="dewdropGrad" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0%" stopColor="#7DD3FC" />
+            <Stop offset="50%" stopColor="#38BDF8" />
+            <Stop offset="100%" stopColor="#0284C7" />
+          </SvgGradient>
+          {/* Berry Gradient 1 */}
+          <SvgGradient id="berryGrad1" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0%" stopColor="#818CF8" />
+            <Stop offset="60%" stopColor="#4F46E5" />
+            <Stop offset="100%" stopColor="#312E81" />
+          </SvgGradient>
+          {/* Berry Gradient 2 */}
+          <SvgGradient id="berryGrad2" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0%" stopColor="#A78BFA" />
+            <Stop offset="60%" stopColor="#7C3AED" />
+            <Stop offset="100%" stopColor="#4C1D95" />
+          </SvgGradient>
+          {/* Leaf Gradient */}
+          <SvgGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0%" stopColor="#34D399" />
+            <Stop offset="100%" stopColor="#059669" />
+          </SvgGradient>
+        </Defs>
+
+        {/* 1. Backdrop Ambient Spotlight (Matching the Squirrel Card Circle!) */}
+        <Circle
+          cx="50"
+          cy="52"
+          r="42"
+          fill="url(#aquaGlow)"
+          stroke="rgba(125, 211, 252, 0.45)"
+          strokeWidth="1.5"
+          strokeDasharray="4 3"
+        />
+        <Circle cx="50" cy="52" r="32" fill="rgba(56, 189, 248, 0.16)" />
+
+        {/* 2. Main Pure Crystal Water Dewdrop */}
+        <Path
+          d="M50 18 C50 18 28 47 28 62 C28 74.15 37.85 84 50 84 C62.15 84 72 74.15 72 62 C72 47 50 18 50 18 Z"
+          fill="url(#dewdropGrad)"
+          stroke="#E0F2FE"
+          strokeWidth="2.2"
+        />
+        {/* Wave level inside dewdrop */}
+        <Path
+          d="M31 60 Q40 55 50 60 T69 60 C69 71 60.5 81 50 81 C39.5 81 31 71 31 60 Z"
+          fill="rgba(255, 255, 255, 0.32)"
+        />
+        {/* Dewdrop Gloss Highlight */}
+        <Path
+          d="M36 48 C34 56 36 64 38 68"
+          fill="none"
+          stroke="#FFFFFF"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+
+        {/* 3. Forest Blueberries (What squirrels love to eat!) */}
+        {/* Left Berry */}
+        <Circle cx="33" cy="72" r="12" fill="url(#berryGrad1)" stroke="#1E1B4B" strokeWidth="1.8" />
+        <Circle cx="30" cy="69" r="2.5" fill="#E0E7FF" opacity={0.75} />
+        <Path d="M33 68 L34 71 L37 72 L34 73 L33 76 L32 73 L29 72 L32 71 Z" fill="#312E81" />
+
+        {/* Right Berry */}
+        <Circle cx="68" cy="70" r="11" fill="url(#berryGrad2)" stroke="#1E1B4B" strokeWidth="1.8" />
+        <Circle cx="65" cy="67" r="2.2" fill="#EDE9FE" opacity={0.75} />
+        <Path d="M68 67 L69 69 L71 70 L69 71 L68 73 L67 71 L65 70 L67 69 Z" fill="#4C1D95" />
+
+        {/* 4. Fresh Forest Leaf 🍃 */}
+        <Path
+          d="M50 16 C42 10 38 16 38 22 C44 22 48 18 50 16 Z"
+          fill="url(#leafGrad)"
+          stroke="#064E3B"
+          strokeWidth="1.4"
+        />
+
+        {/* 5. Floating Splash Bubbles */}
+        <Circle cx="76" cy="28" r="4" fill="#38BDF8" opacity={0.9} />
+        <Circle cx="21" cy="38" r="2.8" fill="#7DD3FC" opacity={0.8} />
+        <Circle cx="78" cy="46" r="2.2" fill="#BAE6FD" opacity={0.9} />
+      </Svg>
+    </Animated.View>
+  );
+};
 
 export const MascotBanner: React.FC<MascotBannerProps> = ({
   tip = 'Sugar & sodium are in harmony! Stay hydrated before dinner.',
@@ -151,24 +304,24 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
       buttonText: 'Insights ✨',
       btnColors: ['#10B981', '#059669'] as [string, string],
       cardGradient: ['#0C2919', '#144229', '#1E5E3B'] as [string, string, string],
-      borderColor: 'rgba(45, 106, 79, 0.45)',
+      borderColor: 'rgba(45, 106, 79, 0.55)',
       visualType: 'mascot',
     },
     {
       tag: 'NUTRIENT SHIELD',
-      tagColor: '#6EE7B7',
-      pulseColor: '#10B981',
+      tagColor: '#FDE68A',
+      pulseColor: '#F59E0B',
       headline: 'Sugar & Sodium Safe',
       body: 'Sugar 14g / 25g • Sodium 1,070mg (balanced).',
       badgeText: 'Safe 🛡️',
-      badgeBg: 'rgba(16, 185, 129, 0.25)',
-      badgeBorder: 'rgba(110, 231, 183, 0.45)',
-      badgeColor: '#ECFDF5',
+      badgeBg: 'rgba(245, 158, 11, 0.28)',
+      badgeBorder: 'rgba(251, 191, 36, 0.55)',
+      badgeColor: '#FFFBEB',
       buttonText: 'View Shield ➔',
-      btnColors: ['#059669', '#047857'] as [string, string],
-      cardGradient: ['#042F24', '#064E3B', '#0D6E54'] as [string, string, string],
-      borderColor: 'rgba(16, 185, 129, 0.45)',
-      visualType: 'shield',
+      btnColors: ['#F59E0B', '#D97706'] as [string, string],
+      cardGradient: ['#381806', '#5C2805', '#8C3D07'] as [string, string, string],
+      borderColor: 'rgba(245, 158, 11, 0.55)',
+      visualType: 'acornShield',
     },
     {
       tag: 'DAILY HYDRATION',
@@ -177,14 +330,14 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
       headline: '1,750 ml Logged',
       body: '750ml remaining to hit your 2,500ml daily target.',
       badgeText: '70% 💧',
-      badgeBg: 'rgba(56, 189, 248, 0.25)',
-      badgeBorder: 'rgba(125, 211, 252, 0.45)',
+      badgeBg: 'rgba(56, 189, 248, 0.28)',
+      badgeBorder: 'rgba(125, 211, 252, 0.55)',
       badgeColor: '#F0F9FF',
       buttonText: 'Log Water ➔',
       btnColors: ['#0284C7', '#0369A1'] as [string, string],
-      cardGradient: ['#062A3B', '#0A4A66', '#0284C7'] as [string, string, string],
-      borderColor: 'rgba(56, 189, 248, 0.45)',
-      visualType: 'hydration',
+      cardGradient: ['#07283D', '#0B4E74', '#0284C7'] as [string, string, string],
+      borderColor: 'rgba(56, 189, 248, 0.55)',
+      visualType: 'berryHydration',
     },
   ];
 
@@ -303,16 +456,16 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
                   </TouchableOpacity>
                 </View>
 
-                {/* Right Visual Column: Unique for each card */}
+                {/* Right Visual Column: Squirrel & What Squirrels Eat! */}
                 <View style={styles.rightVisualCol}>
                   {slide.visualType === 'mascot' && (
                     <SquiMascot size={105} animated={true} />
                   )}
-                  {slide.visualType === 'shield' && (
-                    <NutrientShieldVisual size={95} />
+                  {slide.visualType === 'acornShield' && (
+                    <AcornShieldVisual size={100} />
                   )}
-                  {slide.visualType === 'hydration' && (
-                    <HydrationVisual size={95} />
+                  {slide.visualType === 'berryHydration' && (
+                    <BerryHydrationVisual size={100} />
                   )}
                 </View>
               </View>
