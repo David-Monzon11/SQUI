@@ -2,53 +2,58 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { FONTS } from '../../constants/typography';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-export const CARD_WIDTH = SCREEN_WIDTH - 32;
+export const CARD_WIDTH = Math.round(SCREEN_WIDTH - 32);
 
 export const mascotBannerStyles = StyleSheet.create({
   container: {
     marginVertical: 6,
     width: CARD_WIDTH,
+    alignSelf: 'center',
   },
   scrollView: {
     width: CARD_WIDTH,
   },
   cardWrapper: {
     width: CARD_WIDTH,
+    paddingHorizontal: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cardGradient: {
-    borderRadius: 26,
+    width: CARD_WIDTH - 4,
+    borderRadius: 24,
     padding: 16,
     paddingBottom: 14,
     borderWidth: 1.5,
     borderColor: 'rgba(45, 106, 79, 0.45)',
     shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.22,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
+    elevation: 3,
     overflow: 'hidden',
     position: 'relative',
     minHeight: 146,
     justifyContent: 'center',
   },
-  // Ambient background glow circles
+  // Ambient background glow circles (Subtle and soft so edges don't look harsh)
   glowCircle1: {
     position: 'absolute',
-    top: -20,
-    right: -20,
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    backgroundColor: 'rgba(16, 185, 129, 0.12)',
-  },
-  glowCircle2: {
-    position: 'absolute',
-    bottom: -30,
-    left: -20,
+    top: -15,
+    right: -15,
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: 'rgba(212, 163, 115, 0.08)',
+    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+  },
+  glowCircle2: {
+    position: 'absolute',
+    bottom: -25,
+    left: -15,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(212, 163, 115, 0.05)',
   },
 
   // Main Card Body Row
@@ -144,7 +149,7 @@ export const mascotBannerStyles = StyleSheet.create({
 
   // Right Visual Column (Mascot / Shield / Hydration)
   rightVisualCol: {
-    width: 110,
+    width: 105,
     height: 105,
     alignItems: 'center',
     justifyContent: 'center',
