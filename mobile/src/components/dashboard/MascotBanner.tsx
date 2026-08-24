@@ -6,23 +6,125 @@ import {
   Animated,
   Modal,
   ScrollView,
-  Dimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Svg, { Path, Circle, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
 import { SquiMascot } from '../common/SquiMascot';
 import { IconSparkles, IconShieldCheck, IconDroplet, IconTarget } from '../common/Icons';
-import {
-  mascotBannerStyles as styles,
-  CARD_WIDTH,
-  SLIDE_GAP,
-} from './MascotBanner.styles';
+import { mascotBannerStyles as styles, CARD_WIDTH } from './MascotBanner.styles';
 
 interface MascotBannerProps {
   tip?: string;
   healthScore?: number;
 }
+
+// Custom Nutrient Shield Visual for Card 2
+const NutrientShieldVisual: React.FC<{ size?: number }> = ({ size = 95 }) => (
+  <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+    <Svg width={size} height={size} viewBox="0 0 100 100">
+      <Defs>
+        <SvgGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+          <Stop offset="0%" stopColor="#34D399" />
+          <Stop offset="100%" stopColor="#059669" />
+        </SvgGradient>
+        <SvgGradient id="shieldInner" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0%" stopColor="#065F46" />
+          <Stop offset="100%" stopColor="#064E3B" />
+        </SvgGradient>
+      </Defs>
+      {/* Outer ambient dashed aura */}
+      <Circle
+        cx="50"
+        cy="50"
+        r="44"
+        fill="rgba(16, 185, 129, 0.12)"
+        stroke="rgba(110, 231, 183, 0.4)"
+        strokeWidth="1.5"
+        strokeDasharray="4 3"
+      />
+      {/* Inner glow circle */}
+      <Circle cx="50" cy="50" r="36" fill="rgba(5, 150, 105, 0.25)" />
+      
+      {/* Outer Shield Crest */}
+      <Path
+        d="M50 16 L74 25 C74 54 50 78 50 78 C50 78 26 54 26 25 Z"
+        fill="url(#shieldGrad)"
+        stroke="#6EE7B7"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+      />
+      {/* Inner Shield Cavity */}
+      <Path
+        d="M50 24 L67 31 C67 52 50 70 50 70 C50 70 33 52 33 31 Z"
+        fill="url(#shieldInner)"
+      />
+      {/* Bold Safety Checkmark */}
+      <Path
+        d="M41 46 L47 52 L59 39"
+        fill="none"
+        stroke="#FFFFFF"
+        strokeWidth="3.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Decorative Sparkles */}
+      <Path d="M78 18 L80 23 L85 25 L80 27 L78 32 L76 27 L71 25 L76 23 Z" fill="#FDE68A" />
+      <Path d="M22 66 L23 69 L26 70 L23 71 L22 74 L21 71 L18 70 L21 69 Z" fill="#6EE7B7" />
+    </Svg>
+  </View>
+);
+
+// Custom Hydration Droplet Visual for Card 3
+const HydrationVisual: React.FC<{ size?: number }> = ({ size = 95 }) => (
+  <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+    <Svg width={size} height={size} viewBox="0 0 100 100">
+      <Defs>
+        <SvgGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0%" stopColor="#38BDF8" />
+          <Stop offset="100%" stopColor="#0284C7" />
+        </SvgGradient>
+      </Defs>
+      {/* Outer ambient water glow ring */}
+      <Circle
+        cx="50"
+        cy="50"
+        r="44"
+        fill="rgba(56, 189, 248, 0.12)"
+        stroke="rgba(56, 189, 248, 0.35)"
+        strokeWidth="1.5"
+        strokeDasharray="4 3"
+      />
+      <Circle cx="50" cy="50" r="36" fill="rgba(14, 116, 144, 0.25)" />
+
+      {/* Main Hydro Droplet */}
+      <Path
+        d="M50 18 C50 18 28 47 28 62 C28 74.15 37.85 84 50 84 C62.15 84 72 74.15 72 62 C72 47 50 18 50 18 Z"
+        fill="url(#waterGrad)"
+        stroke="#7DD3FC"
+        strokeWidth="2.5"
+      />
+      {/* Translucent Wave Level inside droplet */}
+      <Path
+        d="M31 60 Q40 54 50 60 T69 60 C69 71 60.5 81 50 81 C39.5 81 31 71 31 60 Z"
+        fill="rgba(255, 255, 255, 0.28)"
+      />
+      {/* Highlight reflection */}
+      <Path
+        d="M37 48 C35 55 36 63 38 67"
+        fill="none"
+        stroke="#FFFFFF"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      {/* Floating Aqua Bubbles */}
+      <Circle cx="76" cy="26" r="4.5" fill="#38BDF8" opacity={0.85} />
+      <Circle cx="21" cy="36" r="3" fill="#7DD3FC" opacity={0.75} />
+      <Circle cx="79" cy="67" r="2.8" fill="#BAE6FD" opacity={0.9} />
+    </Svg>
+  </View>
+);
 
 export const MascotBanner: React.FC<MascotBannerProps> = ({
   tip = 'Sugar & sodium are in harmony! Stay hydrated before dinner.',
@@ -38,29 +140,55 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
   const slides = [
     {
       tag: 'DAILY BALANCE',
+      tagColor: '#6EE7B7',
+      pulseColor: '#10B981',
       headline: `Score: ${healthScore}/100`,
       body: tip,
       badgeText: '88 pts 🌰',
+      badgeBg: 'rgba(212, 163, 115, 0.25)',
+      badgeBorder: 'rgba(212, 163, 115, 0.45)',
+      badgeColor: '#FEF3C7',
       buttonText: 'Insights ✨',
+      btnColors: ['#10B981', '#059669'] as [string, string],
+      cardGradient: ['#0C2919', '#144229', '#1E5E3B'] as [string, string, string],
+      borderColor: 'rgba(45, 106, 79, 0.45)',
+      visualType: 'mascot',
     },
     {
       tag: 'NUTRIENT SHIELD',
+      tagColor: '#6EE7B7',
+      pulseColor: '#10B981',
       headline: 'Sugar & Sodium Safe',
       body: 'Sugar 14g / 25g • Sodium 1,070mg (balanced).',
       badgeText: 'Safe 🛡️',
+      badgeBg: 'rgba(16, 185, 129, 0.25)',
+      badgeBorder: 'rgba(110, 231, 183, 0.45)',
+      badgeColor: '#ECFDF5',
       buttonText: 'View Shield ➔',
+      btnColors: ['#059669', '#047857'] as [string, string],
+      cardGradient: ['#042F24', '#064E3B', '#0D6E54'] as [string, string, string],
+      borderColor: 'rgba(16, 185, 129, 0.45)',
+      visualType: 'shield',
     },
     {
       tag: 'DAILY HYDRATION',
+      tagColor: '#7DD3FC',
+      pulseColor: '#38BDF8',
       headline: '1,750 ml Logged',
       body: '750ml remaining to hit your 2,500ml daily target.',
       badgeText: '70% 💧',
+      badgeBg: 'rgba(56, 189, 248, 0.25)',
+      badgeBorder: 'rgba(125, 211, 252, 0.45)',
+      badgeColor: '#F0F9FF',
       buttonText: 'Log Water ➔',
+      btnColors: ['#0284C7', '#0369A1'] as [string, string],
+      cardGradient: ['#062A3B', '#0A4A66', '#0284C7'] as [string, string, string],
+      borderColor: 'rgba(56, 189, 248, 0.45)',
+      visualType: 'hydration',
     },
   ];
 
   useEffect(() => {
-    // Live green pulse indicator
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
@@ -79,8 +207,7 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
 
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = e.nativeEvent.contentOffset.x;
-    const itemInterval = CARD_WIDTH + SLIDE_GAP;
-    const slideIdx = Math.round(offsetX / itemInterval);
+    const slideIdx = Math.round(offsetX / CARD_WIDTH);
     if (slideIdx >= 0 && slideIdx < slides.length && slideIdx !== activeSlide) {
       setActiveSlide(slideIdx);
     }
@@ -88,34 +215,34 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
 
   const changeSlide = (index: number) => {
     setActiveSlide(index);
-    const itemInterval = CARD_WIDTH + SLIDE_GAP;
     scrollRef.current?.scrollTo({
-      x: index * itemInterval,
+      x: index * CARD_WIDTH,
       animated: true,
     });
   };
 
   return (
     <View style={styles.container}>
-      {/* Full-Card Native Horizontal Swipeable Carousel */}
+      {/* Full-Card Swipeable Horizontal Carousel */}
       <ScrollView
         ref={scrollRef}
         horizontal
+        pagingEnabled
         showsHorizontalScrollIndicator={false}
         nestedScrollEnabled={true}
         decelerationRate="fast"
-        snapToInterval={CARD_WIDTH + SLIDE_GAP}
-        snapToAlignment="start"
-        contentContainerStyle={styles.scrollContent}
+        snapToInterval={CARD_WIDTH}
+        snapToAlignment="center"
         onMomentumScrollEnd={onScrollEnd}
+        style={styles.scrollView}
       >
         {slides.map((slide, idx) => (
-          <View key={idx} style={styles.cardSlide}>
+          <View key={idx} style={styles.cardWrapper}>
             <LinearGradient
-              colors={['#0A2416', '#123D25', '#1B5534']}
+              colors={slide.cardGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.cardGradient}
+              style={[styles.cardGradient, { borderColor: slide.borderColor }]}
             >
               {/* Ambient Decorative Glows */}
               <View style={styles.glowCircle1} />
@@ -129,12 +256,27 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
                     <Animated.View
                       style={[
                         styles.pulseDot,
-                        { transform: [{ scale: pulseAnim }] },
+                        {
+                          backgroundColor: slide.pulseColor,
+                          transform: [{ scale: pulseAnim }],
+                        },
                       ]}
                     />
-                    <Text style={styles.companionTag}>{slide.tag}</Text>
-                    <View style={styles.headerScoreBadge}>
-                      <Text style={styles.headerScoreBadgeText}>{slide.badgeText}</Text>
+                    <Text style={[styles.companionTag, { color: slide.tagColor }]}>
+                      {slide.tag}
+                    </Text>
+                    <View
+                      style={[
+                        styles.headerScoreBadge,
+                        {
+                          backgroundColor: slide.badgeBg,
+                          borderColor: slide.badgeBorder,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.headerScoreBadgeText, { color: slide.badgeColor }]}>
+                        {slide.badgeText}
+                      </Text>
                     </View>
                   </View>
 
@@ -151,7 +293,7 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
                     onPress={() => setIsModalOpen(true)}
                   >
                     <LinearGradient
-                      colors={['#10B981', '#059669']}
+                      colors={slide.btnColors}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={styles.actionBtnGradient}
@@ -161,22 +303,17 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
                   </TouchableOpacity>
                 </View>
 
-                {/* Right: SQUI Mascot with Dedicated Green Circle Backdrop */}
-                <View style={styles.rightMascotCol}>
-                  <View style={styles.mascotCircleContainer}>
-                    {/* Glowing Emerald Ring Backdrop */}
-                    <View style={styles.mascotGlowRing} />
-
-                    {/* Concentric Emerald Green Circle */}
-                    <LinearGradient
-                      colors={['#185333', '#0E3621', '#062013']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.mascotCircleGradient}
-                    >
-                      <SquiMascot size={78} animated={true} />
-                    </LinearGradient>
-                  </View>
+                {/* Right Visual Column: Unique for each card */}
+                <View style={styles.rightVisualCol}>
+                  {slide.visualType === 'mascot' && (
+                    <SquiMascot size={105} animated={true} />
+                  )}
+                  {slide.visualType === 'shield' && (
+                    <NutrientShieldVisual size={95} />
+                  )}
+                  {slide.visualType === 'hydration' && (
+                    <HydrationVisual size={95} />
+                  )}
                 </View>
               </View>
             </LinearGradient>

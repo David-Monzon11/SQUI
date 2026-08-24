@@ -3,42 +3,43 @@ import { FONTS } from '../../constants/typography';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export const CARD_WIDTH = SCREEN_WIDTH - 32;
-export const SLIDE_GAP = 12;
 
 export const mascotBannerStyles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    marginVertical: 6,
+    width: CARD_WIDTH,
   },
-  scrollContent: {
-    paddingHorizontal: 0,
-    gap: SLIDE_GAP,
+  scrollView: {
+    width: CARD_WIDTH,
   },
-  cardSlide: {
+  cardWrapper: {
     width: CARD_WIDTH,
   },
   cardGradient: {
-    borderRadius: 24,
+    borderRadius: 26,
     padding: 16,
-    paddingVertical: 15,
+    paddingBottom: 14,
     borderWidth: 1.5,
-    borderColor: 'rgba(52, 211, 153, 0.35)',
+    borderColor: 'rgba(45, 106, 79, 0.45)',
     shadowColor: '#1B432C',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.28,
-    shadowRadius: 14,
-    elevation: 5,
-    position: 'relative',
+    shadowOpacity: 0.22,
+    shadowRadius: 12,
+    elevation: 4,
     overflow: 'hidden',
+    position: 'relative',
+    minHeight: 146,
+    justifyContent: 'center',
   },
   // Ambient background glow circles
   glowCircle1: {
     position: 'absolute',
-    top: -24,
-    right: -24,
+    top: -20,
+    right: -20,
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
   },
   glowCircle2: {
     position: 'absolute',
@@ -55,13 +56,13 @@ export const mascotBannerStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 10,
   },
 
   // Left Content Column
   leftCol: {
     flex: 1,
-    paddingRight: 4,
+    paddingRight: 10,
+    justifyContent: 'center',
   },
   tagRow: {
     flexDirection: 'row',
@@ -73,7 +74,7 @@ export const mascotBannerStyles = StyleSheet.create({
     fontFamily: FONTS.roundedBlack,
     fontSize: 10.5,
     color: '#6EE7B7',
-    letterSpacing: 1.1,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
   },
   pulseDot: {
@@ -85,11 +86,11 @@ export const mascotBannerStyles = StyleSheet.create({
 
   statusTitle: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 17.5,
+    fontSize: 18,
     color: '#FFFFFF',
     letterSpacing: -0.4,
-    lineHeight: 22,
-    marginBottom: 3,
+    lineHeight: 23,
+    marginBottom: 4,
   },
   statusSub: {
     fontFamily: FONTS.roundedSemiBold,
@@ -106,7 +107,7 @@ export const mascotBannerStyles = StyleSheet.create({
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.18,
+    shadowOpacity: 0.15,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -115,7 +116,7 @@ export const mascotBannerStyles = StyleSheet.create({
     alignItems: 'center',
     gap: 5,
     paddingHorizontal: 13,
-    paddingVertical: 6.5,
+    paddingVertical: 7,
     borderRadius: 14,
   },
   actionBtnText: {
@@ -141,44 +142,14 @@ export const mascotBannerStyles = StyleSheet.create({
     color: '#FEF3C7',
   },
 
-  // Right Mascot Area with Dedicated Green Circle Backdrop
-  rightMascotCol: {
-    width: 94,
+  // Right Visual Column (Mascot / Shield / Hydration)
+  rightVisualCol: {
+    width: 110,
+    height: 105,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-  },
-  mascotCircleContainer: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  mascotGlowRing: {
-    position: 'absolute',
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    borderWidth: 1.5,
-    borderColor: 'rgba(110, 231, 183, 0.25)',
-    backgroundColor: 'rgba(16, 185, 129, 0.08)',
-  },
-  mascotCircleGradient: {
-    width: 84,
-    height: 84,
-    borderRadius: 42,
-    borderWidth: 2,
-    borderColor: 'rgba(110, 231, 183, 0.45)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 4,
-    overflow: 'hidden',
+    overflow: 'visible',
   },
 
   // Pagination Dots
@@ -196,7 +167,7 @@ export const mascotBannerStyles = StyleSheet.create({
     backgroundColor: '#D1DDD6',
   },
   dotActive: {
-    width: 20,
+    width: 18,
     height: 6,
     borderRadius: 3,
     backgroundColor: '#1B432C',
