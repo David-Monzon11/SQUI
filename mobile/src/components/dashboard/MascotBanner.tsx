@@ -12,14 +12,12 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SquiMascot } from '../common/SquiMascot';
-import { SquiLogo } from '../common/SquiLogo';
 import { IconSparkles, IconShieldCheck, IconDroplet, IconTarget } from '../common/Icons';
-import { mascotBannerStyles as styles } from './MascotBanner.styles';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const CARD_WIDTH = SCREEN_WIDTH - 32;
-const MASCOT_WIDTH = 115;
-const TEXT_SLIDE_WIDTH = CARD_WIDTH - MASCOT_WIDTH - 24; // Width for left text slider
+import {
+  mascotBannerStyles as styles,
+  CARD_WIDTH,
+  SLIDE_GAP,
+} from './MascotBanner.styles';
 
 interface MascotBannerProps {
   tip?: string;
@@ -81,7 +79,8 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
 
   const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = e.nativeEvent.contentOffset.x;
-    const slideIdx = Math.round(offsetX / TEXT_SLIDE_WIDTH);
+    const itemInterval = CARD_WIDTH + SLIDE_GAP;
+    const slideIdx = Math.round(offsetX / itemInterval);
     if (slideIdx >= 0 && slideIdx < slides.length && slideIdx !== activeSlide) {
       setActiveSlide(slideIdx);
     }
@@ -89,41 +88,42 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
 
   const changeSlide = (index: number) => {
     setActiveSlide(index);
+    const itemInterval = CARD_WIDTH + SLIDE_GAP;
     scrollRef.current?.scrollTo({
-      x: index * TEXT_SLIDE_WIDTH,
+      x: index * itemInterval,
       animated: true,
     });
   };
 
   return (
     <View style={styles.container}>
-      {/* Single Main Card Container */}
-      <LinearGradient
-        colors={['#0C2919', '#144229', '#1E5E3B']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.cardGradient}
+      {/* Full-Card Native Horizontal Swipeable Carousel */}
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        nestedScrollEnabled={true}
+        decelerationRate="fast"
+        snapToInterval={CARD_WIDTH + SLIDE_GAP}
+        snapToAlignment="start"
+        contentContainerStyle={styles.scrollContent}
+        onMomentumScrollEnd={onScrollEnd}
       >
-        {/* Ambient Decorative Glows */}
-        <View style={styles.glowCircle1} />
-        <View style={styles.glowCircle2} />
-
-        <View style={styles.mainRow}>
-          {/* Left: Native Horizontal Swipeable Text Carousel */}
-          <View style={{ width: TEXT_SLIDE_WIDTH, overflow: 'hidden' }}>
-            <ScrollView
-              ref={scrollRef}
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              nestedScrollEnabled={true}
-              decelerationRate="fast"
-              snapToInterval={TEXT_SLIDE_WIDTH}
-              snapToAlignment="start"
-              onMomentumScrollEnd={onScrollEnd}
+        {slides.map((slide, idx) => (
+          <View key={idx} style={styles.cardSlide}>
+            <LinearGradient
+              colors={['#0A2416', '#123D25', '#1B5534']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.cardGradient}
             >
-              {slides.map((slide, idx) => (
-                <View key={idx} style={{ width: TEXT_SLIDE_WIDTH, paddingRight: 6 }}>
+              {/* Ambient Decorative Glows */}
+              <View style={styles.glowCircle1} />
+              <View style={styles.glowCircle2} />
+
+              <View style={styles.mainRow}>
+                {/* Left Content Column */}
+                <View style={styles.leftCol}>
                   {/* Tag & Badge Row */}
                   <View style={styles.tagRow}>
                     <Animated.View
@@ -160,16 +160,29 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>
-              ))}
-            </ScrollView>
-          </View>
 
-          {/* Right: FIXED Anchored SQUI Mascot (Never shifts or unmounts!) */}
-          <View style={styles.rightMascotCol}>
-            <SquiMascot size={115} animated={true} />
+                {/* Right: SQUI Mascot with Dedicated Green Circle Backdrop */}
+                <View style={styles.rightMascotCol}>
+                  <View style={styles.mascotCircleContainer}>
+                    {/* Glowing Emerald Ring Backdrop */}
+                    <View style={styles.mascotGlowRing} />
+
+                    {/* Concentric Emerald Green Circle */}
+                    <LinearGradient
+                      colors={['#185333', '#0E3621', '#062013']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.mascotCircleGradient}
+                    >
+                      <SquiMascot size={78} animated={true} />
+                    </LinearGradient>
+                  </View>
+                </View>
+              </View>
+            </LinearGradient>
           </View>
-        </View>
-      </LinearGradient>
+        ))}
+      </ScrollView>
 
       {/* Interactive Pagination Dots (• • •) */}
       <View style={styles.dotsRow}>
