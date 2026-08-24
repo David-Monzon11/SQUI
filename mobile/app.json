@@ -15,6 +15,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.squi.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/MLogo.jpg",
         "backgroundColor": "#10B981"
