@@ -1,0 +1,122 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                      String           @id @default(uuid())
+  email                   String           @unique
+  passwordHash            String
+  fullName                String
+  age                     Int?
+  gender                  String?
+  heightCm                Float?
+  currentWeightKg         Float?
+  targetWeightKg          Float?
+  activityLevel           String?
+  targetDailySugarG       Float            @default(25.0)
+  targetDailySodiumMg     Float            @default(2000.0)
+  targetDailyCaloriesKcal Float            @default(2000.0)
+  targetDailyWaterMl      Float            @default(2500.0)
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  dailyLogs               DailyHealthLog[]
+  meals                   Meal[]
+  summaries               DailySummary[]
+}
+
+model DailyHealthLog {
+  id               String   @id @default(uuid())
+  userId           String
+  date             String   // YYYY-MM-DD format
+  weightKg         Float?
+  waterIntakeMl    Float    @default(0)
+  bloodPressureSys Int?
+  bloodPressureDia Int?
+  bloodSugarMgDl   Float?
+  mood             String?
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model Meal {
+  id           String        @id @default(uuid())
+  userId       String
+  date         String        // YYYY-MM-DD
+  mealCategory String        // BREAKFAST, LUNCH, DINNER, SNACK, DRINK
+  mealTime     String        // HH:mm
+  foodName     String
+  description  String?
+  portionSize  String        @default("1 serving")
+  imageUrl     String?
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nutrition    NutritionData?
+}
+
+model NutritionData {
+  id           String   @id @default(uuid())
+  mealId       String   @unique
+  sugarG       Float    @default(0)
+  sodiumMg     Float    @default(0)
+  caloriesKcal Float    @default(0)
+  proteinG     Float    @default(0)
+  carbsG       Float    @default(0)
+  fatG         Float    @default(0)
+  fiberG       Float    @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  meal         Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+}
+
+model DailySummary {
+  id               String   @id @default(uuid())
+  userId           String
+  date             String   // YYYY-MM-DD
+  totalSugarG      Float    @default(0)
+  totalSodiumMg    Float    @default(0)
+  totalCaloriesKcal Float   @default(0)
+  totalProteinG    Float    @default(0)
+  totalCarbsG      Float    @default(0)
+  totalFatG        Float    @default(0)
+  totalFiberG      Float    @default(0)
+  waterIntakeMl    Float    @default(0)
+  mealCount        Int      @default(0)
+  sugarStatus      String   @default("SAFE")
+  sodiumStatus     String   @default("SAFE")
+  healthScore      Int      @default(100)
+  positiveHabits   String   // JSON stringified array
+  improvementAreas String   // JSON stringified array
+  squirrelTip      String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model HealthArticle {
+  id          String   @id @default(uuid())
+  title       String
+  category    String   // SUGAR, SODIUM, HYDRATION, HABITS, NUTRITION
+  summary     String
+  content     String
+  readTimeMin Int      @default(3)
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+}

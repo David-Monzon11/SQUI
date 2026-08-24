@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Expo & Metro
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# Native builds
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Database & local data
+*.db
+*.db-journal
+*.sqlite
+dev.db
+
+# TypeScript / Build maps
+*.tsbuildinfo
+*.js.map
+
+# Uploads & Temp storage
+uploads/
+scratch/

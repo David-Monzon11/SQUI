@@ -1,0 +1,11 @@
+export const API_CONFIG = {
+  BASE_URL: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000',
+  TIMEOUT_MS: 10000,
+};
+
+export const DEFAULT_TARGETS = {
+  DAILY_SUGAR_G: 25,
+  DAILY_SODIUM_MG: 2000,
+  DAILY_WATER_ML: 2500,
+  DAILY_CALORIES_KCAL: 2000,
+};

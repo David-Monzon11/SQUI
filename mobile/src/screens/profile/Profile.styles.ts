@@ -1,0 +1,27 @@
+import tw from '../../styles/tailwind';
+
+export const profileStyles = {
+  safeArea: tw`flex-1 bg-pearl`,
+  container: tw`p-4 pb-12`,
+  headerCard: tw`flex-row items-center p-4 bg-white rounded-2xl border border-gray-100 mb-3 shadow-sm`,
+  avatar: tw`mr-3.5`,
+  infoWrap: tw`flex-1`,
+  name: tw`text-base font-extrabold text-pine`,
+  email: tw`text-xs text-slate mb-1`,
+  tagPill: tw`bg-brand-sage-light px-2 py-0.5 rounded-md self-start`,
+  tagText: tw`text-brand-forest text-[11px] font-bold`,
+  sectionCard: tw`bg-white rounded-2xl p-4 border border-gray-100 mb-3 shadow-sm`,
+  sectionTitle: tw`text-xs font-extrabold text-pine uppercase tracking-wider mb-2.5`,
+  inputRow: tw`flex-row justify-between`,
+  inputCol: tw`w-[48%]`,
+  label: tw`text-xs font-bold text-slate mb-1 mt-1`,
+  input: tw`bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs text-pine mb-2`,
+  switchRow: tw`flex-row justify-between items-center py-2.5 border-b border-gray-100`,
+  switchTitle: tw`text-xs font-bold text-pine`,
+  switchSub: tw`text-[11px] text-gray-500`,
+  philosophyCard: tw`bg-amber-50 border border-amber-200 items-center p-3.5 rounded-2xl mb-3`,
+  philosophyTitle: tw`text-[11px] font-extrabold text-amber-800 uppercase tracking-widest mb-1`,
+  philosophyText: tw`text-xs text-amber-950 italic text-center leading-4`,
+  saveButton: tw`bg-brand-forest py-3.5 rounded-2xl items-center shadow-lg`,
+  saveButtonText: tw`text-white text-sm font-extrabold tracking-wide`,
+};
