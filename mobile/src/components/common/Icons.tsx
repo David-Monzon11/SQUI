@@ -273,3 +273,127 @@ export const IconMoon: React.FC<IconProps> = ({ size = 20, color = '#1B432C', st
   </View>
 );
 
+// =========================================================================
+// SQUI Proprietary Concept SVG Emblems (Nature & Mindful Nutrition)
+// =========================================================================
+
+/**
+ * SQUI Sugar Consumed Emblem: Mindful faceted sweetness crystal with botanical sparkle
+ */
+export const IconSquiSugar: React.FC<IconProps> = ({ size = 20, color = '#F59E0B', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      {/* Faceted Sweetness Gem / Cane Crystal */}
+      <Path
+        d="M12 2.5L19.5 8L15.5 21H8.5L4.5 8L12 2.5Z"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill={color}
+        fillOpacity={0.15}
+      />
+      <Path
+        d="M12 2.5V21M4.5 8H19.5M8.5 21L12 8L15.5 21"
+        stroke={color}
+        strokeWidth={strokeWidth * 0.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeOpacity={0.65}
+      />
+      {/* Radiant Sweetness Sparkle */}
+      <Circle cx="18" cy="4.5" r="1" fill={color} />
+      <Circle cx="6" cy="18" r="0.8" fill={color} fillOpacity={0.7} />
+    </Svg>
+  </View>
+);
+
+/**
+ * SQUI Sodium Consumed Emblem: Natural mineral crystal pyramid with balancing shield facets
+ */
+export const IconSquiSodium: React.FC<IconProps> = ({ size = 20, color = '#10B981', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      {/* Hexagonal Mineral Shield / Salt Crystal Prism */}
+      <Path
+        d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill={color}
+        fillOpacity={0.14}
+      />
+      {/* Internal Geometry & Balance Cross */}
+      <Path
+        d="M12 3V21M4 7.5L20 16.5M20 7.5L4 16.5"
+        stroke={color}
+        strokeWidth={strokeWidth * 0.75}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeOpacity={0.55}
+      />
+      {/* Center Mineral Core */}
+      <Circle cx="12" cy="12" r="2.2" fill={color} fillOpacity={0.4} stroke={color} strokeWidth={1} />
+    </Svg>
+  </View>
+);
+
+/**
+ * SQUI Body & Weight Balance Scale: SQUI balance fulcrum with calibrated pans
+ */
+export const IconSquiScale: React.FC<IconProps> = ({ size = 20, color = '#10B981', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      {/* Central Fulcrum Column & Top Pivot */}
+      <Path d="M12 3V19M8 21H16" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+      <Circle cx="12" cy="4" r="1.5" fill={color} />
+      {/* Balanced Beam */}
+      <Path d="M4 7.5H20" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+      {/* Left Pan (Suspended Strings + Dish) */}
+      <Path d="M4 7.5L2 13M4 7.5L6 13" stroke={color} strokeWidth={strokeWidth * 0.75} strokeLinecap="round" />
+      <Path d="M1.5 13C1.5 14.5 6.5 14.5 6.5 13H1.5Z" stroke={color} strokeWidth={strokeWidth * 0.85} fill={color} fillOpacity={0.18} strokeLinejoin="round" />
+      {/* Right Pan (Suspended Strings + Dish) */}
+      <Path d="M20 7.5L18 13M20 7.5L22 13" stroke={color} strokeWidth={strokeWidth * 0.75} strokeLinecap="round" />
+      <Path d="M17.5 13C17.5 14.5 22.5 14.5 22.5 13H17.5Z" stroke={color} strokeWidth={strokeWidth * 0.85} fill={color} fillOpacity={0.18} strokeLinejoin="round" />
+    </Svg>
+  </View>
+);
+
+/**
+ * SQUI Hydration Dewdrop Emblem: Forest spring water dewdrop with internal wave curve
+ */
+export const IconSquiHydration: React.FC<IconProps> = ({ size = 20, color = '#0284C7', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      {/* Dewdrop Outer Shape */}
+      <Path
+        d="M12 2.8C12 2.8 5 11.2 5 15.6C5 19.5 8.1 22 12 22C15.9 22 19 19.5 19 15.6C19 11.2 12 2.8 12 2.8Z"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill={color}
+        fillOpacity={0.16}
+      />
+      {/* Inner Fluid Wave */}
+      <Path
+        d="M7 16C8.5 15 10 17 12 17C14 17 15.5 15 17 16"
+        stroke={color}
+        strokeWidth={strokeWidth * 0.85}
+        strokeLinecap="round"
+      />
+      {/* Light Reflection Glint */}
+      <Path
+        d="M9.5 7.5C8 10 7.5 12 7.5 14"
+        stroke="#FFFFFF"
+        strokeWidth={strokeWidth * 0.8}
+        strokeLinecap="round"
+        strokeOpacity={0.8}
+      />
+      <Circle cx="12" cy="19.2" r="0.8" fill={color} fillOpacity={0.6} />
+    </Svg>
+  </View>
+);
+
+

@@ -98,119 +98,175 @@ export const dashboardStyles = {
     gap: 10,
     marginBottom: 6,
   },
-  statCard: {
+
+  // =========================================================================
+  // Watermarked Bento Metric Widgets (Soft Slate & Botanical Forest)
+  // =========================================================================
+  bentoTouchWrap: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 22,
-    padding: 13,
-    borderWidth: 1.5,
-    borderColor: 'rgba(27, 67, 44, 0.08)',
-    shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-    justifyContent: 'space-between' as const,
-    minHeight: 114,
+    borderRadius: 24,
+    shadowColor: '#0E2E1B',
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.14,
+    shadowRadius: 15,
+    elevation: 5,
   },
-  statTileHeader: {
+  bentoCard: {
+    flex: 1,
+    borderRadius: 24,
+    paddingHorizontal: 14,
+    paddingTop: 13,
+    paddingBottom: 12,
+    minHeight: 146,
+    justifyContent: 'flex-start' as const,
+    overflow: 'hidden' as const,
+    position: 'relative' as const,
+    borderWidth: 1.2,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+  },
+  bentoWatermark: {
+    position: 'absolute' as const,
+    right: -4,
+    bottom: -6,
+    opacity: 0.16,
+  },
+  bentoTopRow: {
     flexDirection: 'row' as const,
     justifyContent: 'space-between' as const,
     alignItems: 'center' as const,
-    marginBottom: 2,
   },
-  statLabel: {
-    fontFamily: FONTS.roundedBold,
-    fontSize: 12,
-    color: '#4A6354',
-    letterSpacing: -0.1,
-  },
-  statValue: {
-    fontFamily: FONTS.roundedBlack,
-    fontSize: 24,
-    color: '#0F2418',
-    letterSpacing: -0.6,
-    marginVertical: 1,
-  },
-  statUnit: {
-    fontFamily: FONTS.roundedBold,
-    fontSize: 12.5,
-    color: '#849C8D',
-  },
-  statTrend: {
-    fontFamily: FONTS.roundedBold,
-    fontSize: 10.5,
-    color: '#2D6A4F',
-    marginTop: 2,
-    letterSpacing: 0.1,
-  },
-  quickWaterBtn: {
-    backgroundColor: '#E8F3EC',
+  bentoIconBadge: (_theme: 'emerald' | 'cyan' | 'amber') => ({
+    width: 32,
+    height: 32,
     borderRadius: 10,
-    paddingVertical: 4.5,
-    paddingHorizontal: 8,
-    flexDirection: 'row' as const,
+    backgroundColor: 'rgba(255, 255, 255, 0.10)',
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    marginTop: 2,
-  },
-  quickWaterText: {
-    fontFamily: FONTS.roundedBlack,
-    fontSize: 11.5,
-    color: '#1B432C',
-  },
-
-  // Status Badges & Gauges
-  statusBadge: (status: string) => {
-    const base = {
-      fontFamily: FONTS.roundedBlack,
-      fontSize: 9.5,
-      paddingHorizontal: 6.5,
-      paddingVertical: 2,
-      borderRadius: 6,
-      letterSpacing: 0.2,
-      overflow: 'hidden' as const,
-    };
-    switch (status) {
-      case 'SAFE':
-        return {
-          ...base,
-          color: '#1B432C',
-          backgroundColor: '#E8F3EC',
-        };
-      case 'CAUTION':
-        return {
-          ...base,
-          color: '#92400E',
-          backgroundColor: '#FEF3C7',
-        };
-      case 'EXCEEDED':
-        return {
-          ...base,
-          color: '#991B1B',
-          backgroundColor: '#FEE2E2',
-        };
-      default:
-        return {
-          ...base,
-          color: '#4A6354',
-          backgroundColor: '#F0F5F2',
-        };
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  }),
+  bentoFloatingPlus: (theme: 'emerald' | 'cyan' | 'amber') => {
+    let bg = '#10B981';
+    let shadow = '#10B981';
+    if (theme === 'cyan') {
+      bg = '#0284C7';
+      shadow = '#0284C7';
+    } else if (theme === 'amber') {
+      bg = '#F59E0B';
+      shadow = '#F59E0B';
     }
+    return {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      backgroundColor: bg,
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      borderWidth: 1.5,
+      borderColor: 'rgba(255, 255, 255, 0.30)',
+      shadowColor: shadow,
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.35,
+      shadowRadius: 7,
+      elevation: 4,
+    };
   },
-  trackBg: {
-    height: 7,
-    backgroundColor: '#EEF2F0',
-    borderRadius: 4,
+  bentoPlusText: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 16,
+    color: '#FFFFFF',
+    lineHeight: 18,
+    marginTop: -1,
+  },
+  bentoContent: {
+    marginTop: 10,
+    zIndex: 2,
+  },
+  bentoLabel: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 10.5,
+    color: 'rgba(255, 255, 255, 0.70)',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase' as const,
+    marginBottom: 1,
+  },
+  bentoValueRow: {
+    marginTop: 1,
+    marginBottom: 0,
+  },
+  bentoMainValue: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 25,
+    color: '#FFFFFF',
+    letterSpacing: -0.8,
+    lineHeight: 28,
+  },
+  bentoUnit: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.80)',
+  },
+  bentoSubText: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.60)',
+    marginTop: 1.5,
+  },
+  bentoTrackBg: {
+    height: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderRadius: 2.5,
     overflow: 'hidden' as const,
-    marginTop: 4,
+    marginTop: 6,
+    width: '78%' as const,
   },
-  trackFill: (pct: number, color: string) => ({
+  bentoTrackFill: (pct: number, color: string) => ({
     width: `${pct}%` as const,
     backgroundColor: color,
     height: '100%' as const,
-    borderRadius: 4,
+    borderRadius: 2.5,
   }),
+
+  glassStatusBadge: (status: string) => {
+    let border = 'rgba(16, 185, 129, 0.35)';
+    if (status === 'CAUTION') {
+      border = 'rgba(245, 158, 11, 0.35)';
+    } else if (status === 'EXCEEDED') {
+      border = 'rgba(239, 68, 68, 0.35)';
+    }
+    return {
+      flexDirection: 'row' as const,
+      alignItems: 'center' as const,
+      backgroundColor: 'rgba(0, 0, 0, 0.35)',
+      borderWidth: 1,
+      borderColor: border,
+      paddingHorizontal: 7.5,
+      paddingVertical: 3,
+      borderRadius: 7,
+    };
+  },
+  statusGlowDot: (status: string) => {
+    let dotColor = '#10B981';
+    if (status === 'CAUTION') dotColor = '#F59E0B';
+    if (status === 'EXCEEDED') dotColor = '#EF4444';
+    return {
+      width: 5,
+      height: 5,
+      borderRadius: 2.5,
+      backgroundColor: dotColor,
+      marginRight: 4,
+    };
+  },
+  statusBadgeText: (status: string) => {
+    let textColor = '#6EE7B7';
+    if (status === 'CAUTION') textColor = '#FDE68A';
+    if (status === 'EXCEEDED') textColor = '#FCA5A5';
+    return {
+      fontFamily: FONTS.roundedBlack,
+      fontSize: 9.5,
+      color: textColor,
+    };
+  },
 
   // Visual Food Diary Stream & Cards (Tightened Spacing)
   diarySectionHeader: {

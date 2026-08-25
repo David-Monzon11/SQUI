@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { IconSquiSugar, IconSquiSodium } from '../../components/common/Icons';
 import { dailyNutrientDetailStyles as styles } from './DailyNutrientDetail.styles';
 
 interface MealBreakdownItem {
@@ -14,6 +15,7 @@ interface MealBreakdownItem {
 interface DailyNutrientDetailScreenProps {
   onBack?: () => void;
   dateStr?: string;
+  nutrientType?: 'SUGAR' | 'SODIUM';
   totalSugar?: number;
   totalSodium?: number;
   meals?: MealBreakdownItem[];
@@ -22,6 +24,7 @@ interface DailyNutrientDetailScreenProps {
 export const DailyNutrientDetailScreen: React.FC<DailyNutrientDetailScreenProps> = ({
   onBack,
   dateStr = 'Today, Aug 21',
+  nutrientType = 'SUGAR',
   totalSugar = 14,
   totalSodium = 1200,
   meals = [
@@ -43,14 +46,16 @@ export const DailyNutrientDetailScreen: React.FC<DailyNutrientDetailScreenProps>
     },
   ],
 }) => {
+  const isSugar = nutrientType === 'SUGAR';
+
   const sugarPct = Math.min(Math.round((totalSugar / 25) * 100), 100);
   const sodiumPct = Math.min(Math.round((totalSodium / 2000) * 100), 100);
 
   const sugarStatus = totalSugar > 25 ? 'EXCEEDED' : totalSugar > 18 ? 'CAUTION' : 'SAFE';
   const sodiumStatus = totalSodium > 2000 ? 'EXCEEDED' : totalSodium > 1400 ? 'CAUTION' : 'SAFE';
 
-  const getSugarColor = () => (totalSugar > 25 ? '#C53030' : totalSugar > 18 ? '#D97706' : '#2D6A4F');
-  const getSodiumColor = () => (totalSodium > 2000 ? '#C53030' : totalSodium > 1400 ? '#D97706' : '#2D6A4F');
+  const getSugarColor = () => (totalSugar > 25 ? '#EF4444' : totalSugar > 18 ? '#F59E0B' : '#10B981');
+  const getSodiumColor = () => (totalSodium > 2000 ? '#EF4444' : totalSodium > 1400 ? '#F59E0B' : '#10B981');
 
   return (
     <View style={styles.safeArea}>
@@ -58,60 +63,77 @@ export const DailyNutrientDetailScreen: React.FC<DailyNutrientDetailScreenProps>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>Daily Nutrient Breakdown</Text>
+            <Text style={styles.title}>
+              {isSugar ? 'Daily Sugar Consumed' : 'Daily Sodium Consumed'}
+            </Text>
             {onBack && (
-              <TouchableOpacity style={styles.backBtn} onPress={onBack}>
+              <TouchableOpacity style={styles.backBtn} activeOpacity={0.75} onPress={onBack}>
                 <Text style={styles.backBtnText}>✕ Close</Text>
               </TouchableOpacity>
             )}
           </View>
-          <Text style={styles.subtitle}>{dateStr} • Complete Sugar & Sodium Analysis</Text>
-        </View>
-
-        {/* 1. SUGAR INTAKE HERO CARD */}
-        <View style={styles.nutrientHeroCard}>
-          <View style={styles.nutrientHeroHeader}>
-            <Text style={styles.nutrientHeroTitle}>🍬 Daily Sugar Intake</Text>
-            <Text style={styles.statusBadge(sugarStatus)}>{sugarStatus}</Text>
-          </View>
-          <View style={styles.bigValRow}>
-            <Text style={styles.bigVal}>{totalSugar}</Text>
-            <Text style={styles.bigValUnit}>grams (g)</Text>
-            <Text style={styles.bigValCap}>/ 25g daily target ({sugarPct}%)</Text>
-          </View>
-          <View style={styles.trackBg}>
-            <View style={styles.trackFill(sugarPct, getSugarColor())} />
-          </View>
-          <Text style={styles.heroAdviceText}>
-            {totalSugar <= 25
-              ? 'Great job! Staying under 25g supports sustained focus and steady blood glucose.'
-              : 'Sugar is above recommended target. Try balancing tomorrow with whole fiber foods.'}
+          <Text style={styles.subtitle}>
+            {isSugar
+              ? `${dateStr} • WHO Recommended Target: ≤ 25g / day`
+              : `${dateStr} • AHA Recommended Daily Cap: ≤ 2,000mg / day`}
           </Text>
         </View>
 
-        {/* 2. SODIUM INTAKE HERO CARD */}
-        <View style={styles.nutrientHeroCard}>
-          <View style={styles.nutrientHeroHeader}>
-            <Text style={styles.nutrientHeroTitle}>🧂 Daily Sodium Intake</Text>
-            <Text style={styles.statusBadge(sodiumStatus)}>{sodiumStatus}</Text>
+        {/* SINGLE FOCUSED NUTRIENT HERO CARD */}
+        {isSugar ? (
+          /* 1. SUGAR CONSUMED HERO CARD */
+          <View style={styles.nutrientHeroCard}>
+            <View style={styles.nutrientHeroHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <IconSquiSugar size={22} color="#F59E0B" />
+                <Text style={styles.nutrientHeroTitle}>Sugar Consumed Today</Text>
+              </View>
+              <Text style={styles.statusBadge(sugarStatus)}>{sugarStatus}</Text>
+            </View>
+            <View style={styles.bigValRow}>
+              <Text style={styles.bigVal}>{totalSugar}</Text>
+              <Text style={styles.bigValUnit}>grams (g)</Text>
+              <Text style={styles.bigValCap}>/ 25g target ({sugarPct}%)</Text>
+            </View>
+            <View style={styles.trackBg}>
+              <View style={styles.trackFill(sugarPct, getSugarColor())} />
+            </View>
+            <Text style={styles.heroAdviceText}>
+              {totalSugar <= 25
+                ? '🐿️ Mindful Balance: Staying under 25g of dietary sugar consumed prevents rapid energy crashes and supports steady metabolic wellness.'
+                : '🐿️ SQUI Reflection: Sugar consumed is above the WHO 25g daily target. Try balancing upcoming meals with leafy greens, water, and whole fiber foods.'}
+            </Text>
           </View>
-          <View style={styles.bigValRow}>
-            <Text style={styles.bigVal}>{totalSodium.toLocaleString()}</Text>
-            <Text style={styles.bigValUnit}>mg</Text>
-            <Text style={styles.bigValCap}>/ 2000mg daily cap ({sodiumPct}%)</Text>
+        ) : (
+          /* 2. SODIUM CONSUMED HERO CARD */
+          <View style={styles.nutrientHeroCard}>
+            <View style={styles.nutrientHeroHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <IconSquiSodium size={22} color="#10B981" />
+                <Text style={styles.nutrientHeroTitle}>Sodium Consumed Today</Text>
+              </View>
+              <Text style={styles.statusBadge(sodiumStatus)}>{sodiumStatus}</Text>
+            </View>
+            <View style={styles.bigValRow}>
+              <Text style={styles.bigVal}>{totalSodium.toLocaleString()}</Text>
+              <Text style={styles.bigValUnit}>mg</Text>
+              <Text style={styles.bigValCap}>/ 2,000mg cap ({sodiumPct}%)</Text>
+            </View>
+            <View style={styles.trackBg}>
+              <View style={styles.trackFill(sodiumPct, getSodiumColor())} />
+            </View>
+            <Text style={styles.heroAdviceText}>
+              {totalSodium <= 2000
+                ? '🐿️ Mindful Balance: Keeping daily sodium consumed under 2,000mg supports arterial flexibility, renal balance, and healthy fluid circulation.'
+                : '🐿️ SQUI Reflection: Dietary sodium from meals reached higher levels today. Hydrate generously with fresh spring water to promote natural mineral balance.'}
+            </Text>
           </View>
-          <View style={styles.trackBg}>
-            <View style={styles.trackFill(sodiumPct, getSodiumColor())} />
-          </View>
-          <Text style={styles.heroAdviceText}>
-            {totalSodium <= 2000
-              ? 'Excellent balance! Keeping daily sodium under 2000mg protects arterial elasticity and kidney health.'
-              : 'Sodium reached higher levels today. Hydrate generously with fresh lemon water to assist natural clearance.'}
-          </Text>
-        </View>
+        )}
 
-        {/* 3. MEAL-BY-MEAL INTAKE BREAKDOWN */}
-        <Text style={styles.sectionHeader}>Meal-by-Meal Contribution</Text>
+        {/* MEAL-BY-MEAL FILTERED BREAKDOWN */}
+        <Text style={styles.sectionHeader}>
+          {isSugar ? 'Sugar Consumed by Logged Meal' : 'Sodium Consumed by Logged Meal'}
+        </Text>
 
         {meals.map((meal) => {
           const mSugarPct = Math.min(Math.round((meal.sugarG / 25) * 100), 100);
@@ -126,25 +148,37 @@ export const DailyNutrientDetailScreen: React.FC<DailyNutrientDetailScreenProps>
               </View>
               <Text style={styles.mealTitle}>{meal.name}</Text>
 
-              <View style={styles.dualMeterRow}>
-                {/* Sugar meter */}
-                <View style={styles.meterCol}>
-                  <Text style={styles.meterLabel}>Sugar: {meal.sugarG}g ({mSugarPct}%)</Text>
+              {isSugar ? (
+                /* Filtered Sugar View */
+                <View style={{ marginTop: 6 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <Text style={{ fontFamily: 'PlusJakartaSans-Bold', fontSize: 12, color: '#92400E' }}>
+                      🍬 {meal.sugarG}g Sugar Consumed
+                    </Text>
+                    <Text style={{ fontFamily: 'PlusJakartaSans-SemiBold', fontSize: 11, color: '#769482' }}>
+                      {mSugarPct}% of 25g daily target
+                    </Text>
+                  </View>
                   <View style={styles.miniBarBg}>
-                    <View style={styles.miniBar(mSugarPct, '#2D6A4F')} />
+                    <View style={styles.miniBar(mSugarPct, mSugarPct > 50 ? '#EA580C' : '#F59E0B')} />
                   </View>
                 </View>
-
-                {/* Sodium meter */}
-                <View style={styles.meterCol}>
-                  <Text style={[styles.meterLabel, isHighSodium && { color: '#92400E' }]}>
-                    Sodium: {meal.sodiumMg}mg {isHighSodium ? '⚠️' : ''}
-                  </Text>
+              ) : (
+                /* Filtered Sodium View */
+                <View style={{ marginTop: 6 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <Text style={[{ fontFamily: 'PlusJakartaSans-Bold', fontSize: 12, color: '#1B432C' }, isHighSodium && { color: '#B45309' }]}>
+                      🧂 {meal.sodiumMg}mg Sodium {isHighSodium ? '⚠️ (High single-meal)' : ''}
+                    </Text>
+                    <Text style={{ fontFamily: 'PlusJakartaSans-SemiBold', fontSize: 11, color: '#769482' }}>
+                      {mSodiumPct}% of 2,000mg cap
+                    </Text>
+                  </View>
                   <View style={styles.miniBarBg}>
-                    <View style={styles.miniBar(mSodiumPct, isHighSodium ? '#D97706' : '#2D6A4F')} />
+                    <View style={styles.miniBar(mSodiumPct, isHighSodium ? '#D97706' : '#10B981')} />
                   </View>
                 </View>
-              </View>
+              )}
             </View>
           );
         })}

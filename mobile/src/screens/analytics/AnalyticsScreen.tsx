@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { MascotBanner } from '../../components/dashboard/MascotBanner';
 import { IconPulseTrend } from '../../components/common/Icons';
 import { analyticsStyles as styles } from './Analytics.styles';
 
@@ -25,12 +24,6 @@ export const AnalyticsScreen: React.FC = () => {
           <Text style={styles.subtitle}>Consistency over intensity. Look how far you've come!</Text>
         </View>
 
-        {/* Mascot Streak Banner */}
-        <MascotBanner
-          healthScore={92}
-          tip="SQUI says: 5 days in your healthy sugar & hydration zone! Keep nurturing this streak."
-        />
-
         {/* Range Selector */}
         <View style={styles.rangeRow}>
           <TouchableOpacity
@@ -50,8 +43,8 @@ export const AnalyticsScreen: React.FC = () => {
         {/* Sugar Compliance Chart */}
         <View style={styles.card}>
           <View style={styles.chartHeader}>
-            <Text style={styles.chartTitle}>Sugar Intake (Target: ≤25g)</Text>
-            <Text style={styles.chartBadge}>85% Compliance</Text>
+            <Text style={styles.chartTitle}>Sugar Consumed (Target: ≤25g)</Text>
+            <Text style={styles.chartBadge}>85% Balance</Text>
           </View>
           <View style={styles.barContainer}>
             {sampleSugarData.map((item, index) => (

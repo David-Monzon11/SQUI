@@ -21,12 +21,12 @@ interface Article {
 const ARTICLES: Article[] = [
   {
     id: 'art-1',
-    title: 'Understanding Daily Sugar Intake: Natural vs. Added',
+    title: 'Understanding Dietary Sugar Consumed: Natural vs. Added',
     category: 'SUGAR',
     readTimeMin: 3,
-    summary: 'Why the WHO recommends keeping added sugars under 25g daily and how to spot hidden sugars.',
+    summary: 'Why the WHO recommends keeping added sugars under 25g daily and how to spot hidden sugars in foods.',
     content:
-      'Added sugars provide quick calories without micronutrients. While whole fruits contain fructose accompanied by beneficial fiber that slows absorption, processed beverages and condiments often contain hidden high-fructose corn syrup that causes sharp glucose spikes. SQUI helps you track total daily sugar intake with gentle color-coded alerts.',
+      'Added sugars provide quick calories without micronutrients. While whole fruits contain fructose accompanied by beneficial fiber that slows absorption, processed beverages and condiments often contain hidden high-fructose corn syrup that causes sharp glucose spikes. SQUI helps you track total daily sugar consumed from food with gentle color-coded alerts.',
   },
   {
     id: 'art-2',

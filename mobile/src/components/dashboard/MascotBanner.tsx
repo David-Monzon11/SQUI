@@ -536,7 +536,7 @@ export const MascotBanner: React.FC<MascotBannerProps> = ({
                 <View style={{ flex: 1 }}>
                   <Text style={styles.insightTitle}>Sodium Balance • 26 / 30 pts</Text>
                   <Text style={styles.insightDesc}>
-                    Daily intake is 1,070mg, well below the 2,000mg maximum.
+                    Daily sodium consumed from meals is 1,070mg, well below the 2,000mg maximum.
                   </Text>
                 </View>
               </View>

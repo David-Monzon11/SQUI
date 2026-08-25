@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import { IconSquiSugar, IconSquiSodium } from '../../components/common/Icons';
 import { MealCategory } from '../../types';
 import { mealLogStyles as styles } from './MealLog.styles';
 
@@ -121,10 +122,13 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ onMealSaved }) => 
           </View>
         </View>
 
-        {/* 4. DEDICATED SEPARATE SUGAR INTAKE CARD */}
+        {/* 4. DEDICATED SEPARATE SUGAR CONSUMED CARD */}
         <View style={styles.card}>
           <View style={styles.nutrientCardHeader}>
-            <Text style={styles.nutrientCardTitle}>🍬 Sugar Intake</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <IconSquiSugar size={18} color="#F59E0B" />
+              <Text style={styles.nutrientCardTitle}>Sugar Consumed</Text>
+            </View>
             <Text style={styles.nutrientCardContext}>WHO Daily Target: ≤25g</Text>
           </View>
           <View style={styles.nutrientInputWrap}>
@@ -138,14 +142,17 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ onMealSaved }) => 
             <Text style={styles.nutrientUnit}>grams (g)</Text>
           </View>
           <Text style={styles.nutrientHelperText}>
-            Tracks added and natural sugars in this dish to prevent energy crashes.
+            Estimated dietary sugar consumed in this food portion (natural or added).
           </Text>
         </View>
 
-        {/* 5. DEDICATED SEPARATE SODIUM INTAKE CARD */}
+        {/* 5. DEDICATED SEPARATE SODIUM CONSUMED CARD */}
         <View style={styles.card}>
           <View style={styles.nutrientCardHeader}>
-            <Text style={styles.nutrientCardTitle}>🧂 Sodium Intake</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <IconSquiSodium size={18} color="#10B981" />
+              <Text style={styles.nutrientCardTitle}>Sodium Consumed</Text>
+            </View>
             <Text style={styles.nutrientCardContext}>Daily Cap: 2000mg</Text>
           </View>
           <View style={[styles.nutrientInputWrap, isHighSodium && styles.highSodiumInputWrap]}>
@@ -162,12 +169,12 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ onMealSaved }) => 
           {isHighSodium ? (
             <View style={styles.warningBox}>
               <Text style={styles.warningText}>
-                ⚠️ High Sodium Alert ({numSodium}mg): Above 800mg threshold for a single meal. SQUI suggests balancing with extra hydration and leafy greens!
+                ⚠️ High Sodium Meal ({numSodium}mg): Exceeds 800mg single-meal guideline. SQUI suggests balancing with extra hydration and leafy greens!
               </Text>
             </View>
           ) : (
             <Text style={styles.nutrientHelperText}>
-              Keeping individual meals under 800mg helps protect healthy blood pressure.
+              Keeping sodium consumed under 800mg per meal protects cardiovascular balance.
             </Text>
           )}
         </View>
