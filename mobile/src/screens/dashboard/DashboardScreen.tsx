@@ -17,86 +17,33 @@ import {
   IconSquiHydration,
   IconSquiSugar,
   IconSquiSodium,
-  IconCameraPlus,
   IconPlus,
-  IconWeatherSunCloud,
 } from '../../components/common/Icons';
 import { DailyNutrientDetailScreen } from '../nutrition/DailyNutrientDetailScreen';
 import { dashboardStyles as styles } from './Dashboard.styles';
+import { MealItem } from '../../types';
 
-interface MealItem {
-  id: string;
-  category: 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'SNACK';
-  name: string;
-  time: string;
-  sugarG: number;
-  sodiumMg: number;
-  caloriesKcal: number;
-  proteinG: number;
-  imageUrl?: string;
+interface DashboardScreenProps {
+  meals: MealItem[];
+  setMeals: React.Dispatch<React.SetStateAction<MealItem[]>>;
+  waterIntakeMl: number;
+  setWaterIntakeMl: React.Dispatch<React.SetStateAction<number>>;
+  onNavigateToMeal: () => void;
 }
 
-export const DashboardScreen: React.FC = () => {
+export const DashboardScreen: React.FC<DashboardScreenProps> = ({
+  meals,
+  setMeals,
+  waterIntakeMl,
+  setWaterIntakeMl,
+  onNavigateToMeal,
+}) => {
   const [todayWeightKg, setTodayWeightKg] = useState(68.2);
   const [tempWeightInput, setTempWeightInput] = useState('68.2');
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
-  const [waterIntakeMl, setWaterIntakeMl] = useState(1750);
   const [isNutrientDetailOpen, setIsNutrientDetailOpen] = useState(false);
   const [selectedNutrientType, setSelectedNutrientType] = useState<'SUGAR' | 'SODIUM'>('SUGAR');
-
-  const [meals] = useState<MealItem[]>([
-    {
-      id: '1',
-      category: 'BREAKFAST',
-      name: 'Avocado Toast & Poached Egg',
-      time: '08:30 AM',
-      sugarG: 2.1,
-      sodiumMg: 380,
-      caloriesKcal: 340,
-      proteinG: 14,
-    },
-    {
-      id: '2',
-      category: 'LUNCH',
-      name: 'Grilled Salmon Quinoa Bowl',
-      time: '12:45 PM',
-      sugarG: 3.5,
-      sodiumMg: 520,
-      caloriesKcal: 580,
-      proteinG: 38,
-    },
-    {
-      id: '3',
-      category: 'SNACK',
-      name: 'Greek Yogurt with Fresh Berries',
-      time: '04:15 PM',
-      sugarG: 8.4,
-      sodiumMg: 65,
-      caloriesKcal: 180,
-      proteinG: 15,
-    },
-  ]);
-
-  const totalSugar = meals.reduce((acc, m) => acc + m.sugarG, 0);
-  const totalSodium = meals.reduce((acc, m) => acc + m.sodiumMg, 0);
-
-  const getSugarStatus = (val: number) => {
-    if (val <= 17.5) return 'SAFE';
-    if (val <= 25) return 'CAUTION';
-    return 'EXCEEDED';
-  };
-
-  const getSodiumStatus = (val: number) => {
-    if (val <= 1400) return 'SAFE';
-    if (val <= 2000) return 'CAUTION';
-    return 'EXCEEDED';
-  };
-
-  const sugarStatus = getSugarStatus(totalSugar);
-  const sodiumStatus = getSodiumStatus(totalSodium);
-
-  const sugarPct = Math.min(Math.round((totalSugar / 25) * 100), 100);
-  const sodiumPct = Math.min(Math.round((totalSodium / 2000) * 100), 100);
+  const [selectedDetailMeal, setSelectedDetailMeal] = useState<MealItem | null>(null);
 
   const handleWaterIncrement = () => {
     setWaterIntakeMl((prev) => prev + 250);
@@ -109,6 +56,23 @@ export const DashboardScreen: React.FC = () => {
       setIsWeightModalOpen(false);
     }
   };
+
+
+  const totalSugar = meals.reduce((acc, m) => acc + (m.nutrition.sugarG || 0), 0);
+  const totalSodium = meals.reduce((acc, m) => acc + (m.nutrition.sodiumMg || 0), 0);
+
+  // SQUI Dynamic Health Score (0-100)
+  const hydrationScore = Math.min((waterIntakeMl / 2500) * 20, 20);
+  const sugarScore = totalSugar <= 25 ? 30 : totalSugar <= 50 ? 15 : 0;
+  const sodiumScore = totalSodium <= 2000 ? 30 : totalSodium <= 3000 ? 15 : 0;
+  const completenessScore = meals.length >= 3 ? 20 : meals.length === 2 ? 15 : meals.length === 1 ? 10 : 0;
+  const healthScore = Math.round(hydrationScore + sugarScore + sodiumScore + completenessScore);
+
+  const sugarStatus = totalSugar <= 17.5 ? 'SAFE' : totalSugar <= 25 ? 'CAUTION' : 'EXCEEDED';
+  const sodiumStatus = totalSodium <= 1400 ? 'SAFE' : totalSodium <= 2000 ? 'CAUTION' : 'EXCEEDED';
+
+  const sugarPct = Math.min(Math.round((totalSugar / 25) * 100), 100);
+  const sodiumPct = Math.min(Math.round((totalSodium / 2000) * 100), 100);
 
   return (
     <View style={styles.safeArea}>
@@ -129,8 +93,11 @@ export const DashboardScreen: React.FC = () => {
 
         {/* SQUI Mascot Reflection Hero Banner */}
         <MascotBanner
-          healthScore={88}
-          tip="SQUI says: Mindful sugar balance today! Sodium was slightly higher from lunch—balance it with extra hydration before dinner."
+          healthScore={healthScore}
+          sugarG={totalSugar}
+          sodiumMg={totalSodium}
+          waterMl={waterIntakeMl}
+          mealCount={meals.length}
         />
 
         {/* Section Label: Daily Vitals */}
@@ -153,12 +120,10 @@ export const DashboardScreen: React.FC = () => {
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              {/* 1. Large Ambient Ghost Watermark (Bottom-Right Lifted) */}
               <View style={styles.bentoWatermark}>
                 <IconSquiScale size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
-              {/* 2. Top Row: Frosted Badge + Circular Frosted (+) Action */}
               <View style={styles.bentoTopRow}>
                 <View style={styles.bentoIconBadge('emerald')}>
                   <IconSquiScale size={18} color="#FFFFFF" />
@@ -176,7 +141,6 @@ export const DashboardScreen: React.FC = () => {
                 </TouchableOpacity>
               </View>
 
-              {/* 3. Metric Content Stack */}
               <View style={styles.bentoContent}>
                 <Text style={styles.bentoLabel}>WEIGHT TREND</Text>
                 <View style={styles.bentoValueRow}>
@@ -198,12 +162,10 @@ export const DashboardScreen: React.FC = () => {
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              {/* 1. Large Ambient Ghost Watermark (Bottom-Right Lifted) */}
               <View style={styles.bentoWatermark}>
                 <IconSquiHydration size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
-              {/* 2. Top Row: Frosted Badge + Circular Frosted (+) Quick Water Log */}
               <View style={styles.bentoTopRow}>
                 <View style={styles.bentoIconBadge('cyan')}>
                   <IconSquiHydration size={18} color="#FFFFFF" />
@@ -218,7 +180,6 @@ export const DashboardScreen: React.FC = () => {
                 </TouchableOpacity>
               </View>
 
-              {/* 3. Metric Content Stack */}
               <View style={styles.bentoContent}>
                 <Text style={styles.bentoLabel}>DAILY HYDRATION</Text>
                 <View style={styles.bentoValueRow}>
@@ -233,12 +194,11 @@ export const DashboardScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Section Label: Daily Nutrients Consumed (Clean without redundant button) */}
+        {/* Section Label: Daily Nutrients Consumed */}
         <Text style={styles.sectionLabel}>Daily Nutrients Consumed</Text>
 
-        {/* Row 2: Interactive Watermarked Bento Nutrient Consumed Cards */}
         <View style={styles.statsRow}>
-          {/* Sugar Consumed Bento Card (2-Side Sunset Amber Gradient) */}
+          {/* Sugar Consumed Bento Card */}
           <TouchableOpacity
             style={styles.bentoTouchWrap}
             activeOpacity={0.88}
@@ -253,12 +213,10 @@ export const DashboardScreen: React.FC = () => {
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              {/* 1. Large Ambient Ghost Watermark Lifted */}
               <View style={styles.bentoWatermark}>
                 <IconSquiSugar size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
-              {/* 2. Top Row: Frosted Badge + Glass Status Badge */}
               <View style={styles.bentoTopRow}>
                 <View style={styles.bentoIconBadge('amber')}>
                   <IconSquiSugar size={18} color="#FFFFFF" />
@@ -269,12 +227,11 @@ export const DashboardScreen: React.FC = () => {
                 </View>
               </View>
 
-              {/* 3. Metric Content Stack */}
               <View style={styles.bentoContent}>
                 <Text style={styles.bentoLabel}>SUGAR CONSUMED</Text>
                 <View style={styles.bentoValueRow}>
                   <Text style={styles.bentoMainValue}>
-                    {totalSugar}
+                    {totalSugar.toFixed(1)}
                     <Text style={styles.bentoUnit}> g</Text>
                   </Text>
                 </View>
@@ -286,7 +243,7 @@ export const DashboardScreen: React.FC = () => {
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Sodium Consumed Bento Card (2-Side Jade Forest Gradient) */}
+          {/* Sodium Consumed Bento Card */}
           <TouchableOpacity
             style={styles.bentoTouchWrap}
             activeOpacity={0.88}
@@ -301,12 +258,10 @@ export const DashboardScreen: React.FC = () => {
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              {/* 1. Large Ambient Ghost Watermark Lifted */}
               <View style={styles.bentoWatermark}>
                 <IconSquiSodium size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
-              {/* 2. Top Row: Frosted Badge + Glass Status Badge */}
               <View style={styles.bentoTopRow}>
                 <View style={styles.bentoIconBadge('emerald')}>
                   <IconSquiSodium size={18} color="#FFFFFF" />
@@ -317,7 +272,6 @@ export const DashboardScreen: React.FC = () => {
                 </View>
               </View>
 
-              {/* 3. Metric Content Stack */}
               <View style={styles.bentoContent}>
                 <Text style={styles.bentoLabel}>SODIUM CONSUMED</Text>
                 <View style={styles.bentoValueRow}>
@@ -335,59 +289,152 @@ export const DashboardScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Food Journal Section Header */}
-        <View style={styles.diarySectionHeader}>
-          <View>
-            <Text style={styles.diarySectionTitle}>Visual Food Diary</Text>
-            <Text style={{ fontSize: 11.5, color: '#6B8775', marginTop: 1 }}>Meals calculate your consumed nutrients</Text>
-          </View>
-          <TouchableOpacity>
-            <Text style={styles.addMealLink}>+ Log Meal</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Rich Meal Cards */}
-        {meals.length === 0 ? (
-          <View style={styles.emptyStateCard}>
-            <SquiLogo size={44} variant="squircle" />
-            <Text style={styles.emptyStateTitle}>No meals logged yet today</Text>
-            <Text style={styles.emptyStateSub}>
-              Snap a photo of your breakfast to kickstart your mindful food journey!
-            </Text>
-            <TouchableOpacity style={styles.emptyStateBtn}>
-              <Text style={styles.emptyStateBtnText}>+ Log First Meal</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          meals.map((meal) => {
-            const isHighSodium = meal.sodiumMg >= 800;
-            return (
-              <View key={meal.id} style={styles.mealCard}>
-                <View style={styles.mealPhotoWrap}>
-                  {meal.imageUrl ? (
-                    <Image source={{ uri: meal.imageUrl }} style={styles.mealPhoto} />
-                  ) : (
-                    <IconCameraPlus size={22} color="#2D6A4F" />
-                  )}
-                </View>
-                <View style={styles.mealContent}>
-                  <View style={styles.mealTopRow}>
-                    <Text style={styles.mealCategoryPill}>{meal.category}</Text>
-                    <Text style={styles.mealTime}>{meal.time}</Text>
-                  </View>
-                  <Text style={styles.mealName}>{meal.name}</Text>
-                  <View style={styles.mealMacrosRow}>
-                    <Text style={styles.macroPill}>🍬 {meal.sugarG}g Sugar</Text>
-                    <Text style={styles.macroPill}>🧂 {meal.sodiumMg}mg Sodium</Text>
-                    {isHighSodium && (
-                      <Text style={styles.highSodiumAlertPill}>⚠️ High Sodium</Text>
-                    )}
-                  </View>
-                </View>
+        {/* Section: Today's Food Gallery (Wrapped in Parent Bento Card Container) */}
+        {meals.length > 0 && (
+          <View style={styles.galleryParentCard}>
+            {/* Food Journal Section Header inside Card */}
+            <View style={styles.galleryCardHeader}>
+              <View>
+                <Text style={styles.galleryCardTitle}>Today's Food Gallery</Text>
+                <Text style={{ fontSize: 11, color: '#6B8775', marginTop: 1 }}>Mindful record of today's nourishment</Text>
               </View>
-            );
-          })
+              <TouchableOpacity onPress={onNavigateToMeal}>
+                <Text style={styles.galleryCardAction}>View All</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.gridContainer}>
+              {meals.map((meal) => {
+                const isHighSodium = meal.nutrition.sodiumMg >= 800;
+                return (
+                  <TouchableOpacity
+                    key={meal.id}
+                    style={styles.gridCard}
+                    activeOpacity={0.9}
+                    onPress={() => setSelectedDetailMeal(meal)}
+                  >
+                    <Image source={{ uri: meal.imageUrl }} style={styles.gridCardImage} />
+                    
+                    {isHighSodium && (
+                      <View style={styles.gridCardWarningDot} />
+                    )}
+
+                    {/* Bottom Text Overlay */}
+                    <LinearGradient
+                      colors={['transparent', 'rgba(0,0,0,0.85)']}
+                      style={styles.gridCardTextOverlay}
+                    >
+                      <Text style={styles.gridCardCategory} numberOfLines={1}>
+                        {meal.mealCategory}
+                      </Text>
+                      <Text style={styles.gridCardName} numberOfLines={1}>
+                        {meal.foodName}
+                      </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Bottom Status Banner inside Card */}
+            <View style={styles.galleryCardFooterBanner}>
+              <Text style={styles.galleryCardFooterText}>
+                🐿️ SQUI: {meals.length} meal{meals.length > 1 ? 's' : ''} logged. Today's health score is {healthScore}/100!
+              </Text>
+            </View>
+          </View>
         )}
+
+        {/* Meal Detail Modal */}
+        <Modal
+          visible={selectedDetailMeal !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSelectedDetailMeal(null)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.detailModalCard}>
+              {selectedDetailMeal && (
+                <>
+                  {/* Category and Time Row */}
+                  <View style={styles.detailModalHeader}>
+                    <Text style={styles.detailModalCategory}>
+                      {selectedDetailMeal.mealCategory}
+                    </Text>
+                    <Text style={styles.detailModalTime}>
+                      {selectedDetailMeal.mealTime}
+                    </Text>
+                  </View>
+
+                  {/* Food Name */}
+                  <Text style={styles.detailModalTitle}>
+                    {selectedDetailMeal.foodName}
+                  </Text>
+                  <Text style={styles.detailModalPortion}>
+                    Portion: {selectedDetailMeal.portionSize}
+                  </Text>
+
+                  {/* Large Covered Image */}
+                  {selectedDetailMeal.imageUrl && (
+                    <View style={styles.detailModalPhotoWrap}>
+                      <Image
+                        source={{ uri: selectedDetailMeal.imageUrl }}
+                        style={styles.detailModalPhoto}
+                      />
+                    </View>
+                  )}
+
+                  {/* Macros Row */}
+                  <View style={styles.detailModalMacros}>
+                    <View style={styles.detailModalMacroBox}>
+                      <Text style={styles.detailModalMacroVal}>
+                        {selectedDetailMeal.nutrition.caloriesKcal}
+                      </Text>
+                      <Text style={styles.detailModalMacroLabel}>Calories</Text>
+                    </View>
+                    <View style={styles.detailModalMacroBox}>
+                      <Text style={styles.detailModalMacroVal}>
+                        {selectedDetailMeal.nutrition.sugarG}g
+                      </Text>
+                      <Text style={styles.detailModalMacroLabel}>Sugar</Text>
+                    </View>
+                    <View style={styles.detailModalMacroBox}>
+                      <Text style={styles.detailModalMacroVal}>
+                        {selectedDetailMeal.nutrition.sodiumMg}mg
+                      </Text>
+                      <Text style={styles.detailModalMacroLabel}>Sodium</Text>
+                    </View>
+                    <View style={styles.detailModalMacroBox}>
+                      <Text style={styles.detailModalMacroVal}>
+                        {selectedDetailMeal.nutrition.proteinG || 0}g
+                      </Text>
+                      <Text style={styles.detailModalMacroLabel}>Protein</Text>
+                    </View>
+                  </View>
+
+                  {/* SQUI Mascot Reflection/Advice */}
+                  <View style={styles.detailMascotFeedback}>
+                    <Text style={styles.detailMascotText}>
+                      {selectedDetailMeal.nutrition.sodiumMg >= 800
+                        ? '🐿️ SQUI says: A little high on sodium for this meal! Balance it by drinking extra water and focusing on fresh leafy greens for your next meal.'
+                        : selectedDetailMeal.nutrition.sugarG >= 10
+                        ? '🐿️ SQUI says: A bit sweet! Keep an eye on your remaining sugar budget for today. Great job tracking!'
+                        : '🌿 SQUI says: Wonderful, balanced choice! Prepared with mindful nutrients to fuel your sustainable wellness.'}
+                    </Text>
+                  </View>
+
+                  {/* Action Buttons */}
+                  <TouchableOpacity
+                    style={styles.detailModalCloseBtn}
+                    onPress={() => setSelectedDetailMeal(null)}
+                  >
+                    <Text style={styles.detailModalCloseBtnText}>Done</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </View>
+        </Modal>
 
         {/* ========================================================================= */}
         {/* 🌤️ 3D CLAYMORPHIC MINDFUL WEATHER & CLIMATE CARD (Montreal Reference)    */}
@@ -430,7 +477,14 @@ export const DashboardScreen: React.FC = () => {
             nutrientType={selectedNutrientType}
             totalSugar={totalSugar}
             totalSodium={totalSodium}
-            meals={meals}
+            meals={meals.map((m) => ({
+              id: m.id,
+              category: m.mealCategory,
+              name: m.foodName,
+              time: m.mealTime,
+              sugarG: m.nutrition.sugarG,
+              sodiumMg: m.nutrition.sodiumMg,
+            }))}
           />
         </Modal>
       </ScrollView>

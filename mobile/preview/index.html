@@ -531,80 +531,102 @@
       transition: width 0.4s ease, background-color 0.4s ease;
     }
 
-    /* Rich Food Diary Cards */
+    /* Premium Visual Meal Card */
     .meal-card-item {
       background: #FFFFFF;
-      border-radius: 18px;
-      padding: 12px;
-      margin-bottom: 8px;
-      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1.5px solid var(--border-subtle);
+      box-shadow: 0 4px 10px rgba(27, 67, 44, 0.04);
       display: flex;
-      gap: 12px;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(27, 67, 44, 0.02);
+      flex-direction: column;
+      gap: 0;
+      align-items: stretch;
     }
 
-    .meal-photo-thumb {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+    .meal-card-portion {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-slate);
+      margin-top: 2px;
+      margin-bottom: 4px;
+    }
+
+    .meal-photo-container-large {
+      width: 100%;
+      height: 168px;
+      border-radius: 18px;
       background: var(--brand-sage-light);
+      position: relative;
+      overflow: hidden;
+      margin-top: 8px;
+      border: 1px solid rgba(27, 67, 44, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
-      color: var(--brand-forest);
-      font-size: 20px;
     }
 
-    .meal-card-body { flex: 1; }
-
-    .meal-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2px;
+    .meal-photo-img-large {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .meal-cat-pill {
-      background: var(--brand-sage-light);
-      color: var(--brand-forest);
+    .high-sodium-alert-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(254, 243, 199, 0.95);
+      border: 1px solid #EA580C;
+      border-radius: 8px;
+      padding: 3px 8px;
       font-size: 9.5px;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 4px;
-    }
-
-    .meal-time {
-      font-size: 10.5px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .meal-title-text {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--text-pine);
-      margin-bottom: 3px;
-    }
-
-    .meal-macros-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      flex-wrap: wrap;
-      font-size: 11px;
-      color: var(--text-slate);
-      font-weight: 600;
-    }
-
-    .high-sodium-tag {
-      background: #FEF3C7;
+      font-weight: 900;
       color: #92400E;
-      font-size: 9.5px;
+      z-index: 10;
+    }
+
+    /* Category Filter List */
+    .category-filter-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 4px 8px 4px;
+      margin-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .category-filter-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-filter-chip {
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: var(--brand-sage-light);
+      border: 1px solid rgba(27, 67, 44, 0.14);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--brand-forest);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .category-filter-chip.active {
+      background: #10B981;
+      border-color: #10B981;
+      color: #FFFFFF;
       font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 4px;
+    }
+
+    .macro-pill {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #4A6354;
+      background: #F3F4F6;
+      padding: 3px 7px;
+      border-radius: 8px;
     }
 
     /* Log Meal Screen Styles */
@@ -775,6 +797,182 @@
     @keyframes screenFade {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Today's Visual Gallery Grid (3x2) */
+    .today-grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 110px);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .today-grid-card {
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      background: #FFFFFF;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .today-grid-card:active {
+      transform: scale(0.98);
+    }
+    .today-grid-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .today-grid-warning-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #EF4444;
+      border: 1.5px solid #FFFFFF;
+      z-index: 5;
+    }
+    .today-grid-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 52px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 6px 8px;
+      pointer-events: none;
+    }
+    .today-grid-cat {
+      font-size: 8.5px;
+      font-weight: 800;
+      color: #A7F3D0;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .today-grid-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .today-placeholder-card {
+      border-radius: 16px;
+      border: 1.5px dashed #D1DDD6;
+      background: var(--brand-sage-light);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .today-placeholder-card:hover {
+      background: #D8EADF;
+    }
+    .today-placeholder-plus {
+      font-size: 18px;
+      font-weight: 800;
+      color: #6B8775;
+    }
+    .today-placeholder-text {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #6B8775;
+    }
+
+    /* Full Gallery View on Log Meal page */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .gallery-grid-item {
+      border-radius: 16px;
+      aspect-ratio: 1;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      background: #FFFFFF;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .gallery-grid-item:active {
+      transform: scale(0.98);
+    }
+    .gallery-grid-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .gallery-grid-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 24px;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .gallery-grid-category {
+      font-size: 8.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 0.2px;
+    }
+    .gallery-plus-card {
+      border-radius: 16px;
+      aspect-ratio: 1;
+      border: 1.5px dashed #D1DDD6;
+      background: var(--brand-sage-light);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .gallery-plus-card:hover {
+      background: #D8EADF;
+    }
+    .gallery-plus-icon {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--brand-emerald);
+    }
+    .gallery-plus-text {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--brand-emerald);
+    }
+    .camera-preset-btn {
+      transition: all 0.2s ease;
+    }
+    .camera-preset-btn.active-preset {
+      border-color: #10B981 !important;
+      background: #064E3B !important;
+    }
+    .camera-preset-btn.active-preset span {
+      color: #FFFFFF !important;
+    }
+    @keyframes htmlScanLineAnim {
+      0% { top: 0; }
+      50% { top: 257px; }
+      100% { top: 0; }
     }
   </style>
 </head>
@@ -1048,49 +1246,27 @@
           </div>
           </div>
 
-          <!-- Section: Visual Food Diary -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin: 12px 4px 6px 4px;">
-            <span class="section-label" style="margin: 0;">Visual Food Diary</span>
-            <span style="font-size: 12.5px; font-weight: 800; color: var(--brand-emerald); cursor: pointer;" onclick="navigateToTab('meal')">+ Log Meal</span>
-          </div>
-
-          <!-- Rich Food Diary Cards Stream -->
-          <div id="foodDiaryCardsStream">
-            <!-- Meal 1 -->
-            <div class="meal-card-item">
-              <div class="meal-photo-thumb">🥣</div>
-              <div class="meal-card-body">
-                <div class="meal-top-row">
-                  <span class="meal-cat-pill">BREAKFAST</span>
-                  <span class="meal-time">08:30 AM</span>
-                </div>
-                <div class="meal-title-text">Rolled Oats with Blueberries</div>
-                <div class="meal-macros-row">
-                  <span>🍬 8g Sugar</span>
-                  <span>•</span>
-                  <span>🧂 150mg Sodium</span>
-                  <span>•</span>
-                  <span>380 kcal</span>
-                </div>
+          <!-- Section: Today's Food Gallery (Wrapped in Parent Bento Card Container) -->
+          <div id="todayGallerySection" style="display: none; background: #FFFFFF; border-radius: 24px; padding: 16px; margin: 12px 0; border: 1.5px solid rgba(27,67,44,0.06); box-shadow: 0 6px 12px rgba(27,67,44,0.04);">
+            <!-- Food Journal Section Header inside Card -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div>
+                <div style="font-size: 14.5px; font-weight: 800; color: #0F2418; letter-spacing: -0.2px;">Today's Food Gallery</div>
+                <div style="font-size: 11px; color: #6B8775; margin-top: 1px;">Mindful record of today's nourishment</div>
               </div>
+              <span style="font-size: 12px; font-weight: 800; color: #2D6A4F; cursor: pointer; letter-spacing: -0.1px;" onclick="navigateToTab('meal')">View All</span>
             </div>
 
-            <!-- Meal 2 with High Sodium Warning -->
-            <div class="meal-card-item">
-              <div class="meal-photo-thumb">🥗</div>
-              <div class="meal-card-body">
-                <div class="meal-top-row">
-                  <span class="meal-cat-pill">LUNCH</span>
-                  <span class="meal-time">12:45 PM</span>
-                </div>
-                <div class="meal-title-text">Grilled Salmon & Spinach Bowl</div>
-                <div class="meal-macros-row">
-                  <span>🍬 6g Sugar</span>
-                  <span>•</span>
-                  <span>🧂 920mg Sodium</span>
-                  <span class="high-sodium-tag">⚠️ High Sodium</span>
-                </div>
-              </div>
+            <!-- Today's Grid Gallery (3x2) inside Card -->
+            <div class="today-grid-container" id="todayGridContainer" style="margin: 0 0 10px 0;">
+              <!-- Populated dynamically by script -->
+            </div>
+
+            <!-- Bottom Status Banner inside Card -->
+            <div style="background: #F1F5F9; border-radius: 12px; padding: 9px 12px; margin-top: 6px; display: flex; align-items: center;">
+              <span id="todayGalleryFooterText" style="font-size: 11px; font-weight: 700; color: #475569; font-family: inherit;">
+                🐿️ SQUI: 0 meals logged.
+              </span>
             </div>
           </div>
 
@@ -1210,97 +1386,181 @@
         </div>
 
         <!-- 2. MEAL LOGGER SCREEN -->
-        <div id="screen-meal" class="view-screen">
-          <div class="greeting-title" style="margin-bottom: 2px;">Log Meal</div>
-          <div class="greeting-subtitle" style="margin-bottom: 12px;">Build mindful eating habits with visual records.</div>
-
-          <!-- Photo Upload Hero Zone -->
-          <div class="photo-upload-card" id="photoUploadZone" onclick="togglePhotoAttached()">
-            <div class="photo-upload-title" id="photoTitleText">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-              <span>Tap to Add Meal Photo</span>
+        <div id="screen-meal" class="view-screen" style="padding: 0;">
+          
+          <!-- View A: Full Gallery Roll -->
+          <div id="meal-gallery-container" style="padding: 16px;">
+            <div class="greeting-title" style="margin-bottom: 2px;">Visual History Gallery</div>
+            <div class="greeting-subtitle" style="margin-bottom: 12px;">Camera roll record of your nutritional choices.</div>
+            
+            <div class="gallery-grid" id="fullGalleryGrid">
+              <!-- Populated dynamically by script -->
             </div>
-            <div class="photo-upload-sub" id="photoSubText">Snapshot or choose from camera roll</div>
           </div>
 
-          <!-- Category Chips -->
-          <div class="cat-chips-scroll">
-            <button class="cat-chip active" onclick="pickCategory(this, 'BREAKFAST')">BREAKFAST</button>
-            <button class="cat-chip" onclick="pickCategory(this, 'LUNCH')">LUNCH</button>
-            <button class="cat-chip" onclick="pickCategory(this, 'DINNER')">DINNER</button>
-            <button class="cat-chip" onclick="pickCategory(this, 'SNACK')">SNACK</button>
-            <button class="cat-chip" onclick="pickCategory(this, 'DRINK')">DRINK</button>
-          </div>
+          <!-- View B: Mock Camera Viewfinder -->
+          <div id="meal-camera-container" style="display: none; background: #000000; min-height: 520px; display: flex; flex-direction: column; justify-content: space-between;">
+            <!-- Top Controls -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #0F172A; border-bottom: 1px solid #1E293B;">
+              <button onclick="resetHTMLMealFlow()" style="padding: 6px 12px; border-radius: 10px; background: #334155; border: none; font-size: 11.5px; font-weight: 700; color: #E2E8F0; cursor: pointer; font-family: inherit;">Cancel</button>
+              <span style="font-size: 13.5px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.5px;">Camera Viewfinder</span>
+              <div style="width: 50px;"></div>
+            </div>
 
-          <!-- Meal Details Card -->
-          <div class="card">
-            <label class="field-label">Food / Dish Name *</label>
-            <input type="text" id="foodNameField" class="field-input-box" placeholder="e.g., Avocado Toast with Poached Egg">
-
-            <div class="grid-2col">
-              <div>
-                <label class="field-label">Portion Size</label>
-                <input type="text" id="portionField" class="field-input-box" placeholder="1 serving" value="1 serving">
-              </div>
-              <div>
-                <label class="field-label">Meal Time</label>
-                <input type="text" class="field-input-box" value="12:45 PM" readonly style="background: #F1F5F9; color: var(--text-slate);">
+            <!-- Viewport -->
+            <div style="flex: 1; background: #000000; position: relative; display: flex; align-items: center; justify-content: center; height: 260px; overflow: hidden;">
+              <img id="cameraViewportImg" src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=500&auto=format&fit=crop&q=80" style="width: 100%; height: 100%; object-fit: cover;">
+              <div style="position: absolute; bottom: 12px; left: 12px; right: 12px; background: rgba(15,23,42,0.8); padding: 10px; border-radius: 14px; border: 1px solid #334155;">
+                <div style="font-size: 9px; font-weight: 900; color: #10B981; letter-spacing: 1px;">MOCK VIEWFINDER</div>
+                <div id="cameraViewportSub" style="font-size: 12px; font-weight: 700; color: #F8FAFC; margin-top: 1px;">Focusing on: Avocado Toast</div>
               </div>
             </div>
 
-            <div class="grid-2col">
-              <div>
-                <label class="field-label">Calories (kcal)</label>
-                <input type="number" id="caloriesField" class="field-input-box" placeholder="420">
+            <!-- Bottom Control Panel -->
+            <div style="background: #0F172A; padding: 16px 14px; border-top: 1px solid #1E293B;">
+              <div style="font-size: 9px; font-weight: 900; color: #64748B; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase;">Point at Food Subject:</div>
+              
+              <!-- Presets Scroll row -->
+              <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: none;">
+                <div onclick="selectHTMLCameraPreset(0)" class="camera-preset-btn active-preset" style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #1E293B; border: 1.5px solid #334155; border-radius: 10px; flex-shrink: 0; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=500&auto=format&fit=crop&q=80" style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+                  <span style="font-size: 11px; font-weight: 700; color: #94A3B8;">Avocado</span>
+                </div>
+                <div onclick="selectHTMLCameraPreset(1)" class="camera-preset-btn" style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #1E293B; border: 1.5px solid #334155; border-radius: 10px; flex-shrink: 0; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80" style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+                  <span style="font-size: 11px; font-weight: 700; color: #94A3B8;">Salmon</span>
+                </div>
+                <div onclick="selectHTMLCameraPreset(2)" class="camera-preset-btn" style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #1E293B; border: 1.5px solid #334155; border-radius: 10px; flex-shrink: 0; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop&q=80" style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+                  <span style="font-size: 11px; font-weight: 700; color: #94A3B8;">Yogurt</span>
+                </div>
+                <div onclick="selectHTMLCameraPreset(3)" class="camera-preset-btn" style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #1E293B; border: 1.5px solid #334155; border-radius: 10px; flex-shrink: 0; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80" style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+                  <span style="font-size: 11px; font-weight: 700; color: #94A3B8;">Burger</span>
+                </div>
+                <div onclick="selectHTMLCameraPreset(4)" class="camera-preset-btn" style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #1E293B; border: 1.5px solid #334155; border-radius: 10px; flex-shrink: 0; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80" style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;">
+                  <span style="font-size: 11px; font-weight: 700; color: #94A3B8;">Matcha</span>
+                </div>
               </div>
-              <div>
-                <label class="field-label">Protein (g)</label>
-                <input type="number" id="proteinField" class="field-input-box" placeholder="24">
+
+              <!-- Shutter Shutter Circular Button -->
+              <div style="display: flex; justify-content: center; align-items: center; margin-top: 4px;">
+                <div onclick="snapHTMLCamera()" style="width: 66px; height: 66px; border-radius: 50%; border: 4px solid #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <div style="width: 50px; height: 50px; border-radius: 50%; background: #10B981;"></div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- DEDICATED SEPARATE SUGAR INTAKE CARD -->
-          <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="font-size: 13px; font-weight: 800; color: var(--text-pine);">🍬 Sugar Intake</span>
-              <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">WHO Target: ≤25g/day</span>
-            </div>
-            <div style="display: flex; align-items: center; background: #FAFDFB; border: 1px solid rgba(27, 67, 44, 0.14); border-radius: 12px; padding: 2px 12px; margin-bottom: 6px;">
-              <input type="number" id="sugarField" style="flex: 1; font-size: 16px; font-weight: 800; border: none; background: transparent; padding: 9px 0; color: var(--text-pine); outline: none;" placeholder="0">
-              <span style="font-size: 12px; font-weight: 700; color: var(--text-slate);">grams (g)</span>
-            </div>
-            <div style="font-size: 11px; color: var(--text-muted);">
-              Tracks total added and natural sugars in this dish.
+          <!-- View C: Mock Scan Screen -->
+          <div id="meal-scanning-container" style="display: none; background: #000000; min-height: 520px; position: relative;">
+            <img id="scanningViewportImg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;">
+            
+            <!-- Scanning Neon Green line & Spinner overlay -->
+            <div style="position: absolute; inset: 0; background: rgba(15, 36, 24, 0.65); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px;">
+              <div style="position: absolute; left: 0; width: 100%; height: 3px; background: #10B981; box-shadow: 0 0 8px #10B981; animation: htmlScanLineAnim 1.8s infinite ease-in-out;"></div>
+              <div style="border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #10B981; border-radius: 50%; width: 26px; height: 26px; animation: spin 1s infinite linear;"></div>
+              <div id="htmlScannerStatus" style="font-size: 12.5px; font-weight: 700; color: #FFFFFF; font-family: inherit;">AI scanning photo...</div>
             </div>
           </div>
 
-          <!-- DEDICATED SEPARATE SODIUM INTAKE CARD -->
-          <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span style="font-size: 13px; font-weight: 800; color: var(--text-pine);">🧂 Sodium Intake</span>
-              <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Daily Cap: 2000mg</span>
-            </div>
-            <div id="sodiumInputContainer" style="display: flex; align-items: center; background: #FAFDFB; border: 1px solid rgba(27, 67, 44, 0.14); border-radius: 12px; padding: 2px 12px; margin-bottom: 6px;">
-              <input type="number" id="sodiumField" oninput="checkSodiumLive(this.value)" style="flex: 1; font-size: 16px; font-weight: 800; border: none; background: transparent; padding: 9px 0; color: var(--text-pine); outline: none;" placeholder="0">
-              <span style="font-size: 12px; font-weight: 700; color: var(--text-slate);">mg</span>
+          <!-- View D: Logger Form (Hidden by Default) -->
+          <div id="meal-logger-form-container" style="display: none; padding: 16px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+              <button onclick="resetHTMLMealFlow()" style="padding: 6px 12px; border-radius: 10px; background: #E8F3EC; border: 1px solid #D1DDD6; font-size: 11.5px; font-weight: 700; color: #2D6A4F; cursor: pointer; font-family: inherit;">← Discard & Return</button>
+              <span style="font-size: 10.5px; font-weight: 800; color: #849C8D; letter-spacing: 1.2px; text-transform: uppercase;">Confirm Log</span>
             </div>
 
-            <!-- Live High-Sodium Alert Banner -->
-            <div id="liveSodiumWarning" class="live-warning-banner">
-              ⚠️ High Sodium Alert (>800mg): SQUI suggests balancing with extra hydration and leafy greens!
+            <div class="greeting-title" style="margin-bottom: 2px;">Scanned Result</div>
+            <div class="greeting-subtitle" style="margin-bottom: 12px;">Name this captured food item to complete the daily log.</div>
+
+            <!-- Captured Image display cover -->
+            <div style="position: relative; width: 100%; height: 160px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(27,67,44,0.08); margin-bottom: 14px;">
+              <img id="formCapturedImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
+              <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(6, 95, 70, 0.85); padding: 4px 8px; border-radius: 6px; font-size: 9.5px; font-weight: 700; color: #A7F3D0;">🤖 AI Vision Analysis Complete</div>
             </div>
 
-            <div style="font-size: 11px; color: var(--text-muted);">
-              Keeping individual meals under 800mg protects arterial elasticity.
+            <!-- AI Ingredients Detected -->
+            <div id="htmlIngredientsDetectedCard" style="background: #F0FDF4; border: 1.5px solid #A7F3D0; border-radius: 20px; padding: 12px; margin-bottom: 14px;">
+              <div style="font-size: 9.5px; font-weight: 900; color: #047857; letter-spacing: 0.8px; margin-bottom: 6px;">🤖 INGREDIENTS DETECTED FROM SHOT:</div>
+              <div id="htmlIngredientsChips" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
             </div>
+
+            <!-- Food Name (Highlighted text box, empty by default) -->
+            <div class="card" style="border: 1.5px solid #10B981; background: #F0FDF4;">
+              <label class="field-label" style="color: #047857;">Name Captured Meal / Food *</label>
+              <input type="text" id="foodNameField" class="field-input-box" placeholder="Type food name here (e.g. My Salmon Salad)" style="background: #FFFFFF;">
+            </div>
+
+            <!-- Category Selection Chips -->
+            <div style="font-size: 10.5px; font-weight: 900; color: #849C8D; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 8px; margin-left: 2px; margin-top: 14px;">Meal Category</div>
+            <div class="cat-chips-scroll">
+              <button class="cat-chip active" onclick="pickCategory(this, 'BREAKFAST')">Breakfast</button>
+              <button class="cat-chip" onclick="pickCategory(this, 'LUNCH')">Lunch</button>
+              <button class="cat-chip" onclick="pickCategory(this, 'DINNER')">Dinner</button>
+              <button class="cat-chip" onclick="pickCategory(this, 'SNACK')">Snack</button>
+              <button class="cat-chip" onclick="pickCategory(this, 'DRINK')">Drink</button>
+            </div>
+
+            <!-- Meal Details Card -->
+            <div class="card">
+              <div class="grid-2col">
+                <div>
+                  <label class="field-label">Portion Size</label>
+                  <input type="text" id="portionField" class="field-input-box" placeholder="1 serving" value="1 serving">
+                </div>
+                <div>
+                  <label class="field-label">Calories (kcal)</label>
+                  <input type="number" id="caloriesField" class="field-input-box" placeholder="420">
+                </div>
+              </div>
+              
+              <div class="grid-2col" style="margin-top: 6px;">
+                <div>
+                  <label class="field-label">Protein (g)</label>
+                  <input type="number" id="proteinField" class="field-input-box" placeholder="14">
+                </div>
+                <div>
+                  <label class="field-label">Portion Weight (g)</label>
+                  <input type="text" class="field-input-box" placeholder="e.g. 150g" value="150g" readonly style="background: #F1F5F9; color: var(--text-slate);">
+                </div>
+              </div>
+            </div>
+
+            <!-- DEDICATED SEPARATE SUGAR INTAKE CARD -->
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 13px; font-weight: 800; color: var(--text-pine);">🍬 AI Estimated Sugar</span>
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Daily Target: ≤25g</span>
+              </div>
+              <div style="display: flex; align-items: center; background: #FAFDFB; border: 1px solid rgba(27, 67, 44, 0.14); border-radius: 12px; padding: 2px 12px; margin-bottom: 6px;">
+                <input type="number" id="sugarField" style="flex: 1; font-size: 16px; font-weight: 800; border: none; background: transparent; padding: 9px 0; color: var(--text-pine); outline: none;" placeholder="0">
+                <span style="font-size: 12px; font-weight: 700; color: var(--text-slate);">g</span>
+              </div>
+            </div>
+
+            <!-- DEDICATED SEPARATE SODIUM INTAKE CARD -->
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 13px; font-weight: 800; color: var(--text-pine);">🧂 AI Estimated Sodium</span>
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Daily Cap: 2000mg</span>
+              </div>
+              <div id="sodiumInputContainer" style="display: flex; align-items: center; background: #FAFDFB; border: 1px solid rgba(27, 67, 44, 0.14); border-radius: 12px; padding: 2px 12px; margin-bottom: 6px;">
+                <input type="number" id="sodiumField" oninput="checkSodiumLive(this.value)" style="flex: 1; font-size: 16px; font-weight: 800; border: none; background: transparent; padding: 9px 0; color: var(--text-pine); outline: none;" placeholder="0">
+                <span style="font-size: 12px; font-weight: 700; color: var(--text-slate);">mg</span>
+              </div>
+
+              <!-- Live High-Sodium Alert Banner -->
+              <div id="liveSodiumWarning" class="live-warning-banner">
+                ⚠️ High Sodium Alert (>800mg): SQUI suggests balancing with extra hydration!
+              </div>
+            </div>
+
+            <button class="btn-cta-primary" onclick="handleMealSubmit()">
+              Add Captured Food to Gallery
+            </button>
           </div>
-
-          <button class="btn-cta-primary" onclick="handleMealSubmit()">
-            Save to Visual Food Diary
-          </button>
-        </div>
-          </button>
         </div>
 
         <!-- 3. ANALYTICS SCREEN -->
@@ -1462,6 +1722,47 @@
         </button>
       </div>
 
+      <!-- Meal Detail Modal -->
+      <div id="mealDetailModal" class="modal-sheet" onclick="if(event.target === this) closeMealDetailModal()" style="display: none; align-items: center; justify-content: center; background: rgba(15, 36, 24, 0.45); z-index: 1000; padding: 20px;">
+        <div style="background: #FFFFFF; border-radius: 28px; padding: 20px; width: 100%; max-width: 320px; border: 1px solid rgba(27,67,44,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span id="detailCategory" style="font-size: 9.5px; font-weight: 800; color: #1B432C; background: #E8F3EC; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.2px; text-transform: uppercase;">Breakfast</span>
+            <span id="detailTime" style="font-size: 10.5px; font-weight: 600; color: var(--text-muted);">08:30 AM</span>
+          </div>
+          <div id="detailTitle" style="font-size: 16px; font-weight: 800; color: var(--text-pine); letter-spacing: -0.3px; margin-top: 4px;">Meal Title</div>
+          <div id="detailPortion" style="font-size: 11.5px; font-weight: 700; color: var(--text-slate); margin-bottom: 2px;">1 serving</div>
+          
+          <div style="width: 100%; height: 120px; border-radius: 16px; overflow: hidden; border: 1px solid #E5E7EB;">
+            <img id="detailImage" src="" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+
+          <div style="display: flex; justify-content: space-between; background: #F7FAF8; border-radius: 16px; padding: 10px; border: 1px solid rgba(27, 67, 44, 0.04); margin-top: 4px;">
+            <div style="text-align: center; flex: 1;">
+              <div id="detailCalories" style="font-size: 13px; font-weight: 900; color: var(--text-pine);">340</div>
+              <div style="font-size: 8.5px; font-weight: 700; color: var(--text-muted); margin-top: 1px;">Calories</div>
+            </div>
+            <div style="text-align: center; flex: 1;">
+              <div id="detailSugar" style="font-size: 13px; font-weight: 900; color: var(--text-pine);">2.1g</div>
+              <div style="font-size: 8.5px; font-weight: 700; color: var(--text-muted); margin-top: 1px;">Sugar</div>
+            </div>
+            <div style="text-align: center; flex: 1;">
+              <div id="detailSodium" style="font-size: 13px; font-weight: 900; color: var(--text-pine);">380mg</div>
+              <div style="font-size: 8.5px; font-weight: 700; color: var(--text-muted); margin-top: 1px;">Sodium</div>
+            </div>
+            <div style="text-align: center; flex: 1;">
+              <div id="detailProtein" style="font-size: 13px; font-weight: 900; color: var(--text-pine);">14g</div>
+              <div style="font-size: 8.5px; font-weight: 700; color: var(--text-muted); margin-top: 1px;">Protein</div>
+            </div>
+          </div>
+
+          <div style="background: #F0FDF4; border-radius: 16px; padding: 10px; border-left: 3px solid #10B981; margin-top: 4px;">
+            <div id="detailMascotText" style="font-size: 10.5px; font-weight: 600; color: #065F46; line-height: 14.5px;">🐿️ SQUI says: Balanced choice!</div>
+          </div>
+
+          <button style="background: var(--brand-forest); border: none; border-radius: 16px; padding: 10px; color: #FFFFFF; font-size: 13px; font-weight: 800; cursor: pointer; text-align: center; font-family: inherit; margin-top: 6px;" onclick="closeMealDetailModal()">Done</button>
+        </div>
+      </div>
+
       <!-- iOS Home Indicator -->
       <div class="home-indicator"></div>
 
@@ -1475,6 +1776,121 @@
     let currentWeight = 68.2;
     let dateOffset = 0;
     let selectedCat = 'BREAKFAST';
+
+    let meals = [
+      {
+        id: '1',
+        mealCategory: 'BREAKFAST',
+        foodName: 'Avocado Toast & Poached Egg',
+        mealTime: '08:30 AM',
+        portionSize: '1 serving',
+        imageUrl: 'https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=500&auto=format&fit=crop&q=80',
+        sugarG: 2.1,
+        sodiumMg: 380,
+        caloriesKcal: 340,
+        proteinG: 14,
+        carbsG: 24,
+        fatG: 18
+      },
+      {
+        id: '2',
+        mealCategory: 'LUNCH',
+        foodName: 'Grilled Salmon Quinoa Bowl',
+        mealTime: '12:45 PM',
+        portionSize: '1 bowl',
+        imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80',
+        sugarG: 3.5,
+        sodiumMg: 520,
+        caloriesKcal: 580,
+        proteinG: 38,
+        carbsG: 45,
+        fatG: 22
+      },
+      {
+        id: '3',
+        mealCategory: 'SNACK',
+        foodName: 'Greek Yogurt with Fresh Berries',
+        mealTime: '04:15 PM',
+        portionSize: '1 container',
+        imageUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop&q=80',
+        sugarG: 8.4,
+        sodiumMg: 65,
+        caloriesKcal: 180,
+        proteinG: 15,
+        carbsG: 17,
+        fatG: 3.5
+      }
+    ];
+
+    const GALLERY_PRESETS = [
+      {
+        name: 'Avocado Toast & Egg',
+        category: 'BREAKFAST',
+        caloriesKcal: 340,
+        sugarG: 2.1,
+        sodiumMg: 380,
+        proteinG: 14,
+        carbsG: 24,
+        fatG: 18,
+        portionSize: '1 serving',
+        imageUrl: 'https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=500&auto=format&fit=crop&q=80',
+        ingredients: ['Sourdough Bread', 'Avocado Mash', 'Poached Egg', 'Chili Flakes']
+      },
+      {
+        name: 'Grilled Salmon Bowl',
+        category: 'LUNCH',
+        caloriesKcal: 580,
+        sugarG: 3.5,
+        sodiumMg: 520,
+        proteinG: 38,
+        carbsG: 45,
+        fatG: 22,
+        portionSize: '1 bowl',
+        imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80',
+        ingredients: ['Atlantic Salmon', 'Red Quinoa', 'Pickled Cucumber', 'Sesame Oil']
+      },
+      {
+        name: 'Berry Greek Yogurt',
+        category: 'SNACK',
+        caloriesKcal: 180,
+        sugarG: 8.4,
+        sodiumMg: 65,
+        proteinG: 15,
+        carbsG: 17,
+        fatG: 3.5,
+        portionSize: '1 container',
+        imageUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop&q=80',
+        ingredients: ['A2 Greek Yogurt', 'Fresh Blueberries', 'Organic Honey', 'Chia Seeds']
+      },
+      {
+        name: 'Double Cheeseburger',
+        category: 'DINNER',
+        caloriesKcal: 680,
+        sugarG: 9.5,
+        sodiumMg: 1150,
+        proteinG: 32,
+        carbsG: 40,
+        fatG: 36,
+        portionSize: '1 burger',
+        imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80',
+        ingredients: ['Brioche Bun', 'Grass-fed Beef Patty', 'Cheddar Cheese', 'Pickle Relish']
+      },
+      {
+        name: 'Iced Matcha Latte',
+        category: 'DRINK',
+        caloriesKcal: 120,
+        sugarG: 14.0,
+        sodiumMg: 45,
+        proteinG: 4.5,
+        carbsG: 16,
+        fatG: 3.0,
+        portionSize: '1 glass',
+        imageUrl: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80',
+        ingredients: ['Uji Matcha Powder', 'Barista Oat Milk', 'Agave Nectar', 'Ice']
+      }
+    ];
+
+    let htmlAttachedPhotoUrl = null;
 
     function refreshTime() {
       const d = new Date();
@@ -1548,24 +1964,109 @@
     function logWaterQuick() {
       waterMl += 250;
       document.getElementById('waterValDisplay').innerHTML = `${waterMl.toLocaleString()} <span class="stat-num-unit">ml</span>`;
+      renderTodayGrid();
     }
 
-    let isPhotoAttached = false;
+    let selectedPresetIndex = 0;
+    let selectedCameraPreset = GALLERY_PRESETS[0];
 
-    function togglePhotoAttached() {
-      isPhotoAttached = !isPhotoAttached;
-      const zone = document.getElementById('photoUploadZone');
-      const title = document.getElementById('photoTitleText');
-      const sub = document.getElementById('photoSubText');
+    function resetHTMLMealFlow() {
+      // Hide all states and show gallery
+      document.getElementById('meal-gallery-container').style.display = 'block';
+      document.getElementById('meal-camera-container').style.display = 'none';
+      document.getElementById('meal-scanning-container').style.display = 'none';
+      document.getElementById('meal-logger-form-container').style.display = 'none';
 
-      if (isPhotoAttached) {
-        zone.classList.add('attached');
-        title.innerHTML = '✓ Photo Attached';
-        sub.innerText = 'Ready for your visual food diary';
+      // Reset fields
+      document.getElementById('foodNameField').value = '';
+      document.getElementById('portionField').value = '1 serving';
+      document.getElementById('caloriesField').value = '';
+      document.getElementById('proteinField').value = '';
+      document.getElementById('sugarField').value = '';
+      document.getElementById('sodiumField').value = '';
+      document.getElementById('liveSodiumWarning').style.display = 'none';
+      document.getElementById('htmlIngredientsDetectedCard').style.display = 'none';
+    }
+
+    function selectHTMLCameraPreset(index) {
+      selectedPresetIndex = index;
+      selectedCameraPreset = GALLERY_PRESETS[index];
+      
+      // Update viewport image and text
+      document.getElementById('cameraViewportImg').src = selectedCameraPreset.imageUrl;
+      document.getElementById('cameraViewportSub').innerText = 'Focusing on: ' + selectedCameraPreset.name;
+
+      // Sync active preset chip highlights
+      const chips = document.querySelectorAll('.camera-preset-btn');
+      chips.forEach((c, idx) => {
+        if (idx === index) c.classList.add('active-preset');
+        else c.classList.remove('active-preset');
+      });
+    }
+
+    function snapHTMLCamera() {
+      const camera = document.getElementById('meal-camera-container');
+      const scan = document.getElementById('meal-scanning-container');
+      
+      camera.style.display = 'none';
+      scan.style.display = 'block';
+
+      document.getElementById('scanningViewportImg').src = selectedCameraPreset.imageUrl;
+
+      const status = document.getElementById('htmlScannerStatus');
+      status.innerText = 'AI vision analysis: Analyzing food textures...';
+
+      setTimeout(() => {
+        status.innerText = 'AI matching: Identifying ingredient profiles...';
+      }, 600);
+
+      setTimeout(() => {
+        status.innerText = 'AI complete: Estimating sugar & sodium density...';
+      }, 1200);
+
+      setTimeout(() => {
+        // Transition to form
+        scan.style.display = 'none';
+        document.getElementById('meal-logger-form-container').style.display = 'block';
+
+        // Pre-fill form fields
+        document.getElementById('formCapturedImg').src = selectedCameraPreset.imageUrl;
+        document.getElementById('foodNameField').value = ''; // Empty so user types name
+        document.getElementById('portionField').value = selectedCameraPreset.portionSize;
+        document.getElementById('caloriesField').value = selectedCameraPreset.caloriesKcal;
+        document.getElementById('proteinField').value = selectedCameraPreset.proteinG;
+        document.getElementById('sugarField').value = selectedCameraPreset.sugarG;
+        document.getElementById('sodiumField').value = selectedCameraPreset.sodiumMg;
+        checkSodiumLive(selectedCameraPreset.sodiumMg);
+
+        // Pre-select category pill
+        document.querySelectorAll('.cat-chip').forEach(btn => {
+          if (btn.innerText.toUpperCase() === selectedCameraPreset.category) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        selectedCat = selectedCameraPreset.category;
+
+        // Render detected ingredients chips
+        const ingChips = document.getElementById('htmlIngredientsChips');
+        ingChips.innerHTML = selectedCameraPreset.ingredients.map(ing => `
+          <span style="background: rgba(16,185,129,0.12); color: #047857; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px;">[${ing}]</span>
+        `).join('');
+        document.getElementById('htmlIngredientsDetectedCard').style.display = 'block';
+        
+        // Focus the name field
+        document.getElementById('foodNameField').focus();
+      }, 1800);
+    }
+
+    function toggleLoggerForm(show) {
+      if (show) {
+        document.getElementById('meal-gallery-container').style.display = 'none';
+        document.getElementById('meal-camera-container').style.display = 'flex';
       } else {
-        zone.classList.remove('attached');
-        title.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg><span>Tap to Add Meal Photo</span>';
-        sub.innerText = 'Snapshot or choose from camera roll';
+        resetHTMLMealFlow();
       }
     }
 
@@ -1585,20 +2086,139 @@
       selectedCat = cat;
     }
 
+    function renderTodayGrid() {
+      const section = document.getElementById('todayGallerySection');
+      const container = document.getElementById('todayGridContainer');
+      const footerText = document.getElementById('todayGalleryFooterText');
+      if (!section || !container || !footerText) return;
+
+      container.innerHTML = '';
+      
+      if (meals.length === 0) {
+        section.style.display = 'none';
+      } else {
+        section.style.display = 'block';
+        
+        // Render only actual logged meals for today, wrapped dynamically
+        meals.forEach(meal => {
+          const isHighSodium = meal.sodiumMg >= 800;
+          container.innerHTML += `
+            <div class="today-grid-card" onclick="openMealDetailModal('${meal.id}')">
+              <img src="${meal.imageUrl}" class="today-grid-card-img">
+              ${isHighSodium ? '<div class="today-grid-warning-dot"></div>' : ''}
+              <div class="today-grid-overlay">
+                <span class="today-grid-cat">${meal.mealCategory}</span>
+                <span class="today-grid-name">${meal.foodName}</span>
+              </div>
+            </div>
+          `;
+        });
+
+        // Compute daily health score
+        const hydrationScore = Math.min((waterMl / 2500) * 20, 20);
+        const sugarScore = sugarG <= 25 ? 30 : sugarG <= 50 ? 15 : 0;
+        const sodiumScore = sodiumMg <= 2000 ? 30 : sodiumMg <= 3000 ? 15 : 0;
+        const completenessScore = meals.length >= 3 ? 20 : meals.length === 2 ? 15 : meals.length === 1 ? 10 : 0;
+        const healthScore = Math.round(hydrationScore + sugarScore + sodiumScore + completenessScore);
+
+        footerText.innerText = `🐿️ SQUI: ${meals.length} meal${meals.length > 1 ? 's' : ''} logged. Today's health score is ${healthScore}/100!`;
+      }
+    }
+
+    function renderFullGallery() {
+      const grid = document.getElementById('fullGalleryGrid');
+      if (!grid) return;
+
+      grid.innerHTML = `
+        <div class="gallery-plus-card" onclick="toggleLoggerForm(true)">
+          <span class="gallery-plus-icon">+</span>
+          <span class="gallery-plus-text">Add Meal</span>
+        </div>
+      `;
+
+      meals.forEach(meal => {
+        const isHighSodium = meal.sodiumMg >= 800;
+        grid.innerHTML += `
+          <div class="gallery-grid-item" onclick="openMealDetailModal('${meal.id}')">
+            <img src="${meal.imageUrl}" class="gallery-grid-img">
+            ${isHighSodium ? '<div class="today-grid-warning-dot" style="top: 6px; right: 6px;"></div>' : ''}
+            <div class="gallery-grid-overlay">
+              <span class="gallery-grid-category">${meal.mealCategory}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function openMealDetailModal(mealId) {
+      const meal = meals.find(m => m.id === mealId);
+      if (!meal) return;
+
+      document.getElementById('detailCategory').innerText = meal.mealCategory;
+      document.getElementById('detailTime').innerText = meal.mealTime;
+      document.getElementById('detailTitle').innerText = meal.foodName;
+      document.getElementById('detailPortion').innerText = 'Portion: ' + meal.portionSize;
+      document.getElementById('detailImage').src = meal.imageUrl;
+      document.getElementById('detailCalories').innerText = meal.caloriesKcal || 340;
+      document.getElementById('detailSugar').innerText = (meal.sugarG || 0) + 'g';
+      document.getElementById('detailSodium').innerText = (meal.sodiumMg || 0) + 'mg';
+      document.getElementById('detailProtein').innerText = (meal.proteinG || 14) + 'g';
+
+      const mascot = document.getElementById('detailMascotText');
+      if (meal.sodiumMg >= 800) {
+        mascot.innerText = '🐿️ SQUI says: A little high on sodium for this meal! Balance it by drinking extra water and focusing on fresh leafy greens for your next meal.';
+      } else if (meal.sugarG >= 10) {
+        mascot.innerText = '🐿️ SQUI says: A bit sweet! Keep an eye on your remaining sugar budget for today. Great job tracking!';
+      } else {
+        mascot.innerText = '🌿 SQUI says: Wonderful, balanced choice! Prepared with mindful nutrients to fuel your sustainable wellness.';
+      }
+
+      document.getElementById('mealDetailModal').style.display = 'flex';
+    }
+
+    function closeMealDetailModal() {
+      document.getElementById('mealDetailModal').style.display = 'none';
+    }
+
     function handleMealSubmit() {
       const name = document.getElementById('foodNameField').value.trim();
-      const sugar = parseFloat(document.getElementById('sugarField').value) || 4;
-      const sodium = parseFloat(document.getElementById('sodiumField').value) || 380;
+      const calories = parseFloat(document.getElementById('caloriesField').value) || 340;
+      const protein = parseFloat(document.getElementById('proteinField').value) || 14;
+      const sugar = parseFloat(document.getElementById('sugarField').value) || 0;
+      const sodium = parseFloat(document.getElementById('sodiumField').value) || 0;
 
       if (!name) {
         alert('Please enter a meal or dish name');
         return;
       }
 
-      sugarG += sugar;
-      sodiumMg += sodium;
+      const newMeal = {
+        id: Math.random().toString(36).substring(2, 9),
+        mealCategory: selectedCat,
+        foodName: name,
+        mealTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        portionSize: document.getElementById('portionField').value || '1 serving',
+        imageUrl: document.getElementById('formCapturedImg').src,
+        sugarG: sugar,
+        sodiumMg: sodium,
+        caloriesKcal: calories,
+        proteinG: protein
+      };
 
-      document.getElementById('sugarAmount').innerText = sugarG;
+      meals.unshift(newMeal);
+
+      // Recompute and update daily metrics dashboard bento cards
+      let calculatedSugar = 0;
+      let calculatedSodium = 0;
+      meals.forEach(m => {
+        calculatedSugar += m.sugarG;
+        calculatedSodium += m.sodiumMg;
+      });
+
+      sugarG = calculatedSugar;
+      sodiumMg = calculatedSodium;
+
+      document.getElementById('sugarAmount').innerText = sugarG.toFixed(1);
       document.getElementById('sodiumAmount').innerText = sodiumMg.toLocaleString();
 
       const sPct = Math.min(Math.round((sugarG / 25) * 100), 100);
@@ -1615,6 +2235,10 @@
         sFill.style.background = 'var(--status-caution)';
         sBadge.className = 'gauge-status-tag tag-caution';
         sBadge.innerText = 'CAUTION';
+      } else {
+        sFill.style.background = '#FFFFFF';
+        sBadge.className = 'gauge-status-tag tag-safe';
+        sBadge.innerText = 'SAFE';
       }
 
       const naFill = document.getElementById('sodiumProgressFill');
@@ -1628,33 +2252,15 @@
         naFill.style.background = 'var(--status-caution)';
         naBadge.className = 'gauge-status-tag tag-caution';
         naBadge.innerText = 'CAUTION';
+      } else {
+        naFill.style.background = '#FFFFFF';
+        naBadge.className = 'gauge-status-tag tag-safe';
+        naBadge.innerText = 'SAFE';
       }
 
-      const isHighSodium = sodium >= 800;
-      const stream = document.getElementById('foodDiaryCardsStream');
-      const emojiMap = { 'BREAKFAST': '🥣', 'LUNCH': '🥗', 'DINNER': '🍲', 'SNACK': '🍎', 'DRINK': '🍵' };
-
-      const newCardHtml = `
-        <div class="meal-card-item">
-          <div class="meal-photo-thumb">${emojiMap[selectedCat] || '🍽️'}</div>
-          <div class="meal-card-body">
-            <div class="meal-top-row">
-              <span class="meal-cat-pill">${selectedCat}</span>
-              <span class="meal-time">Just now</span>
-            </div>
-            <div class="meal-title-text">${name}</div>
-            <div class="meal-macros-row">
-              <span>🍬 ${sugar}g Sugar</span>
-              <span>•</span>
-              <span>🧂 ${sodium}mg Sodium</span>
-              ${isHighSodium ? '<span class="high-sodium-tag">⚠️ High Sodium</span>' : ''}
-            </div>
-          </div>
-        </div>
-      `;
-
-      stream.insertAdjacentHTML('afterbegin', newCardHtml);
-      document.getElementById('foodNameField').value = '';
+      resetHTMLMealFlow();
+      renderTodayGrid();
+      renderFullGallery();
       navigateToTab('dashboard');
     }
 
@@ -1676,7 +2282,7 @@
         title.innerText = 'Daily Sugar Consumed';
         sub.innerText = 'Today, Aug 21 • WHO Recommended Target: ≤ 25g / day';
         heroTitle.innerHTML = '<span style="font-size: 18px;">🍬</span> Sugar Consumed Today';
-        heroVal.innerText = sugarG;
+        heroVal.innerText = sugarG.toFixed(1);
         heroUnit.innerText = 'grams (g)';
         heroCap.innerText = '/ 25g target (' + Math.round((sugarG / 25) * 100) + '%)';
         heroTrack.style.width = Math.min(Math.round((sugarG / 25) * 100), 100) + '%';
@@ -1685,20 +2291,14 @@
           ? '🐿️ Mindful Balance: Staying under 25g of dietary sugar consumed prevents rapid energy crashes and supports steady metabolic wellness.'
           : '🐿️ SQUI Reflection: Sugar consumed is above the WHO 25g daily target. Try balancing upcoming meals with leafy greens, water, and whole fiber foods.';
         breakdownHeader.innerText = 'Sugar Consumed by Logged Meal';
-        breakdownList.innerHTML = `
+        breakdownList.innerHTML = meals.map(meal => `
           <div class="breakdown-item" style="background: #FFFFFF; border-radius: 16px; padding: 12px; margin-bottom: 8px; border: 1px solid rgba(27,67,44,0.08);">
-            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #849C8D; font-weight: 700;"><span>BREAKFAST</span><span>8:30 AM</span></div>
-            <div style="font-size: 13px; font-weight: 800; color: #0F2418; margin: 2px 0 6px 0;">Rolled Oats with Fresh Blueberries</div>
-            <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; color: #92400E; margin-bottom: 4px;"><span>🍬 8g Sugar Consumed</span><span style="color: #769482;">32% of 25g target</span></div>
-            <div style="height: 5px; background: rgba(27,67,44,0.08); border-radius: 2.5px; overflow: hidden;"><div style="width: 32%; background: #F59E0B; height: 100%; border-radius: 2.5px;"></div></div>
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #849C8D; font-weight: 700;"><span>${meal.mealCategory}</span><span>${meal.mealTime}</span></div>
+            <div style="font-size: 13px; font-weight: 800; color: #0F2418; margin: 2px 0 6px 0;">${meal.foodName}</div>
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; color: #92400E; margin-bottom: 4px;"><span>🍬 ${meal.sugarG}g Sugar Consumed</span><span style="color: #769482;">${Math.round((meal.sugarG / 25) * 100)}% of target</span></div>
+            <div style="height: 5px; background: rgba(27,67,44,0.08); border-radius: 2.5px; overflow: hidden;"><div style="width: ${Math.round((meal.sugarG / 25) * 100)}%; background: #F59E0B; height: 100%; border-radius: 2.5px;"></div></div>
           </div>
-          <div class="breakdown-item" style="background: #FFFFFF; border-radius: 16px; padding: 12px; margin-bottom: 8px; border: 1px solid rgba(27,67,44,0.08);">
-            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #849C8D; font-weight: 700;"><span>LUNCH</span><span>12:45 PM</span></div>
-            <div style="font-size: 13px; font-weight: 800; color: #0F2418; margin: 2px 0 6px 0;">Grilled Salmon & Spinach Bowl</div>
-            <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; color: #92400E; margin-bottom: 4px;"><span>🍬 6g Sugar Consumed</span><span style="color: #769482;">24% of 25g target</span></div>
-            <div style="height: 5px; background: rgba(27,67,44,0.08); border-radius: 2.5px; overflow: hidden;"><div style="width: 24%; background: #F59E0B; height: 100%; border-radius: 2.5px;"></div></div>
-          </div>
-        `;
+        `).join('');
       } else {
         title.innerText = 'Daily Sodium Consumed';
         sub.innerText = 'Today, Aug 21 • AHA Recommended Daily Cap: ≤ 2,000mg / day';
@@ -1712,20 +2312,14 @@
           ? '🐿️ Mindful Balance: Keeping daily sodium consumed under 2,000mg supports arterial flexibility, renal balance, and healthy fluid circulation.'
           : '🐿️ SQUI Reflection: Dietary sodium from meals reached higher levels today. Hydrate generously with fresh spring water to promote natural mineral balance.';
         breakdownHeader.innerText = 'Sodium Consumed by Logged Meal';
-        breakdownList.innerHTML = `
+        breakdownList.innerHTML = meals.map(meal => `
           <div class="breakdown-item" style="background: #FFFFFF; border-radius: 16px; padding: 12px; margin-bottom: 8px; border: 1px solid rgba(27,67,44,0.08);">
-            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #849C8D; font-weight: 700;"><span>BREAKFAST</span><span>8:30 AM</span></div>
-            <div style="font-size: 13px; font-weight: 800; color: #0F2418; margin: 2px 0 6px 0;">Rolled Oats with Fresh Blueberries</div>
-            <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; color: #1B432C; margin-bottom: 4px;"><span>🧂 150mg Sodium</span><span style="color: #769482;">7.5% of 2,000mg cap</span></div>
-            <div style="height: 5px; background: rgba(27,67,44,0.08); border-radius: 2.5px; overflow: hidden;"><div style="width: 7.5%; background: #10B981; height: 100%; border-radius: 2.5px;"></div></div>
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #849C8D; font-weight: 700;"><span>${meal.mealCategory}</span><span>${meal.mealTime}</span></div>
+            <div style="font-size: 13px; font-weight: 800; color: #0F2418; margin: 2px 0 6px 0;">${meal.foodName}</div>
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; color: #B45309; margin-bottom: 4px;"><span>🧂 ${meal.sodiumMg}mg Sodium</span><span style="color: #769482;">${Math.round((meal.sodiumMg / 2000) * 100)}% of cap</span></div>
+            <div style="height: 5px; background: rgba(27,67,44,0.08); border-radius: 2.5px; overflow: hidden;"><div style="width: ${Math.min(Math.round((meal.sodiumMg / 2000) * 100), 100)}%; background: #D97706; height: 100%; border-radius: 2.5px;"></div></div>
           </div>
-          <div class="breakdown-item" style="background: #FFFFFF; border-radius: 16px; padding: 12px; margin-bottom: 8px; border: 1px solid rgba(27,67,44,0.08);">
-            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #849C8D; font-weight: 700;"><span>LUNCH</span><span>12:45 PM</span></div>
-            <div style="font-size: 13px; font-weight: 800; color: #0F2418; margin: 2px 0 6px 0;">Grilled Salmon & Spinach Bowl</div>
-            <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; color: #B45309; margin-bottom: 4px;"><span>🧂 920mg Sodium ⚠️ (High single-meal)</span><span style="color: #769482;">46% of 2,000mg cap</span></div>
-            <div style="height: 5px; background: rgba(27,67,44,0.08); border-radius: 2.5px; overflow: hidden;"><div style="width: 46%; background: #D97706; height: 100%; border-radius: 2.5px;"></div></div>
-          </div>
-        `;
+        `).join('');
       }
 
       modal.style.display = 'flex';
@@ -1734,6 +2328,10 @@
     function closeNutrientModal() {
       document.getElementById('nutrientModalOverlay').style.display = 'none';
     }
+
+    // Initial load bindings
+    renderTodayGrid();
+    renderFullGallery();
   </script>
 
   <!-- Filtered Nutrient Breakdown Modal -->
