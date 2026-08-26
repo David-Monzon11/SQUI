@@ -30,6 +30,7 @@ model User {
   summaries               DailySummary[]
 }
 
+// Optional daily lifestyle vitals (weight, water hydration)
 model DailyHealthLog {
   id               String   @id @default(uuid())
   userId           String
@@ -49,6 +50,7 @@ model DailyHealthLog {
   @@unique([userId, date])
 }
 
+// Visual Food Diary: Individual meals and food items logged by the user
 model Meal {
   id           String        @id @default(uuid())
   userId       String
@@ -67,11 +69,12 @@ model Meal {
   nutrition    NutritionData?
 }
 
+// Dietary nutrients consumed from each individual logged meal
 model NutritionData {
   id           String   @id @default(uuid())
   mealId       String   @unique
-  sugarG       Float    @default(0)
-  sodiumMg     Float    @default(0)
+  sugarG       Float    @default(0)   // Grams of sugar consumed in this meal
+  sodiumMg     Float    @default(0)   // Milligrams of sodium consumed in this meal
   caloriesKcal Float    @default(0)
   proteinG     Float    @default(0)
   carbsG       Float    @default(0)

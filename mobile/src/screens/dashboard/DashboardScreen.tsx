@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MascotBanner } from '../../components/dashboard/MascotBanner';
+import { WeatherCard } from '../../components/dashboard/WeatherCard';
 import { SquiLogo } from '../../components/common/SquiLogo';
 import {
   IconSquiScale,
@@ -17,6 +18,8 @@ import {
   IconSquiSugar,
   IconSquiSodium,
   IconCameraPlus,
+  IconPlus,
+  IconWeatherSunCloud,
 } from '../../components/common/Icons';
 import { DailyNutrientDetailScreen } from '../nutrition/DailyNutrientDetailScreen';
 import { dashboardStyles as styles } from './Dashboard.styles';
@@ -41,41 +44,59 @@ export const DashboardScreen: React.FC = () => {
   const [isNutrientDetailOpen, setIsNutrientDetailOpen] = useState(false);
   const [selectedNutrientType, setSelectedNutrientType] = useState<'SUGAR' | 'SODIUM'>('SUGAR');
 
-  const [meals, setMeals] = useState<MealItem[]>([
+  const [meals] = useState<MealItem[]>([
     {
-      id: 'meal-1',
+      id: '1',
       category: 'BREAKFAST',
-      name: 'Rolled Oats with Fresh Blueberries',
-      time: '8:30 AM',
-      sugarG: 8,
-      sodiumMg: 150,
-      caloriesKcal: 380,
-      proteinG: 12,
+      name: 'Avocado Toast & Poached Egg',
+      time: '08:30 AM',
+      sugarG: 2.1,
+      sodiumMg: 380,
+      caloriesKcal: 340,
+      proteinG: 14,
     },
     {
-      id: 'meal-2',
+      id: '2',
       category: 'LUNCH',
-      name: 'Grilled Salmon & Spinach Salad',
+      name: 'Grilled Salmon Quinoa Bowl',
       time: '12:45 PM',
-      sugarG: 6,
-      sodiumMg: 920, // High sodium (>800mg) for testing
-      caloriesKcal: 520,
+      sugarG: 3.5,
+      sodiumMg: 520,
+      caloriesKcal: 580,
       proteinG: 38,
+    },
+    {
+      id: '3',
+      category: 'SNACK',
+      name: 'Greek Yogurt with Fresh Berries',
+      time: '04:15 PM',
+      sugarG: 8.4,
+      sodiumMg: 65,
+      caloriesKcal: 180,
+      proteinG: 15,
     },
   ]);
 
-  // Aggregate totals
   const totalSugar = meals.reduce((acc, m) => acc + m.sugarG, 0);
   const totalSodium = meals.reduce((acc, m) => acc + m.sodiumMg, 0);
 
+  const getSugarStatus = (val: number) => {
+    if (val <= 17.5) return 'SAFE';
+    if (val <= 25) return 'CAUTION';
+    return 'EXCEEDED';
+  };
+
+  const getSodiumStatus = (val: number) => {
+    if (val <= 1400) return 'SAFE';
+    if (val <= 2000) return 'CAUTION';
+    return 'EXCEEDED';
+  };
+
+  const sugarStatus = getSugarStatus(totalSugar);
+  const sodiumStatus = getSodiumStatus(totalSodium);
+
   const sugarPct = Math.min(Math.round((totalSugar / 25) * 100), 100);
   const sodiumPct = Math.min(Math.round((totalSodium / 2000) * 100), 100);
-
-  const getSugarColor = () => (totalSugar > 25 ? '#EF4444' : totalSugar > 18 ? '#F59E0B' : '#10B981');
-  const getSodiumColor = () => (totalSodium > 2000 ? '#EF4444' : totalSodium > 1400 ? '#F59E0B' : '#10B981');
-
-  const sugarStatus = totalSugar > 25 ? 'EXCEEDED' : totalSugar > 18 ? 'CAUTION' : 'SAFE';
-  const sodiumStatus = totalSodium > 2000 ? 'EXCEEDED' : totalSodium > 1400 ? 'CAUTION' : 'SAFE';
 
   const handleWaterIncrement = () => {
     setWaterIntakeMl((prev) => prev + 250);
@@ -85,13 +106,18 @@ export const DashboardScreen: React.FC = () => {
     const parsed = parseFloat(tempWeightInput);
     if (!isNaN(parsed) && parsed > 20 && parsed < 300) {
       setTodayWeightKg(parsed);
+      setIsWeightModalOpen(false);
     }
-    setIsWeightModalOpen(false);
   };
 
   return (
     <View style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      {/* 📜 Scrollable Feed */}
+      <ScrollView
+        style={styles.scrollArea}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header with Integrated Date & Circular Avatar */}
         <View style={styles.header}>
           <View>
@@ -101,7 +127,7 @@ export const DashboardScreen: React.FC = () => {
           <SquiLogo size={46} variant="circle" />
         </View>
 
-        {/* SQUI Mascot Reflection Banner */}
+        {/* SQUI Mascot Reflection Hero Banner */}
         <MascotBanner
           healthScore={88}
           tip="SQUI says: Mindful sugar balance today! Sodium was slightly higher from lunch—balance it with extra hydration before dinner."
@@ -112,7 +138,7 @@ export const DashboardScreen: React.FC = () => {
 
         {/* Row 1: Watermarked Bento Vitals Cards */}
         <View style={styles.statsRow}>
-          {/* Weight Bento Card (Soft Botanical Forest Slate) */}
+          {/* Weight Bento Card (2-Side Emerald Gradient) */}
           <TouchableOpacity
             style={styles.bentoTouchWrap}
             activeOpacity={0.88}
@@ -122,31 +148,31 @@ export const DashboardScreen: React.FC = () => {
             }}
           >
             <LinearGradient
-              colors={['#1E3A2F', '#152C23', '#0E2019']}
+              colors={['#10B981', '#059669', '#047857']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              {/* 1. Large Ambient Ghost Watermark (Bottom-Right) */}
+              {/* 1. Large Ambient Ghost Watermark (Bottom-Right Lifted) */}
               <View style={styles.bentoWatermark}>
-                <IconSquiScale size={74} color="#34D399" />
+                <IconSquiScale size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
-              {/* 2. Top Row: Frosted Badge + Floating (+) Action */}
+              {/* 2. Top Row: Frosted Badge + Circular Frosted (+) Action */}
               <View style={styles.bentoTopRow}>
                 <View style={styles.bentoIconBadge('emerald')}>
-                  <IconSquiScale size={18} color="#6EE7B7" />
+                  <IconSquiScale size={18} color="#FFFFFF" />
                 </View>
                 <TouchableOpacity
-                  style={styles.bentoFloatingPlus('emerald')}
-                  activeOpacity={0.75}
-                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  style={styles.bentoFloatingPlus}
+                  activeOpacity={0.7}
+                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                   onPress={() => {
                     setTempWeightInput(todayWeightKg.toString());
                     setIsWeightModalOpen(true);
                   }}
                 >
-                  <Text style={styles.bentoPlusText}>+</Text>
+                  <IconPlus size={16} color="#FFFFFF" strokeWidth={2.4} />
                 </TouchableOpacity>
               </View>
 
@@ -164,31 +190,31 @@ export const DashboardScreen: React.FC = () => {
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Hydration Bento Card (Soft Nordic Slate Azure) */}
+          {/* Hydration Bento Card (2-Side Azure Gradient) */}
           <View style={styles.bentoTouchWrap}>
             <LinearGradient
-              colors={['#1B3547', '#122736', '#0C1B26']}
+              colors={['#0EA5E9', '#0284C7', '#0369A1']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              {/* 1. Large Ambient Ghost Watermark (Bottom-Right) */}
+              {/* 1. Large Ambient Ghost Watermark (Bottom-Right Lifted) */}
               <View style={styles.bentoWatermark}>
-                <IconSquiHydration size={74} color="#38BDF8" />
+                <IconSquiHydration size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
-              {/* 2. Top Row: Frosted Badge + Floating (+) Quick Water Log */}
+              {/* 2. Top Row: Frosted Badge + Circular Frosted (+) Quick Water Log */}
               <View style={styles.bentoTopRow}>
                 <View style={styles.bentoIconBadge('cyan')}>
-                  <IconSquiHydration size={18} color="#7DD3FC" />
+                  <IconSquiHydration size={18} color="#FFFFFF" />
                 </View>
                 <TouchableOpacity
-                  style={styles.bentoFloatingPlus('cyan')}
-                  activeOpacity={0.75}
-                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  style={styles.bentoFloatingPlus}
+                  activeOpacity={0.7}
+                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                   onPress={handleWaterIncrement}
                 >
-                  <Text style={styles.bentoPlusText}>+</Text>
+                  <IconPlus size={16} color="#FFFFFF" strokeWidth={2.4} />
                 </TouchableOpacity>
               </View>
 
@@ -212,7 +238,7 @@ export const DashboardScreen: React.FC = () => {
 
         {/* Row 2: Interactive Watermarked Bento Nutrient Consumed Cards */}
         <View style={styles.statsRow}>
-          {/* Sugar Consumed Bento Card (Soft Dark Amber Walnut Slate) */}
+          {/* Sugar Consumed Bento Card (2-Side Sunset Amber Gradient) */}
           <TouchableOpacity
             style={styles.bentoTouchWrap}
             activeOpacity={0.88}
@@ -222,20 +248,20 @@ export const DashboardScreen: React.FC = () => {
             }}
           >
             <LinearGradient
-              colors={['#3B2C20', '#2B1E14', '#1E140C']}
+              colors={['#F59E0B', '#EA580C', '#C2410C']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              {/* 1. Large Ambient Ghost Watermark */}
+              {/* 1. Large Ambient Ghost Watermark Lifted */}
               <View style={styles.bentoWatermark}>
-                <IconSquiSugar size={74} color="#FBBF24" />
+                <IconSquiSugar size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
               {/* 2. Top Row: Frosted Badge + Glass Status Badge */}
               <View style={styles.bentoTopRow}>
                 <View style={styles.bentoIconBadge('amber')}>
-                  <IconSquiSugar size={18} color="#FDE68A" />
+                  <IconSquiSugar size={18} color="#FFFFFF" />
                 </View>
                 <View style={styles.glassStatusBadge(sugarStatus)}>
                   <View style={styles.statusGlowDot(sugarStatus)} />
@@ -254,13 +280,13 @@ export const DashboardScreen: React.FC = () => {
                 </View>
                 <Text style={styles.bentoSubText}>of 25g daily target</Text>
                 <View style={styles.bentoTrackBg}>
-                  <View style={styles.bentoTrackFill(sugarPct, getSugarColor())} />
+                  <View style={styles.bentoTrackFill(sugarPct, '#FFFFFF')} />
                 </View>
               </View>
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Sodium Consumed Bento Card (Soft Jade Mineral Slate) */}
+          {/* Sodium Consumed Bento Card (2-Side Jade Forest Gradient) */}
           <TouchableOpacity
             style={styles.bentoTouchWrap}
             activeOpacity={0.88}
@@ -270,20 +296,20 @@ export const DashboardScreen: React.FC = () => {
             }}
           >
             <LinearGradient
-              colors={['#1E3A2F', '#152C23', '#0E2019']}
+              colors={['#10B981', '#059669', '#065F46']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              {/* 1. Large Ambient Ghost Watermark */}
+              {/* 1. Large Ambient Ghost Watermark Lifted */}
               <View style={styles.bentoWatermark}>
-                <IconSquiSodium size={74} color="#34D399" />
+                <IconSquiSodium size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
               {/* 2. Top Row: Frosted Badge + Glass Status Badge */}
               <View style={styles.bentoTopRow}>
                 <View style={styles.bentoIconBadge('emerald')}>
-                  <IconSquiSodium size={18} color="#6EE7B7" />
+                  <IconSquiSodium size={18} color="#FFFFFF" />
                 </View>
                 <View style={styles.glassStatusBadge(sodiumStatus)}>
                   <View style={styles.statusGlowDot(sodiumStatus)} />
@@ -302,7 +328,7 @@ export const DashboardScreen: React.FC = () => {
                 </View>
                 <Text style={styles.bentoSubText}>of 2,000mg daily cap</Text>
                 <View style={styles.bentoTrackBg}>
-                  <View style={styles.bentoTrackFill(sodiumPct, getSodiumColor())} />
+                  <View style={styles.bentoTrackFill(sodiumPct, '#FFFFFF')} />
                 </View>
               </View>
             </LinearGradient>
@@ -362,6 +388,11 @@ export const DashboardScreen: React.FC = () => {
             );
           })
         )}
+
+        {/* ========================================================================= */}
+        {/* 🌤️ 3D CLAYMORPHIC MINDFUL WEATHER & CLIMATE CARD (Montreal Reference)    */}
+        {/* ========================================================================= */}
+        <WeatherCard />
 
         {/* Quick Weight Logger Modal */}
         <Modal visible={isWeightModalOpen} transparent animationType="slide">

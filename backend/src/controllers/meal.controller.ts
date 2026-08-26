@@ -43,7 +43,7 @@ export const getMealsByDate = async (req: AuthenticatedRequest, res: Response, n
 
 export const deleteMeal = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const result = await mealService.deleteMeal(req.userId!, id);
     return sendSuccess(res, result, 200, "Meal deleted successfully");
   } catch (error) {

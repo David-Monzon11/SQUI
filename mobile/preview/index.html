@@ -249,6 +249,46 @@
       box-shadow: 0 4px 16px rgba(27, 67, 44, 0.03);
     }
 
+    @keyframes squiJumpLoop {
+      0%, 100% { transform: translateY(0) scaleY(1) scaleX(1); }
+      4% { transform: translateY(4px) scaleY(0.88) scaleX(1.12); }
+      11% { transform: translateY(-26px) scaleY(1.16) scaleX(0.88); }
+      17% { transform: translateY(0) scaleY(1) scaleX(1); }
+      21% { transform: translateY(3px) scaleY(0.85) scaleX(1.15); }
+      28% { transform: translateY(0) scaleY(1) scaleX(1); }
+      32%, 100% { transform: translateY(0) scaleY(1) scaleX(1); }
+    }
+
+    @keyframes leafLeftImpactBounce {
+      0%, 20%, 100% { transform: translateY(0) rotate(0deg); }
+      24% { transform: translateY(-18px) rotate(-24deg); }
+      32% { transform: translateY(0) rotate(0deg); }
+    }
+
+    @keyframes leafRightImpactBounce {
+      0%, 20%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(28deg); }
+      33% { transform: translateY(0) rotate(0deg); }
+    }
+
+    @keyframes leafCenterImpactBounce {
+      0%, 20%, 100% { transform: translateY(0) rotate(0deg); }
+      23% { transform: translateY(-12px) rotate(10deg); }
+      31% { transform: translateY(0) rotate(0deg); }
+    }
+
+    @keyframes leafUpperLeftImpactBounce {
+      0%, 20%, 100% { transform: translateY(0) rotate(0deg); }
+      24% { transform: translateY(-26px) rotate(-36deg); }
+      33% { transform: translateY(0) rotate(0deg); }
+    }
+
+    @keyframes leafUpperRightImpactBounce {
+      0%, 20%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-24px) rotate(34deg); }
+      33% { transform: translateY(0) rotate(0deg); }
+    }
+
     .header-top {
       display: flex;
       justify-content: space-between;
@@ -778,27 +818,121 @@
         <!-- 1. DASHBOARD SCREEN -->
         <div id="screen-dashboard" class="view-screen active">
           
-          <!-- Top Header with Circular Profile Avatar -->
-          <div class="header-top">
-            <div>
-              <div class="greeting-title">Good day, Alex</div>
-              <div class="greeting-subtitle">Friday, Aug 21 • Mindful food choices</div>
-            </div>
-            <img src="/MLogo.jpg" class="logo-avatar" alt="SQUI Profile" onclick="navigateToTab('menu')">
-          </div>
-
-          <!-- SQUI Mascot Banner -->
-          <div class="mascot-hero-card">
-            <div class="mascot-hero-logo">
-              <img src="/MLogo.jpg" alt="SQUI Mascot">
-            </div>
-            <div class="mascot-hero-body">
-              <div class="mascot-score-row">
-                <span class="mascot-score-tag">Daily Balance Score</span>
-                <span class="score-pill-gold" id="scoreValue">88 / 100</span>
+          <!-- 📌 Fixed Top Section (Pinned Header & Mascot Hero Card - Unaffected by Scroll) -->
+          <div class="fixed-top-hero-section" style="position: sticky; top: -10px; z-index: 25; background: var(--bg-pearl); padding: 10px 0 4px 0; margin-top: -10px; backdrop-filter: blur(8px);">
+            <!-- Top Header with Circular Profile Avatar -->
+            <div class="header-top">
+              <div>
+                <div class="greeting-title">Good day, Alex</div>
+                <div class="greeting-subtitle">Friday, Aug 21 • Mindful food choices</div>
               </div>
-              <div class="mascot-advice-text">
-                Mindful sugar balance today! Sodium was slightly higher from lunch—balance it with extra hydration before dinner.
+              <img src="/MLogo.jpg" class="logo-avatar" alt="SQUI Profile" onclick="navigateToTab('menu')">
+            </div>
+
+            <!-- SQUI Master Bento Hero Card -->
+            <div class="mascot-hero-card" onclick="openNutrientModal()" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: linear-gradient(135deg, #0F3C26 0%, #0A2D1C 50%, #061D12 100%); border: 1.5px solid rgba(255, 255, 255, 0.22); border-radius: 26px; box-shadow: 0 8px 18px rgba(14, 46, 27, 0.18); min-height: 142px; position: relative; overflow: hidden; margin-bottom: 6px; cursor: pointer;">
+              <!-- Ambient Glow -->
+              <div style="position: absolute; top: -20px; right: -20px; width: 140px; height: 140px; border-radius: 70px; background: rgba(16, 185, 129, 0.15); pointer-events: none;"></div>
+
+              <!-- Left: Mascot Stage with Layered Horizontal Perspective Ghost Leaves -->
+              <div style="width: 110px; height: 104px; display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 1; overflow: visible;">
+                <!-- 🌑 Dynamic Landing Footprint Shadow -->
+                <div style="position: absolute; bottom: 2px; width: 72px; height: 8px; border-radius: 4px; background: rgba(0,0,0,0.35); pointer-events: none;"></div>
+
+                <!-- 🍂 Layer 1: Background Ghost Leaves (Behind SQUI, zIndex 1) -->
+                <div style="position: absolute; bottom: 4px; width: 110px; height: 44px; pointer-events: none; z-index: 1;">
+                  <!-- Background Rowan Sprig / Fern Branch (Horizontal Spanning) -->
+                  <svg style="position: absolute; left: 10px; bottom: 8px; width: 90px; height: 20px; opacity: 0.5;" viewBox="0 0 90 20" fill="none">
+                    <path d="M4 16 Q45 8 86 14" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M16 13 C14 8 22 7 23 12" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" stroke-width="1.2"/>
+                    <path d="M34 11 C32 6 40 5 41 10" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" stroke-width="1.2"/>
+                    <path d="M52 10 C50 5 58 5 59 10" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" stroke-width="1.2"/>
+                    <path d="M70 12 C68 7 76 7 77 12" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" stroke-width="1.2"/>
+                  </svg>
+
+                  <!-- Upper Left Ginkgo Fan Leaf 🍃 -->
+                  <svg style="position: absolute; left: 4px; bottom: 14px; width: 28px; height: 20px; animation: leafUpperLeftImpactBounce 4.5s infinite ease-in-out;" viewBox="0 0 28 20" fill="none">
+                    <path d="M14 19 C14 14 7 8 2 6 C7 2 21 1 26 6 C21 8 14 14 14 19 Z" fill="rgba(255, 255, 255, 0.20)" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
+                    <path d="M14 18 Q7 10 5 8 M14 18 Q14 7 14 4 M14 18 Q21 10 23 8" stroke="#FFFFFF" stroke-width="0.9" stroke-linecap="round" opacity="0.5"/>
+                  </svg>
+
+                  <!-- Upper Right Ginkgo Fan Leaf 🍂 -->
+                  <svg style="position: absolute; right: 4px; bottom: 12px; width: 28px; height: 20px; animation: leafUpperRightImpactBounce 4.5s infinite ease-in-out;" viewBox="0 0 28 20" fill="none">
+                    <path d="M14 19 C14 14 21 8 26 6 C21 2 7 1 2 6 C7 8 14 14 14 19 Z" fill="rgba(255, 255, 255, 0.20)" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
+                    <path d="M14 18 Q21 10 23 8 M14 18 Q14 7 14 4 M14 18 Q7 10 5 8" stroke="#FFFFFF" stroke-width="0.9" stroke-linecap="round" opacity="0.5"/>
+                  </svg>
+                </div>
+
+                <!-- 🐿️ Layer 2: ORIGINAL SQUI Mascot SVG (100% Preserved Geometry) -->
+                <div style="animation: squiJumpLoop 4.5s infinite ease-in-out; transform-origin: bottom center; z-index: 2;">
+                  <svg width="95" height="95" viewBox="0 0 120 95" fill="none">
+                    <defs>
+                      <linearGradient id="prevSquiPureEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#34D399"/>
+                        <stop offset="50%" stop-color="#10B981"/>
+                        <stop offset="100%" stop-color="#059669"/>
+                      </linearGradient>
+                    </defs>
+                    <!-- 1. TAIL -->
+                    <path d="M 34 54 C 28 62 20 72 12 72 C 6 72 4 64 6 52 C 8 36 14 20 24 10 C 34 0 48 4 52 14 C 56 22 52 28 48 30 C 44 30 40 26 42 22 C 42 32 38 44 34 54 Z" fill="url(#prevSquiPureEmerald)" stroke="#051A0E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <!-- 2. SQUI BODY & LEGS -->
+                    <path d="M 54 34 C 40 38 28 46 20 56 C 12 68 14 78 18 84 C 22 86 34 86 44 84 C 48 78 52 76 58 76 C 58 80 56 84 60 84 C 64 84 66 84 70 84 C 70 78 70 72 72 70 C 72 76 70 84 74 84 C 78 84 84 84 86 84 C 88 72 84 62 76 56 C 82 56 88 54 94 48 C 98 44 100 40 98 38 C 92 32 84 22 78 20 C 76 16 80 6 82 4 C 78 4 72 10 70 14 C 68 12 68 8 68 4 C 64 6 62 12 62 16 C 58 20 54 26 54 34 Z" fill="url(#prevSquiPureEmerald)" stroke="#051A0E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <!-- 3. FACE & EYE & NOSE -->
+                    <path d="M 74 56 C 80 58 86 56 92 50" stroke="#051A0E" stroke-width="2.8" stroke-linecap="round"/>
+                    <ellipse cx="81" cy="36" rx="6.5" ry="8.5" fill="#051A0E"/>
+                    <circle cx="80" cy="33" r="3.2" fill="#FFFFFF"/>
+                    <ellipse cx="97" cy="40" rx="2.5" ry="3.8" fill="#FFFFFF" stroke="#051A0E" stroke-width="2.6" transform="rotate(15 97 40)"/>
+                  </svg>
+                </div>
+
+                <!-- 🍂 Layer 3: Foreground Ghost Leaves (In Front of Paws, zIndex 3) -->
+                <div style="position: absolute; bottom: 0; width: 110px; height: 38px; pointer-events: none; z-index: 3;">
+                  <!-- 1. Left Horizontal Flat Oak Leaf 🍂 -->
+                  <svg style="position: absolute; left: 2px; bottom: 2px; width: 42px; height: 22px; animation: leafLeftImpactBounce 4.5s infinite ease-in-out;" viewBox="0 0 42 22" fill="none">
+                    <path d="M2 14 C7 7 14 8 18 4 C24 9 32 7 40 11 C36 17 29 19 22 21 C14 20 8 21 2 14 Z" fill="rgba(255, 255, 255, 0.22)" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                    <path d="M3 14 Q21 13 39 11" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+                    <path d="M13 13 L17 8 M22 13 L27 8 M31 12 L35 9" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+                  </svg>
+
+                  <!-- 2. Right Horizontal Flat Heart/Aspen Leaf 🍃 -->
+                  <svg style="position: absolute; right: 2px; bottom: 1px; width: 40px; height: 24px; animation: leafRightImpactBounce 4.5s infinite ease-in-out;" viewBox="0 0 40 24" fill="none">
+                    <path d="M4 15 C9 6 25 5 36 12 C38 18 29 23 18 22 C9 21 4 19 4 15 Z" fill="rgba(255, 255, 255, 0.22)" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                    <path d="M5 15 Q20 14 36 12" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+                    <path d="M16 14 L20 9 M25 14 L29 9" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+                  </svg>
+
+                  <!-- 3. Center Horizontal Maple Star Leaf 🍁 -->
+                  <svg style="position: absolute; left: 39px; bottom: -1px; width: 32px; height: 20px; animation: leafCenterImpactBounce 4.5s infinite ease-in-out;" viewBox="0 0 32 20" fill="none">
+                    <path d="M16 2 L19 7 L29 6 L23 12 L26 18 L16 14 L6 18 L9 12 L3 6 L13 7 Z" fill="rgba(255, 255, 255, 0.24)" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+                    <path d="M16 14 V3" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" opacity="0.6"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Right: Content & Keyword Chips -->
+              <div style="flex: 1; padding-left: 14px; z-index: 1;">
+                <!-- Top Row: Category + Status Pill -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+                  <span style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.85); letter-spacing: 0.8px; text-transform: uppercase;">DAILY HARMONY</span>
+                  <span style="display: flex; align-items: center; gap: 4px; background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.30); padding: 2px 7px; border-radius: 7px; font-size: 9.5px; font-weight: 900; color: #FFFFFF;">
+                    <span style="width: 5px; height: 5px; border-radius: 2.5px; background: #34D399;"></span>
+                    OPTIMAL
+                  </span>
+                </div>
+
+                <!-- Hero Score Row -->
+                <div style="display: flex; align-items: baseline; margin: 1px 0 4px 0;">
+                  <span style="font-size: 32px; font-weight: 900; color: #FFFFFF; letter-spacing: -1px; line-height: 36px;">88</span>
+                  <span style="font-size: 14px; font-weight: 700; color: rgba(255, 255, 255, 0.70); margin-left: 3px;">/ 100</span>
+                  <span style="font-size: 11.5px; font-weight: 700; color: #6EE7B7; margin-left: 8px;">Balanced ✨</span>
+                </div>
+
+                <!-- Keyword Highlight Chips -->
+                <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px;">
+                  <span style="background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); padding: 3px 7.5px; border-radius: 7px; font-size: 10px; font-weight: 700; color: #FFFFFF;">Sugar: Safe</span>
+                  <span style="background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); padding: 3px 7.5px; border-radius: 7px; font-size: 10px; font-weight: 700; color: #FFFFFF;">Sodium: Safe</span>
+                  <span style="background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); padding: 3px 7.5px; border-radius: 7px; font-size: 10px; font-weight: 700; color: #FFFFFF;">💧 70% Hydrated</span>
+                </div>
               </div>
             </div>
           </div>
@@ -806,49 +940,53 @@
           <!-- Section: Daily Vitals -->
           <div class="section-label">Daily Vitals</div>
           <div class="stats-2col">
-            <!-- Weight Bento Card (Soft Botanical Forest Slate) -->
-            <div class="stat-tile" onclick="toggleWeightModal(true)" style="background: linear-gradient(145deg, #1E3A2F, #152C23, #0E2019); border: 1.2px solid rgba(255,255,255,0.12); box-shadow: 0 7px 15px rgba(14, 46, 27, 0.14); border-radius: 24px; padding: 13px 14px; min-height: 146px; display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden; cursor: pointer;">
-              <!-- Ambient Ghost Watermark -->
-              <svg style="position: absolute; right: -4px; bottom: -6px; width: 74px; height: 74px; opacity: 0.16; stroke: #34D399; pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3v16M8 21h8M4 7.5h16"/><circle cx="12" cy="4" r="1.5" fill="#34D399"/></svg>
+            <!-- Weight Bento Card (2-Side Emerald Diagonal Gradient) -->
+            <div class="stat-tile" onclick="toggleWeightModal(true)" style="background: linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%); border: 1.5px solid rgba(255,255,255,0.25); box-shadow: 0 7px 16px rgba(14, 46, 27, 0.16); border-radius: 24px; padding: 13px 14px; min-height: 146px; display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden; cursor: pointer;">
+              <!-- Ambient Ghost Watermark (Lifted 66px) -->
+              <svg style="position: absolute; right: 2px; bottom: 3px; width: 66px; height: 66px; opacity: 0.28; stroke: #FFFFFF; pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3C7 7.5 7 10 5.5 14C4.5 17 4 19 4 21"/><path d="M19 3C17 7.5 17 10 18.5 14C19.5 17 20 19 20 21"/><path d="M5.8 12C9 14.5 15 14.5 18.2 12"/><path d="M9 13.2V14.6M12 13.8V15.4M15 13.2V14.6" stroke-width="1.5"/></svg>
 
-              <!-- Top Row: Frosted Badge + Floating (+) Action -->
+              <!-- Top Row: Frosted Badge + Circular Frosted (+) Action -->
               <div class="stat-tile-top" style="display: flex; justify-content: space-between; align-items: center; z-index: 1;">
-                <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;">
-                  <svg style="width: 18px; height: 18px; stroke: #6EE7B7;" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3v16M8 21h8M4 7.5h16"/></svg>
+                <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 255, 255, 0.20); border: 1px solid rgba(255,255,255,0.30); display: flex; align-items: center; justify-content: center;">
+                  <svg style="width: 18px; height: 18px; stroke: #FFFFFF;" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3C7 7.5 7 10 5.5 14C4.5 17 4 19 4 21"/><path d="M19 3C17 7.5 17 10 18.5 14C19.5 17 20 19 20 21"/><path d="M5.8 12C9 14.5 15 14.5 18.2 12"/></svg>
                 </div>
-                <div style="width: 28px; height: 28px; border-radius: 14px; background: #10B981; border: 1.5px solid rgba(255,255,255,0.30); display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 16px; font-weight: 800; box-shadow: 0 3px 7px rgba(16, 185, 129, 0.35); cursor: pointer;">+</div>
+                <div style="width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); border: 1.2px solid rgba(255, 255, 255, 0.35); display: flex; align-items: center; justify-content: center; color: #FFFFFF; cursor: pointer;">
+                  <svg style="width: 16px; height: 16px; stroke: #FFFFFF;" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
               </div>
 
               <!-- Metric Content (Lifted Up with Bold Emphasis) -->
               <div style="margin-top: 10px; z-index: 2;">
-                <div style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.70); letter-spacing: 0.8px; text-transform: uppercase;">WEIGHT TREND</div>
+                <div style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.85); letter-spacing: 0.8px; text-transform: uppercase;">WEIGHT TREND</div>
                 <div class="stat-num-val" style="margin-top: 1px;">
-                  <span id="weightDisplay" style="font-size: 25px; font-weight: 900; color: #FFFFFF; line-height: 28px;">68.2</span> <span class="stat-num-unit" style="font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.80);">kg</span>
+                  <span id="weightDisplay" style="font-size: 25px; font-weight: 900; color: #FFFFFF; line-height: 28px;">68.2</span> <span class="stat-num-unit" style="font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.90);">kg</span>
                 </div>
-                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.60); font-weight: 700; margin-top: 1.5px;">↓ 0.2 kg vs last wk</div>
+                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.85); font-weight: 700; margin-top: 1.5px;">↓ 0.2 kg vs last wk</div>
               </div>
             </div>
 
-            <!-- Hydration Bento Card (Soft Nordic Slate Azure) -->
-            <div class="stat-tile" style="background: linear-gradient(145deg, #1B3547, #122736, #0C1B26); border: 1.2px solid rgba(255,255,255,0.12); box-shadow: 0 7px 15px rgba(14, 46, 27, 0.14); border-radius: 24px; padding: 13px 14px; min-height: 146px; display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden;">
-              <!-- Ambient Ghost Watermark -->
-              <svg style="position: absolute; right: -4px; bottom: -6px; width: 74px; height: 74px; opacity: 0.16; stroke: #38BDF8; pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2.8C12 2.8 5 11.2 5 15.6C5 19.5 8.1 22 12 22C15.9 22 19 19.5 19 15.6C19 11.2 12 2.8 12 2.8Z"/></svg>
+            <!-- Hydration Bento Card (2-Side Azure Diagonal Gradient) -->
+            <div class="stat-tile" style="background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 50%, #0369A1 100%); border: 1.5px solid rgba(255,255,255,0.25); box-shadow: 0 7px 16px rgba(14, 46, 27, 0.16); border-radius: 24px; padding: 13px 14px; min-height: 146px; display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden;">
+              <!-- Ambient Ghost Watermark (Lifted 66px) -->
+              <svg style="position: absolute; right: 2px; bottom: 3px; width: 66px; height: 66px; opacity: 0.28; stroke: #FFFFFF; pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5C12 2.5 5 11 5 15.8C5 19.8 8.1 22 12 22C15.9 22 19 19.8 19 15.8C19 11 12 2.5 12 2.5Z" fill="#FFFFFF" fill-opacity="0.15"/><path d="M8.5 15C9 18 10.5 19 12 19" stroke-width="1.6"/></svg>
 
-              <!-- Top Row: Frosted Badge + Floating (+) Action -->
+              <!-- Top Row: Frosted Badge + Circular Frosted (+) Action -->
               <div class="stat-tile-top" style="display: flex; justify-content: space-between; align-items: center; z-index: 1;">
-                <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;">
-                  <svg style="width: 18px; height: 18px; stroke: #7DD3FC;" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 255, 255, 0.20); border: 1px solid rgba(255,255,255,0.30); display: flex; align-items: center; justify-content: center;">
+                  <svg style="width: 18px; height: 18px; stroke: #FFFFFF;" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5C12 2.5 5 11 5 15.8C5 19.8 8.1 22 12 22C15.9 22 19 19.8 19 15.8C19 11 12 2.5 12 2.5Z" fill="#FFFFFF" fill-opacity="0.15"/></svg>
                 </div>
-                <div onclick="logWaterQuick()" style="width: 28px; height: 28px; border-radius: 14px; background: #0284C7; border: 1.5px solid rgba(255,255,255,0.30); display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 16px; font-weight: 800; box-shadow: 0 3px 7px rgba(2, 132, 199, 0.35); cursor: pointer;" title="Quick +250ml Water Log">+</div>
+                <div onclick="logWaterQuick()" style="width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); border: 1.2px solid rgba(255, 255, 255, 0.35); display: flex; align-items: center; justify-content: center; color: #FFFFFF; cursor: pointer;" title="Quick +250ml Water Log">
+                  <svg style="width: 16px; height: 16px; stroke: #FFFFFF;" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
               </div>
 
               <!-- Metric Content (Lifted Up with Bold Emphasis) -->
               <div style="margin-top: 10px; z-index: 2;">
-                <div style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.70); letter-spacing: 0.8px; text-transform: uppercase;">DAILY HYDRATION</div>
+                <div style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.85); letter-spacing: 0.8px; text-transform: uppercase;">DAILY HYDRATION</div>
                 <div class="stat-num-val" style="margin-top: 1px;">
-                  <span id="waterValDisplay" style="font-size: 25px; font-weight: 900; color: #FFFFFF; line-height: 28px;">1,750</span> <span class="stat-num-unit" style="font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.80);">ml</span>
+                  <span id="waterValDisplay" style="font-size: 25px; font-weight: 900; color: #FFFFFF; line-height: 28px;">1,750</span> <span class="stat-num-unit" style="font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.90);">ml</span>
                 </div>
-                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.60); font-weight: 700; margin-top: 1.5px;">of 2,500ml target (70%)</div>
+                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.85); font-weight: 700; margin-top: 1.5px;">of 2,500ml target (70%)</div>
               </div>
             </div>
           </div>
@@ -856,50 +994,54 @@
           <!-- Section: Daily Nutrients Consumed (Clean without redundant button) -->
           <div class="section-label">Daily Nutrients Consumed</div>
           <div class="stats-2col">
-            <!-- Sugar Bento Card (Soft Dark Amber Walnut Slate) -->
-            <div class="stat-tile" onclick="openFilteredNutrientModal('SUGAR')" title="View Sugar Consumed Breakdown" style="background: linear-gradient(145deg, #3B2C20, #2B1E14, #1E140C); border: 1.2px solid rgba(255,255,255,0.12); box-shadow: 0 7px 15px rgba(14, 46, 27, 0.14); border-radius: 24px; padding: 13px 14px; min-height: 146px; display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden; cursor: pointer;">
-              <!-- Ambient Ghost Watermark -->
-              <svg style="position: absolute; right: -4px; bottom: -6px; width: 74px; height: 74px; opacity: 0.16; stroke: #FBBF24; pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2.5L19.5 8L15.5 21H8.5L4.5 8L12 2.5Z"/></svg>
+            <!-- Sugar Bento Card (2-Side Sunset Amber Diagonal Gradient) -->
+            <div class="stat-tile" onclick="openFilteredNutrientModal('SUGAR')" title="View Sugar Consumed Breakdown" style="background: linear-gradient(135deg, #F59E0B 0%, #EA580C 50%, #C2410C 100%); border: 1.5px solid rgba(255,255,255,0.25); box-shadow: 0 7px 16px rgba(14, 46, 27, 0.16); border-radius: 24px; padding: 13px 14px; min-height: 146px; display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden; cursor: pointer;">
+              <!-- Ambient Ghost Watermark (Lifted 66px) -->
+              <svg style="position: absolute; right: 2px; bottom: 3px; width: 66px; height: 66px; opacity: 0.28; stroke: #FFFFFF; pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L20 7.5L12 12L4 7.5L12 3Z" fill="#FFFFFF" fill-opacity="0.15"/><path d="M4 7.5V16.5L12 21V12" fill="#FFFFFF" fill-opacity="0.08"/><path d="M20 7.5V16.5L12 21" fill="#FFFFFF" fill-opacity="0.2"/></svg>
 
               <!-- Top Row -->
               <div class="stat-tile-top" style="display: flex; justify-content: space-between; align-items: center; z-index: 1;">
-                <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 14px;">🍬</div>
-                <span class="gauge-status-tag tag-safe" id="sugarStatusBadge" style="display: flex; align-items: center; gap: 4px; padding: 3px 7.5px; border-radius: 7px; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(16, 185, 129, 0.35); color: #6EE7B7; font-size: 9.5px; font-weight: 800;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #10B981;"></span>SAFE</span>
+                <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 255, 255, 0.20); border: 1px solid rgba(255,255,255,0.30); display: flex; align-items: center; justify-content: center;">
+                  <svg style="width: 18px; height: 18px; stroke: #FFFFFF;" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L20 7.5L12 12L4 7.5L12 3Z"/><path d="M4 7.5V16.5L12 21V12"/><path d="M20 7.5V16.5L12 21"/></svg>
+                </div>
+                <span class="gauge-status-tag tag-safe" id="sugarStatusBadge" style="display: flex; align-items: center; gap: 4px; padding: 3px 7.5px; border-radius: 7px; background: rgba(255, 255, 255, 0.20); border: 1px solid rgba(255, 255, 255, 0.35); color: #FFFFFF; font-size: 9.5px; font-weight: 800;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #FFFFFF;"></span>SAFE</span>
               </div>
 
               <!-- Metric Content (Lifted Up with Bold Emphasis) -->
               <div style="margin-top: 10px; z-index: 2;">
-                <div style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.70); letter-spacing: 0.8px; text-transform: uppercase;">SUGAR CONSUMED</div>
+                <div style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.85); letter-spacing: 0.8px; text-transform: uppercase;">SUGAR CONSUMED</div>
                 <div class="stat-num-val" style="margin-top: 1px;">
-                  <span id="sugarAmount" style="font-size: 25px; font-weight: 900; color: #FFFFFF; line-height: 28px;">14</span><span class="stat-num-unit" style="font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.80);"> g</span>
+                  <span id="sugarAmount" style="font-size: 25px; font-weight: 900; color: #FFFFFF; line-height: 28px;">14</span><span class="stat-num-unit" style="font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.90);"> g</span>
                 </div>
-                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.60); font-weight: 700; margin-top: 1.5px;">of 25g daily target</div>
-                <div class="track-bg" style="height: 5px; margin-top: 6px; background: rgba(255, 255, 255, 0.14); border-radius: 2.5px; width: 78%; overflow: hidden;">
-                  <div class="track-fill" id="sugarProgressFill" style="width: 56%; background: #10B981; height: 100%; border-radius: 2.5px;"></div>
+                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.85); font-weight: 700; margin-top: 1.5px;">of 25g daily target</div>
+                <div class="track-bg" style="height: 5px; margin-top: 6px; background: rgba(255, 255, 255, 0.25); border-radius: 2.5px; width: 78%; overflow: hidden;">
+                  <div class="track-fill" id="sugarProgressFill" style="width: 56%; background: #FFFFFF; height: 100%; border-radius: 2.5px;"></div>
                 </div>
               </div>
             </div>
 
-            <!-- Sodium Bento Card (Soft Jade Mineral Slate) -->
-            <div class="stat-tile" onclick="openFilteredNutrientModal('SODIUM')" title="View Sodium Consumed Breakdown" style="background: linear-gradient(145deg, #1E3A2F, #152C23, #0E2019); border: 1.2px solid rgba(255,255,255,0.12); box-shadow: 0 7px 15px rgba(14, 46, 27, 0.14); border-radius: 24px; padding: 13px 14px; min-height: 146px; display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden; cursor: pointer;">
-              <!-- Ambient Ghost Watermark -->
-              <svg style="position: absolute; right: -4px; bottom: -6px; width: 74px; height: 74px; opacity: 0.16; stroke: #34D399; pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z"/></svg>
+            <!-- Sodium Bento Card (2-Side Jade Forest Diagonal Gradient) -->
+            <div class="stat-tile" onclick="openFilteredNutrientModal('SODIUM')" title="View Sodium Consumed Breakdown" style="background: linear-gradient(135deg, #10B981 0%, #059669 50%, #065F46 100%); border: 1.5px solid rgba(255,255,255,0.25); box-shadow: 0 7px 16px rgba(14, 46, 27, 0.16); border-radius: 24px; padding: 13px 14px; min-height: 146px; display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden; cursor: pointer;">
+              <!-- Ambient Ghost Watermark (Lifted 66px) -->
+              <svg style="position: absolute; right: 2px; bottom: 3px; width: 66px; height: 66px; opacity: 0.28; stroke: #FFFFFF; pointer-events: none;" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H15V6H9V3Z" fill="#FFFFFF" fill-opacity="0.2"/><path d="M9 6L6.5 18.5C6.2 20 7.5 21 9 21H15C16.5 21 17.8 20 17.5 18.5L15 6" fill="#FFFFFF" fill-opacity="0.1"/><path d="M8 14C10 13.2 14 13.2 16 14" stroke-opacity="0.6"/></svg>
 
               <!-- Top Row -->
               <div class="stat-tile-top" style="display: flex; justify-content: space-between; align-items: center; z-index: 1;">
-                <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 14px;">🧂</div>
-                <span class="gauge-status-tag tag-safe" id="sodiumStatusBadge" style="display: flex; align-items: center; gap: 4px; padding: 3px 7.5px; border-radius: 7px; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(16, 185, 129, 0.35); color: #6EE7B7; font-size: 9.5px; font-weight: 800;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #10B981;"></span>SAFE</span>
+                <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 255, 255, 0.20); border: 1px solid rgba(255,255,255,0.30); display: flex; align-items: center; justify-content: center;">
+                  <svg style="width: 18px; height: 18px; stroke: #FFFFFF;" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H15V6H9V3Z"/><path d="M9 6L6.5 18.5C6.2 20 7.5 21 9 21H15C16.5 21 17.8 20 17.5 18.5L15 6"/></svg>
+                </div>
+                <span class="gauge-status-tag tag-safe" id="sodiumStatusBadge" style="display: flex; align-items: center; gap: 4px; padding: 3px 7.5px; border-radius: 7px; background: rgba(255, 255, 255, 0.20); border: 1px solid rgba(255, 255, 255, 0.35); color: #FFFFFF; font-size: 9.5px; font-weight: 800;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #FFFFFF;"></span>SAFE</span>
               </div>
 
               <!-- Metric Content (Lifted Up with Bold Emphasis) -->
               <div style="margin-top: 10px; z-index: 2;">
-                <div style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.70); letter-spacing: 0.8px; text-transform: uppercase;">SODIUM CONSUMED</div>
+                <div style="font-size: 10.5px; font-weight: 900; color: rgba(255, 255, 255, 0.85); letter-spacing: 0.8px; text-transform: uppercase;">SODIUM CONSUMED</div>
                 <div class="stat-num-val" style="margin-top: 1px;">
-                  <span id="sodiumAmount" style="font-size: 25px; font-weight: 900; color: #FFFFFF; line-height: 28px;">1,200</span><span class="stat-num-unit" style="font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.80);"> mg</span>
+                  <span id="sodiumAmount" style="font-size: 25px; font-weight: 900; color: #FFFFFF; line-height: 28px;">1,200</span><span class="stat-num-unit" style="font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.90);"> mg</span>
                 </div>
-                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.60); font-weight: 700; margin-top: 1.5px;">of 2,000mg daily cap</div>
-                <div class="track-bg" style="height: 5px; margin-top: 6px; background: rgba(255, 255, 255, 0.14); border-radius: 2.5px; width: 78%; overflow: hidden;">
-                  <div class="track-fill" id="sodiumProgressFill" style="width: 60%; background: #10B981; height: 100%; border-radius: 2.5px;"></div>
+                <div style="font-size: 11px; color: rgba(255, 255, 255, 0.85); font-weight: 700; margin-top: 1.5px;">of 2,000mg daily cap</div>
+                <div class="track-bg" style="height: 5px; margin-top: 6px; background: rgba(255, 255, 255, 0.25); border-radius: 2.5px; width: 78%; overflow: hidden;">
+                  <div class="track-fill" id="sodiumProgressFill" style="width: 60%; background: #FFFFFF; height: 100%; border-radius: 2.5px;"></div>
                 </div>
               </div>
             </div>
@@ -948,6 +1090,119 @@
                   <span>🧂 920mg Sodium</span>
                   <span class="high-sodium-tag">⚠️ High Sodium</span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🌤️ 3D CLAYMORPHIC SCULPTED WAVE GLASSMORPHISM CARD (SQUI Emerald Forest Theme) -->
+          <div style="margin-top: 18px; margin-bottom: 12px; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 0 2px;">
+              <span class="section-label" style="margin: 0;">Mindful Climate</span>
+              <span style="font-size: 11.5px; font-weight: 600; color: #4A6354;">Weather & Hydration Balance</span>
+            </div>
+
+            <!-- Wave Card Wrapper with Drop Shadow -->
+            <div style="position: relative; min-height: 154px; border-radius: 34px; overflow: visible;">
+              <!-- 🌊 Sculpted Organic Wave SVG Background with Glassmorphic Gradient & R34 Rounder Corners (Drop Shadow on SVG directly) -->
+              <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; filter: drop-shadow(0 14px 24px rgba(5, 46, 22, 0.25));" viewBox="0 0 350 235" preserveAspectRatio="none">
+                <defs>
+                  <!-- SQUI Signature Bright Nature Emerald Gradient (Matching Bento Stats Cards) -->
+                  <linearGradient id="prevSquiWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#10B981"/>
+                    <stop offset="50%" stop-color="#059669"/>
+                    <stop offset="100%" stop-color="#047857"/>
+                  </linearGradient>
+
+                  <!-- Ambient Emerald Glass Glow -->
+                  <linearGradient id="prevSquiGlassGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#34D399" stop-opacity="0.05"/>
+                  </linearGradient>
+
+                  <!-- Frosted Wave Rim Highlight -->
+                  <linearGradient id="prevWaveRimHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+                    <stop offset="60%" stop-color="#6EE7B7" stop-opacity="0.75"/>
+                    <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.45"/>
+                  </linearGradient>
+
+                  <!-- Luminous 3D Sky Background Radial Gradient -->
+                  <radialGradient id="prevSkyBgGrad" cx="80%" cy="25%" r="75%" fx="80%" fy="25%">
+                    <stop offset="0%" stop-color="#FFFBEB" stop-opacity="0.9"/>
+                    <stop offset="15%" stop-color="#BAE6FD" stop-opacity="1"/>
+                    <stop offset="55%" stop-color="#38BDF8"/>
+                    <stop offset="100%" stop-color="#0369A1"/>
+                  </radialGradient>
+                </defs>
+
+                <!-- 3D Sky Backdrop filling the negative space -->
+                <rect x="0" y="0" width="350" height="235" rx="34" fill="url(#prevSkyBgGrad)"/>
+
+                <!-- Volumetric Cloud Shadow (Volumetric Concentric Glows) -->
+                <ellipse cx="284" cy="138" rx="64" ry="18" fill="rgba(3, 37, 56, 0.07)" />
+                <ellipse cx="284" cy="138" rx="48" ry="14" fill="rgba(3, 37, 56, 0.14)" />
+                <ellipse cx="284" cy="138" rx="34" ry="10" fill="rgba(3, 37, 56, 0.22)" />
+
+                <!-- 🌊 Sculpted Wave Card Body: Rounder Corners (R34) & Full Height 235 -->
+                <path d="M 34 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200 L 350 201 C 350 220 334 235 316 235 L 34 235 C 15 235 0 220 0 201 L 0 34 C 0 15 15 0 34 0 Z" fill="url(#prevSquiWaveGrad)"/>
+                <path d="M 34 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200 L 350 201 C 350 220 334 235 316 235 L 34 235 C 15 235 0 220 0 201 L 0 34 C 0 15 15 0 34 0 Z" fill="url(#prevSquiGlassGlow)"/>
+                <path d="M 34 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200 L 350 201 C 350 220 334 235 316 235 L 34 235 C 15 235 0 220 0 201 L 0 34 C 0 15 15 0 34 0 Z" fill="none" stroke="url(#prevWaveRimHighlight)" stroke-width="1.5"/>
+
+                <!-- Frosted Outer Card Border to enclose the full rect -->
+                <rect x="0" y="0" width="350" height="235" rx="34" fill="none" stroke="rgba(255, 255, 255, 0.22)" stroke-width="1.5"/>
+              </svg>
+
+              <!-- Card Content Overlay -->
+              <div style="position: relative; z-index: 3; padding: 16px 16px 16px 16px; min-height: 154px; display: flex; flex-direction: column; justify-content: space-between;">
+
+                <!-- Main Row: Left Temp + Right 3D Mascot Illustration in Wave Dip -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <!-- Left: Huge Temp & Location Info -->
+                  <div style="z-index: 2; padding-top: 2px;">
+                    <div style="font-size: 50px; font-weight: 900; color: #FFFFFF; letter-spacing: -2px; line-height: 54px;">19°</div>
+                    <div style="font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.75); margin-top: 1px;">H:24°  L:18°</div>
+                    <div style="font-size: 13.5px; font-weight: 800; color: #FFFFFF; margin-top: 3px;">Montreal, Canada</div>
+
+                    <!-- Creative Weather Status Badge -->
+                    <div style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.24); border-radius: 14px; padding: 4.5px 10px; margin-top: 8px; align-self: flex-start; width: max-content;">
+                      <span style="width: 6px; height: 6px; border-radius: 3px; background: #38dbff; margin-right: 6px; display: inline-block;"></span>
+                      <span style="font-size: 10.5px; font-weight: 900; color: #FFFFFF; letter-spacing: 0.5px; text-transform: uppercase;">Mid Rain</span>
+                    </div>
+                  </div>
+
+                  <!-- Right: 3D Weather Illustration (Protruding from Wave Dip) -->
+                  <div style="display: flex; flex-direction: column; align-items: center; width: 132px; margin-top: -20px; z-index: 5;">
+                    <img src="../assets/vecteezy_3d-icon-of-a-sun-behind-a-cloud-partly-cloudy-weather_66228107.png" style="width: 105px; height: 105px; object-fit: contain;" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Glassmorphic Hourly Forecast Pill Strip -->
+            <div style="margin-top: 10px; display: flex; gap: 7px;">
+              <div style="flex: 1; background: rgba(255, 255, 255, 0.85); border: 1.2px solid rgba(27, 67, 44, 0.12); border-radius: 18px; padding: 9px 4px; text-align: center; cursor: pointer;">
+                <div style="font-size: 10px; font-weight: 700; color: #4A6354; margin-bottom: 3px;">3 AM</div>
+                <div style="font-size: 13px; margin: 2px 0;">🌧️</div>
+                <div style="font-size: 8.5px; font-weight: 900; color: #059669; margin-top: 1px;">40%</div>
+                <div style="font-size: 12.5px; font-weight: 900; color: #0F2418; margin-top: 2px;">18°</div>
+              </div>
+              <div style="flex: 1; background: rgba(255, 255, 255, 0.85); border: 1.2px solid rgba(27, 67, 44, 0.12); border-radius: 18px; padding: 9px 4px; text-align: center; cursor: pointer;">
+                <div style="font-size: 10px; font-weight: 700; color: #4A6354; margin-bottom: 3px;">4 AM</div>
+                <div style="font-size: 13px; margin: 2px 0;">🌧️</div>
+                <div style="font-size: 8.5px; font-weight: 900; color: #059669; margin-top: 1px;">50%</div>
+                <div style="font-size: 12.5px; font-weight: 900; color: #0F2418; margin-top: 2px;">19°</div>
+              </div>
+              <div style="flex: 1; background: rgba(255, 255, 255, 0.85); border: 1.2px solid rgba(27, 67, 44, 0.12); border-radius: 18px; padding: 9px 4px; text-align: center; cursor: pointer;">
+                <div style="font-size: 10px; font-weight: 700; color: #4A6354; margin-bottom: 3px;">5 AM</div>
+                <div style="font-size: 13px; margin: 2px 0;">🌙</div>
+                <div style="font-size: 8.5px; font-weight: 900; color: transparent; margin-top: 1px;">-</div>
+                <div style="font-size: 12.5px; font-weight: 900; color: #0F2418; margin-top: 2px;">20°</div>
+              </div>
+              <div style="flex: 1; background: rgba(255, 255, 255, 0.85); border: 1.2px solid rgba(27, 67, 44, 0.12); border-radius: 18px; padding: 9px 4px; text-align: center; cursor: pointer;">
+                <div style="font-size: 10px; font-weight: 700; color: #4A6354; margin-bottom: 3px;">6 AM</div>
+                <div style="font-size: 13px; margin: 2px 0;">☀️</div>
+                <div style="font-size: 8.5px; font-weight: 900; color: transparent; margin-top: 1px;">-</div>
+                <div style="font-size: 12.5px; font-weight: 900; color: #0F2418; margin-top: 2px;">22°</div>
               </div>
             </div>
           </div>

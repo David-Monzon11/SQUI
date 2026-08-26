@@ -6,6 +6,14 @@ export const dashboardStyles = {
     flex: 1,
     backgroundColor: COLORS.background, // Clean Pearl Sage #F7FAF8
   },
+  scrollArea: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 40,
+  },
   container: {
     paddingHorizontal: 16,
     paddingTop: 6,
@@ -100,15 +108,15 @@ export const dashboardStyles = {
   },
 
   // =========================================================================
-  // Watermarked Bento Metric Widgets (Soft Slate & Botanical Forest)
+  // Watermarked Bento Metric Widgets (2-Side Diagonal Gradient + Frosted Glass)
   // =========================================================================
   bentoTouchWrap: {
     flex: 1,
     borderRadius: 24,
     shadowColor: '#0E2E1B',
     shadowOffset: { width: 0, height: 7 },
-    shadowOpacity: 0.14,
-    shadowRadius: 15,
+    shadowOpacity: 0.16,
+    shadowRadius: 16,
     elevation: 5,
   },
   bentoCard: {
@@ -121,14 +129,14 @@ export const dashboardStyles = {
     justifyContent: 'flex-start' as const,
     overflow: 'hidden' as const,
     position: 'relative' as const,
-    borderWidth: 1.2,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
   },
   bentoWatermark: {
     position: 'absolute' as const,
-    right: -4,
-    bottom: -6,
-    opacity: 0.16,
+    right: 2,
+    bottom: 3,
+    opacity: 0.28,
   },
   bentoTopRow: {
     flexDirection: 'row' as const,
@@ -139,44 +147,27 @@ export const dashboardStyles = {
     width: 32,
     height: 32,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.10)',
+    backgroundColor: 'rgba(255, 255, 255, 0.20)',
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.30)',
   }),
-  bentoFloatingPlus: (theme: 'emerald' | 'cyan' | 'amber') => {
-    let bg = '#10B981';
-    let shadow = '#10B981';
-    if (theme === 'cyan') {
-      bg = '#0284C7';
-      shadow = '#0284C7';
-    } else if (theme === 'amber') {
-      bg = '#F59E0B';
-      shadow = '#F59E0B';
-    }
-    return {
-      width: 28,
-      height: 28,
-      borderRadius: 14,
-      backgroundColor: bg,
-      alignItems: 'center' as const,
-      justifyContent: 'center' as const,
-      borderWidth: 1.5,
-      borderColor: 'rgba(255, 255, 255, 0.30)',
-      shadowColor: shadow,
-      shadowOffset: { width: 0, height: 3 },
-      shadowOpacity: 0.35,
-      shadowRadius: 7,
-      elevation: 4,
-    };
+  bentoFloatingPlus: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    borderWidth: 1.2,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
   },
   bentoPlusText: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 16,
+    fontSize: 18,
     color: '#FFFFFF',
-    lineHeight: 18,
-    marginTop: -1,
+    lineHeight: 20,
   },
   bentoContent: {
     marginTop: 10,
@@ -185,7 +176,7 @@ export const dashboardStyles = {
   bentoLabel: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 10.5,
-    color: 'rgba(255, 255, 255, 0.70)',
+    color: 'rgba(255, 255, 255, 0.85)',
     letterSpacing: 0.8,
     textTransform: 'uppercase' as const,
     marginBottom: 1,
@@ -204,69 +195,55 @@ export const dashboardStyles = {
   bentoUnit: {
     fontFamily: FONTS.roundedBold,
     fontSize: 13,
-    color: 'rgba(255, 255, 255, 0.80)',
+    color: 'rgba(255, 255, 255, 0.90)',
   },
   bentoSubText: {
     fontFamily: FONTS.roundedBold,
     fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.60)',
+    color: 'rgba(255, 255, 255, 0.85)',
     marginTop: 1.5,
   },
   bentoTrackBg: {
     height: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 2.5,
     overflow: 'hidden' as const,
     marginTop: 6,
     width: '78%' as const,
   },
-  bentoTrackFill: (pct: number, color: string) => ({
+  bentoTrackFill: (pct: number, _color: string) => ({
     width: `${pct}%` as const,
-    backgroundColor: color,
+    backgroundColor: '#FFFFFF',
     height: '100%' as const,
     borderRadius: 2.5,
   }),
 
-  glassStatusBadge: (status: string) => {
-    let border = 'rgba(16, 185, 129, 0.35)';
-    if (status === 'CAUTION') {
-      border = 'rgba(245, 158, 11, 0.35)';
-    } else if (status === 'EXCEEDED') {
-      border = 'rgba(239, 68, 68, 0.35)';
-    }
-    return {
-      flexDirection: 'row' as const,
-      alignItems: 'center' as const,
-      backgroundColor: 'rgba(0, 0, 0, 0.35)',
-      borderWidth: 1,
-      borderColor: border,
-      paddingHorizontal: 7.5,
-      paddingVertical: 3,
-      borderRadius: 7,
-    };
-  },
-  statusGlowDot: (status: string) => {
-    let dotColor = '#10B981';
-    if (status === 'CAUTION') dotColor = '#F59E0B';
-    if (status === 'EXCEEDED') dotColor = '#EF4444';
-    return {
-      width: 5,
-      height: 5,
-      borderRadius: 2.5,
-      backgroundColor: dotColor,
-      marginRight: 4,
-    };
-  },
-  statusBadgeText: (status: string) => {
-    let textColor = '#6EE7B7';
-    if (status === 'CAUTION') textColor = '#FDE68A';
-    if (status === 'EXCEEDED') textColor = '#FCA5A5';
-    return {
-      fontFamily: FONTS.roundedBlack,
-      fontSize: 9.5,
-      color: textColor,
-    };
-  },
+  glassStatusBadge: (_status: string) => ({
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    backgroundColor: 'rgba(255, 255, 255, 0.20)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
+    paddingHorizontal: 7.5,
+    paddingVertical: 3,
+    borderRadius: 7,
+  }),
+  statusGlowDot: (_status: string) => ({
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#FFFFFF',
+    marginRight: 4,
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 3,
+  }),
+  statusBadgeText: (_status: string) => ({
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 9.5,
+    color: '#FFFFFF',
+  }),
 
   // Visual Food Diary Stream & Cards (Tightened Spacing)
   diarySectionHeader: {
@@ -486,4 +463,137 @@ export const dashboardStyles = {
     fontSize: 12,
     color: '#849C8D',
   },
+
+  // =========================================================================
+  // 🌤️ Mindful Weather & Climate Bento Card
+  // =========================================================================
+  weatherCardContainer: {
+    marginTop: 18,
+    marginBottom: 8,
+  },
+  weatherBentoCard: {
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 15,
+    position: 'relative' as const,
+    overflow: 'hidden' as const,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.22)',
+    shadowColor: '#0F2E1B',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.16,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  weatherWatermark: {
+    position: 'absolute' as const,
+    right: 6,
+    top: 8,
+    opacity: 0.22,
+    transform: [{ rotate: '8deg' }],
+  },
+  weatherTopRow: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
+    marginBottom: 10,
+  },
+  weatherTagBadge: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    gap: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    paddingHorizontal: 9,
+    paddingVertical: 3.5,
+    borderRadius: 9,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.28)',
+  },
+  weatherTagText: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 10.5,
+    color: '#FFFFFF',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase' as const,
+  },
+  weatherLocationPill: {
+    backgroundColor: 'rgba(0, 0, 0, 0.22)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  weatherLocationText: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.90)',
+  },
+  weatherMainRow: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
+    marginBottom: 10,
+  },
+  weatherTempBlock: {
+    flexDirection: 'row' as const,
+    alignItems: 'baseline' as const,
+  },
+  weatherTempDegrees: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 34,
+    color: '#FFFFFF',
+    letterSpacing: -1,
+    lineHeight: 38,
+  },
+  weatherTempSub: {
+    marginLeft: 6,
+  },
+  weatherConditionText: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 12.5,
+    color: '#FFFFFF',
+  },
+  weatherHighLowText: {
+    fontFamily: FONTS.medium,
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.70)',
+  },
+  weatherStatsCol: {
+    flexDirection: 'row' as const,
+    gap: 6,
+  },
+  weatherStatChip: {
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.22)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 9,
+    alignItems: 'center' as const,
+  },
+  weatherStatLabel: {
+    fontFamily: FONTS.roundedSemiBold,
+    fontSize: 9.5,
+    color: 'rgba(255, 255, 255, 0.75)',
+    marginBottom: 1,
+  },
+  weatherStatValue: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 10.5,
+    color: '#FFFFFF',
+  },
+  weatherInsightRow: {
+    backgroundColor: 'rgba(0, 0, 0, 0.20)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 7.5,
+  },
+  weatherInsightText: {
+    fontFamily: FONTS.medium,
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.92)',
+    lineHeight: 15.5,
+  },
 };
+

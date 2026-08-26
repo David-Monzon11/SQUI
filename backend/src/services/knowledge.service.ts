@@ -3,12 +3,12 @@ import { prisma } from "../config/db.js";
 const DEFAULT_ARTICLES = [
   {
     id: "art-1",
-    title: "Understanding Sugar Intake: Natural vs. Added Sugars",
+    title: "Understanding Dietary Sugar Consumed: Natural vs. Added Sugars",
     category: "SUGAR",
     readTimeMin: 3,
     summary: "Why the WHO recommends keeping added sugars under 25g daily and how to spot sneaky hidden sugars on food labels.",
     content:
-      "Added sugars provide calories without essential micronutrients. While whole fruits contain fructose packaged with beneficial fiber and antioxidants, processed beverages and sauces often contain high-fructose corn syrup or sucrose that spike blood glucose. SQUI helps you track total daily sugar intake with gentle reminders when approaching the 25g threshold.",
+      "Added sugars provide calories without essential micronutrients. While whole fruits contain fructose packaged with beneficial fiber and antioxidants, processed beverages and sauces often contain high-fructose corn syrup or sucrose that spike blood glucose. SQUI helps you track total daily sugar consumed from food with gentle reminders when approaching the 25g threshold.",
   },
   {
     id: "art-2",

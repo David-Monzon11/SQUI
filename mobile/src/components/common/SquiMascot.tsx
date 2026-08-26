@@ -13,124 +13,250 @@ import Svg, {
 interface SquiMascotProps {
   size?: number;
   animated?: boolean;
+  showLeaves?: boolean;
 }
 
 export const SquiMascot: React.FC<SquiMascotProps> = ({
   size = 115,
   animated = true,
+  showLeaves = true,
 }) => {
-  // Jump Physics Animation
+// Squirrel Jump Physics
   const jumpY = useRef(new Animated.Value(0)).current;
   const squashScaleY = useRef(new Animated.Value(1)).current;
   const squashScaleX = useRef(new Animated.Value(1)).current;
   const tiltRotate = useRef(new Animated.Value(0)).current;
+  const shadowScale = useRef(new Animated.Value(1)).current;
+  const shadowOpacity = useRef(new Animated.Value(0.35)).current;
+
+  // Aesthetic Ghost Leaves Physics (5 Layered Ghost Leaves)
+  const leafLeft1Y = useRef(new Animated.Value(0)).current;
+  const leafLeft1Rot = useRef(new Animated.Value(0)).current;
+
+  const leafRight1Y = useRef(new Animated.Value(0)).current;
+  const leafRight1Rot = useRef(new Animated.Value(0)).current;
+
+  const leafCenterY = useRef(new Animated.Value(0)).current;
+  const leafCenterRot = useRef(new Animated.Value(0)).current;
+
+  const leafLeftUpperY = useRef(new Animated.Value(0)).current;
+  const leafLeftUpperRot = useRef(new Animated.Value(0)).current;
+
+  const leafRightUpperY = useRef(new Animated.Value(0)).current;
+  const leafRightUpperRot = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (!animated) return;
 
     const jumpCycle = Animated.loop(
       Animated.sequence([
-        // Phase 1: Crouch / Anticipation (250ms)
+        // =========================================================================
+        // Phase 1: Snappy Crouch Anticipation (200ms) - Leaves 100% STILL
+        // =========================================================================
         Animated.parallel([
           Animated.timing(jumpY, {
-            toValue: 5,
-            duration: 250,
+            toValue: 4,
+            duration: 200,
             easing: Easing.out(Easing.quad),
             useNativeDriver: true,
           }),
           Animated.timing(squashScaleY, {
             toValue: 0.88,
-            duration: 250,
+            duration: 200,
             useNativeDriver: true,
           }),
           Animated.timing(squashScaleX, {
             toValue: 1.12,
-            duration: 250,
-            useNativeDriver: true,
-          }),
-          Animated.timing(tiltRotate, {
-            toValue: -3,
-            duration: 250,
-            useNativeDriver: true,
-          }),
-        ]),
-
-        // Phase 2: Joyful Leap Upwards (350ms)
-        Animated.parallel([
-          Animated.timing(jumpY, {
-            toValue: -24,
-            duration: 350,
-            easing: Easing.out(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleY, {
-            toValue: 1.18,
-            duration: 350,
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleX, {
-            toValue: 0.88,
-            duration: 350,
-            useNativeDriver: true,
-          }),
-          Animated.timing(tiltRotate, {
-            toValue: 6,
-            duration: 350,
-            useNativeDriver: true,
-          }),
-        ]),
-
-        // Phase 3: Apex Float in Air (300ms)
-        Animated.parallel([
-          Animated.timing(jumpY, {
-            toValue: -28,
-            duration: 300,
-            easing: Easing.inOut(Easing.quad),
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleY, {
-            toValue: 1.0,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleX, {
-            toValue: 1.0,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(tiltRotate, {
-            toValue: 2,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-        ]),
-
-        // Phase 4: Touchdown Impact (280ms)
-        Animated.parallel([
-          Animated.timing(jumpY, {
-            toValue: 3,
-            duration: 280,
-            easing: Easing.in(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleY, {
-            toValue: 0.86,
-            duration: 280,
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleX, {
-            toValue: 1.14,
-            duration: 280,
+            duration: 200,
             useNativeDriver: true,
           }),
           Animated.timing(tiltRotate, {
             toValue: -2,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shadowScale, {
+            toValue: 1.15,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]),
+
+        // =========================================================================
+        // Phase 2: Energetic Snappy Leap Upwards (320ms) - Leaves 100% STILL
+        // =========================================================================
+        Animated.parallel([
+          Animated.timing(jumpY, {
+            toValue: -26,
+            duration: 320,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(squashScaleY, {
+            toValue: 1.16,
+            duration: 320,
+            useNativeDriver: true,
+          }),
+          Animated.timing(squashScaleX, {
+            toValue: 0.88,
+            duration: 320,
+            useNativeDriver: true,
+          }),
+          Animated.timing(tiltRotate, {
+            toValue: 5,
+            duration: 320,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shadowScale, {
+            toValue: 0.60,
+            duration: 320,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shadowOpacity, {
+            toValue: 0.12,
+            duration: 320,
+            useNativeDriver: true,
+          }),
+        ]),
+
+        // =========================================================================
+        // Phase 3: Crisp Apex & Gravity Descent (280ms) - Leaves 100% STILL
+        // =========================================================================
+        Animated.parallel([
+          Animated.timing(jumpY, {
+            toValue: 0,
+            duration: 280,
+            easing: Easing.in(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(squashScaleY, {
+            toValue: 1.0,
+            duration: 280,
+            useNativeDriver: true,
+          }),
+          Animated.timing(squashScaleX, {
+            toValue: 1.0,
+            duration: 280,
+            useNativeDriver: true,
+          }),
+          Animated.timing(tiltRotate, {
+            toValue: 0,
+            duration: 280,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shadowScale, {
+            toValue: 0.95,
+            duration: 280,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shadowOpacity, {
+            toValue: 0.28,
             duration: 280,
             useNativeDriver: true,
           }),
         ]),
 
-        // Phase 5: Spring Rebound & Settle (400ms)
+        // =========================================================================
+        // Phase 4: Touchdown Impact -> FEET HIT GROUND & LEAVES BURST UP! (220ms)
+        // =========================================================================
+        Animated.parallel([
+          Animated.timing(jumpY, {
+            toValue: 3,
+            duration: 220,
+            easing: Easing.in(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(squashScaleY, {
+            toValue: 0.85,
+            duration: 220,
+            useNativeDriver: true,
+          }),
+          Animated.timing(squashScaleX, {
+            toValue: 1.15,
+            duration: 220,
+            useNativeDriver: true,
+          }),
+          Animated.timing(tiltRotate, {
+            toValue: -2,
+            duration: 220,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shadowScale, {
+            toValue: 1.1,
+            duration: 220,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shadowOpacity, {
+            toValue: 0.35,
+            duration: 220,
+            useNativeDriver: true,
+          }),
+
+          // 🍂 Impact shockwave kicks up horizontal leaf bed!
+          Animated.timing(leafLeft1Y, {
+            toValue: -18,
+            duration: 220,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(leafLeft1Rot, {
+            toValue: -24,
+            duration: 220,
+            useNativeDriver: true,
+          }),
+
+          Animated.timing(leafRight1Y, {
+            toValue: -20,
+            duration: 220,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(leafRight1Rot, {
+            toValue: 28,
+            duration: 220,
+            useNativeDriver: true,
+          }),
+
+          Animated.timing(leafCenterY, {
+            toValue: -12,
+            duration: 200,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(leafCenterRot, {
+            toValue: 10,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+
+          Animated.timing(leafLeftUpperY, {
+            toValue: -26,
+            duration: 230,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(leafLeftUpperRot, {
+            toValue: -36,
+            duration: 230,
+            useNativeDriver: true,
+          }),
+
+          Animated.timing(leafRightUpperY, {
+            toValue: -24,
+            duration: 220,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(leafRightUpperRot, {
+            toValue: 34,
+            duration: 220,
+            useNativeDriver: true,
+          }),
+        ]),
+
+        // =========================================================================
+        // Phase 5: Leaves Settle Back Horizontally on Ground (400ms)
+        // =========================================================================
         Animated.parallel([
           Animated.spring(jumpY, {
             toValue: 0,
@@ -156,9 +282,78 @@ export const SquiMascot: React.FC<SquiMascotProps> = ({
             tension: 40,
             useNativeDriver: true,
           }),
+
+          // 🍂 Leaves settle smoothly back into horizontal bed
+          Animated.spring(leafLeft1Y, {
+            toValue: 0,
+            friction: 3.5,
+            tension: 28,
+            useNativeDriver: true,
+          }),
+          Animated.spring(leafLeft1Rot, {
+            toValue: 0,
+            friction: 3.5,
+            tension: 28,
+            useNativeDriver: true,
+          }),
+
+          Animated.spring(leafRight1Y, {
+            toValue: 0,
+            friction: 3.2,
+            tension: 26,
+            useNativeDriver: true,
+          }),
+          Animated.spring(leafRight1Rot, {
+            toValue: 0,
+            friction: 3.2,
+            tension: 26,
+            useNativeDriver: true,
+          }),
+
+          Animated.spring(leafCenterY, {
+            toValue: 0,
+            friction: 4,
+            tension: 30,
+            useNativeDriver: true,
+          }),
+          Animated.spring(leafCenterRot, {
+            toValue: 0,
+            friction: 4,
+            tension: 30,
+            useNativeDriver: true,
+          }),
+
+          Animated.spring(leafLeftUpperY, {
+            toValue: 0,
+            friction: 3.8,
+            tension: 26,
+            useNativeDriver: true,
+          }),
+          Animated.spring(leafLeftUpperRot, {
+            toValue: 0,
+            friction: 3.8,
+            tension: 26,
+            useNativeDriver: true,
+          }),
+
+          Animated.spring(leafRightUpperY, {
+            toValue: 0,
+            friction: 3.6,
+            tension: 28,
+            useNativeDriver: true,
+          }),
+          Animated.spring(leafRightUpperRot, {
+            toValue: 0,
+            friction: 3.6,
+            tension: 28,
+            useNativeDriver: true,
+          }),
         ]),
 
-        Animated.delay(400),
+        // =========================================================================
+        // Phase 6: Ground Rest (3200ms) - Calm peaceful resting pause between jumps
+        // =========================================================================
+        Animated.delay(3200),
       ])
     );
 
@@ -171,10 +366,121 @@ export const SquiMascot: React.FC<SquiMascotProps> = ({
     outputRange: ['-15deg', '0deg', '15deg'],
   });
 
+  const leafLeft1RotInterp = leafLeft1Rot.interpolate({
+    inputRange: [-45, 0, 45],
+    outputRange: ['-45deg', '0deg', '45deg'],
+  });
+
+  const leafRight1RotInterp = leafRight1Rot.interpolate({
+    inputRange: [-45, 0, 45],
+    outputRange: ['-45deg', '0deg', '45deg'],
+  });
+
+  const leafCenterRotInterp = leafCenterRot.interpolate({
+    inputRange: [-45, 0, 45],
+    outputRange: ['-45deg', '0deg', '45deg'],
+  });
+
+  const leafLeftUpperRotInterp = leafLeftUpperRot.interpolate({
+    inputRange: [-45, 0, 45],
+    outputRange: ['-45deg', '0deg', '45deg'],
+  });
+
+  const leafRightUpperRotInterp = leafRightUpperRot.interpolate({
+    inputRange: [-45, 0, 45],
+    outputRange: ['-45deg', '0deg', '45deg'],
+  });
+
   return (
-    <View style={{ width: size, height: size, justifyContent: 'flex-end', alignItems: 'center' }}>
+    <View style={{ width: size + 20, height: size, justifyContent: 'flex-end', alignItems: 'center', position: 'relative', overflow: 'visible' }}>
+      {/* ========================================================================= */}
+      {/* 🌑 DYNAMIC GROUND FOOTPRINT SHADOW                                        */}
+      {/* ========================================================================= */}
       <Animated.View
         style={{
+          position: 'absolute',
+          bottom: 2,
+          width: 72,
+          height: 10,
+          borderRadius: 5,
+          backgroundColor: '#000000',
+          opacity: shadowOpacity,
+          transform: [{ scaleX: shadowScale }],
+        }}
+      />
+
+      {/* ========================================================================= */}
+      {/* 🍂 LAYER 1: BACKGROUND GHOST LEAVES (Behind SQUI, zIndex 1)               */}
+      {/* ========================================================================= */}
+      {showLeaves && (
+        <View style={{ position: 'absolute', bottom: 4, width: size + 20, height: 44, alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 1 }}>
+          {/* Background Rowan Sprig / Fern Branch (Horizontal Spanning) */}
+          <Svg width={90} height={20} viewBox="0 0 90 20" fill="none" style={{ position: 'absolute', bottom: 8, opacity: 0.5 }}>
+            <Path d="M4 16 Q45 8 86 14" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
+            <Path d="M16 13 C14 8 22 7 23 12" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" strokeWidth="1.2" />
+            <Path d="M34 11 C32 6 40 5 41 10" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" strokeWidth="1.2" />
+            <Path d="M52 10 C50 5 58 5 59 10" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" strokeWidth="1.2" />
+            <Path d="M70 12 C68 7 76 7 77 12" fill="rgba(255,255,255,0.18)" stroke="#FFFFFF" strokeWidth="1.2" />
+          </Svg>
+
+          {/* Upper Left Ginkgo Fan Leaf 🍃 */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              left: 4,
+              bottom: 14,
+              transform: [
+                { translateY: leafLeftUpperY },
+                { rotate: leafLeftUpperRotInterp },
+              ],
+            }}
+          >
+            <Svg width={28} height={20} viewBox="0 0 28 20" fill="none">
+              <Path
+                d="M14 19 C14 14 7 8 2 6 C7 2 21 1 26 6 C21 8 14 14 14 19 Z"
+                fill="rgba(255, 255, 255, 0.20)"
+                stroke="#FFFFFF"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                opacity={0.8}
+              />
+              <Path d="M14 18 Q7 10 5 8 M14 18 Q14 7 14 4 M14 18 Q21 10 23 8" stroke="#FFFFFF" strokeWidth="0.9" strokeLinecap="round" opacity={0.5} />
+            </Svg>
+          </Animated.View>
+
+          {/* Upper Right Ginkgo Fan Leaf 🍂 */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              right: 4,
+              bottom: 12,
+              transform: [
+                { translateY: leafRightUpperY },
+                { rotate: leafRightUpperRotInterp },
+              ],
+            }}
+          >
+            <Svg width={28} height={20} viewBox="0 0 28 20" fill="none">
+              <Path
+                d="M14 19 C14 14 21 8 26 6 C21 2 7 1 2 6 C7 8 14 14 14 19 Z"
+                fill="rgba(255, 255, 255, 0.20)"
+                stroke="#FFFFFF"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                opacity={0.8}
+              />
+              <Path d="M14 18 Q21 10 23 8 M14 18 Q14 7 14 4 M14 18 Q7 10 5 8" stroke="#FFFFFF" strokeWidth="0.9" strokeLinecap="round" opacity={0.5} />
+            </Svg>
+          </Animated.View>
+        </View>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 🐿️ LAYER 2: ORIGINAL SQUI JUMPING MASCOT (100% PRESERVED GEOMETRY)       */}
+      {/* ========================================================================= */}
+      <Animated.View
+        style={{
+          zIndex: 2,
           transform: [
             { translateY: jumpY },
             { rotate: rotationInterpolate },
@@ -249,7 +555,7 @@ export const SquiMascot: React.FC<SquiMascotProps> = ({
           />
 
           {/* ========================================================================= */}
-          {/* 3. FACE (100% PRESERVED & UNTOUCHED)                                      */}
+          {/* 3. FACE (100% PRESERVED & UNTOUCHED ORIGINAL)                             */}
           {/* ========================================================================= */}
 
           {/* Smiling Mouth Line */}
@@ -289,6 +595,93 @@ export const SquiMascot: React.FC<SquiMascotProps> = ({
           />
         </Svg>
       </Animated.View>
+
+      {/* ========================================================================= */}
+      {/* 🍂 LAYER 3: FOREGROUND GHOST LEAVES (In Front of Paws, zIndex 3)          */}
+      {/* ========================================================================= */}
+      {showLeaves && (
+        <View style={{ position: 'absolute', bottom: 0, width: size + 20, height: 38, alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 3 }}>
+          {/* 1. Left Horizontal Flat Oak Leaf 🍂 */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              left: 2,
+              bottom: 2,
+              transform: [
+                { translateY: leafLeft1Y },
+                { rotate: leafLeft1RotInterp },
+              ],
+            }}
+          >
+            <Svg width={42} height={22} viewBox="0 0 42 22" fill="none">
+              <Path
+                d="M2 14 C7 7 14 8 18 4 C24 9 32 7 40 11 C36 17 29 19 22 21 C14 20 8 21 2 14 Z"
+                fill="rgba(255, 255, 255, 0.22)"
+                stroke="#FFFFFF"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity={0.9}
+              />
+              <Path d="M3 14 Q21 13 39 11" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" opacity={0.6} />
+              <Path d="M13 13 L17 8 M22 13 L27 8 M31 12 L35 9" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" opacity={0.5} />
+            </Svg>
+          </Animated.View>
+
+          {/* 2. Right Horizontal Flat Heart/Aspen Leaf 🍃 */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              right: 2,
+              bottom: 1,
+              transform: [
+                { translateY: leafRight1Y },
+                { rotate: leafRight1RotInterp },
+              ],
+            }}
+          >
+            <Svg width={40} height={24} viewBox="0 0 40 24" fill="none">
+              <Path
+                d="M4 15 C9 6 25 5 36 12 C38 18 29 23 18 22 C9 21 4 19 4 15 Z"
+                fill="rgba(255, 255, 255, 0.22)"
+                stroke="#FFFFFF"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity={0.9}
+              />
+              <Path d="M5 15 Q20 14 36 12" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" opacity={0.6} />
+              <Path d="M16 14 L20 9 M25 14 L29 9" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" opacity={0.5} />
+            </Svg>
+          </Animated.View>
+
+          {/* 3. Center Horizontal Maple Star Leaf 🍁 */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              bottom: -1,
+              transform: [
+                { translateY: leafCenterY },
+                { rotate: leafCenterRotInterp },
+              ],
+            }}
+          >
+            <Svg width={32} height={20} viewBox="0 0 32 20" fill="none">
+              <Path
+                d="M16 2 L19 7 L29 6 L23 12 L26 18 L16 14 L6 18 L9 12 L3 6 L13 7 Z"
+                fill="rgba(255, 255, 255, 0.24)"
+                stroke="#FFFFFF"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity={0.95}
+              />
+              <Path d="M16 14 V3" stroke="#FFFFFF" strokeWidth="1.1" strokeLinecap="round" opacity={0.6} />
+            </Svg>
+          </Animated.View>
+        </View>
+      )}
     </View>
   );
 };
+

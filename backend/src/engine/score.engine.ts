@@ -52,9 +52,9 @@ export const generateSquirrelReflection = (
   const improvementAreas: string[] = [];
 
   if (sugarStatus === "SAFE") {
-    positiveHabits.push("Mindful sugar choices kept you well within your healthy zone today.");
+    positiveHabits.push("Mindful meal choices kept your consumed sugar well within your healthy target today.");
   } else {
-    improvementAreas.push("Higher sugar intake noticed. Consider fresh whole fruits and infused water tomorrow.");
+    improvementAreas.push("Higher sugar consumed from meals noticed. Consider fresh whole fruits and infused water tomorrow.");
   }
 
   if (sodiumStatus === "SAFE") {

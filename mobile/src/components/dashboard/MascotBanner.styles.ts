@@ -6,255 +6,247 @@ export const CARD_WIDTH = Math.round(SCREEN_WIDTH - 32);
 
 export const mascotBannerStyles = StyleSheet.create({
   container: {
-    marginVertical: 6,
-    width: CARD_WIDTH,
+    marginVertical: 8,
+    width: '100%',
     alignSelf: 'center',
   },
-  scrollView: {
-    width: CARD_WIDTH,
-  },
-  cardWrapper: {
-    width: CARD_WIDTH,
-    paddingHorizontal: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardGradient: {
-    width: CARD_WIDTH - 4,
-    borderRadius: 24,
-    padding: 16,
-    paddingBottom: 14,
-    borderWidth: 1.5,
-    borderColor: 'rgba(45, 106, 79, 0.45)',
-    shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 4 },
+  touchWrap: {
+    borderRadius: 26,
+    shadowColor: '#0E2E1B',
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.18,
-    shadowRadius: 10,
-    elevation: 3,
+    shadowRadius: 18,
+    elevation: 6,
+  },
+  heroCard: {
+    borderRadius: 26,
+    paddingHorizontal: 16,
+    paddingVertical: 15,
+    minHeight: 142,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.22)',
     overflow: 'hidden',
     position: 'relative',
-    minHeight: 146,
-    justifyContent: 'center',
   },
-  // Ambient background glow circles (Subtle and soft so edges don't look harsh)
-  glowCircle1: {
+  // Ambient Glows
+  ambientGlow: {
     position: 'absolute',
-    top: -15,
-    right: -15,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(16, 185, 129, 0.08)',
-  },
-  glowCircle2: {
-    position: 'absolute',
-    bottom: -25,
-    left: -15,
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: 'rgba(212, 163, 115, 0.05)',
+    top: -20,
+    right: -20,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: 'rgba(16, 185, 129, 0.15)',
   },
 
-  // Main Card Body Row
+  // Main Content Row
   mainRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
 
-  // Left Content Column
-  leftCol: {
-    flex: 1,
-    paddingRight: 10,
-    justifyContent: 'center',
-  },
-  tagRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 4,
-  },
-  companionTag: {
-    fontFamily: FONTS.roundedBlack,
-    fontSize: 10.5,
-    color: '#6EE7B7',
-    letterSpacing: 1.2,
-    textTransform: 'uppercase',
-  },
-  pulseDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#10B981',
-  },
-
-  statusTitle: {
-    fontFamily: FONTS.roundedBlack,
-    fontSize: 18,
-    color: '#FFFFFF',
-    letterSpacing: -0.4,
-    lineHeight: 23,
-    marginBottom: 4,
-  },
-  statusSub: {
-    fontFamily: FONTS.roundedSemiBold,
-    fontSize: 11.5,
-    color: '#D1FAE5',
-    lineHeight: 16,
-    marginBottom: 10,
-  },
-
-  // Action Button with Gradient
-  actionBtnWrap: {
-    alignSelf: 'flex-start',
-    borderRadius: 14,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  actionBtnGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    paddingHorizontal: 13,
-    paddingVertical: 7,
-    borderRadius: 14,
-  },
-  actionBtnText: {
-    fontFamily: FONTS.roundedBlack,
-    fontSize: 11.5,
-    color: '#FFFFFF',
-    letterSpacing: 0.1,
-  },
-
-  // Score Badge in Header Row
-  headerScoreBadge: {
-    backgroundColor: 'rgba(212, 163, 115, 0.25)',
-    borderWidth: 1,
-    borderColor: 'rgba(212, 163, 115, 0.45)',
-    paddingHorizontal: 7,
-    paddingVertical: 1.5,
-    borderRadius: 8,
-    marginLeft: 4,
-  },
-  headerScoreBadgeText: {
-    fontFamily: FONTS.roundedBlack,
-    fontSize: 9.5,
-    color: '#FEF3C7',
-  },
-
-  // Right Visual Column (Mascot / Shield / Hydration)
-  rightVisualCol: {
-    width: 105,
-    height: 105,
+  // Left Mascot Stage Column
+  mascotCol: {
+    width: 112,
+    height: 104,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
     overflow: 'visible',
   },
+  mascotBackdrop: {
+    position: 'absolute',
+    width: 86,
+    height: 86,
+    borderRadius: 43,
+    backgroundColor: 'rgba(16, 185, 129, 0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(110, 231, 183, 0.30)',
+  },
 
-  // Pagination Dots
-  dotsRow: {
-    flexDirection: 'row',
+  // Right Content Column
+  rightCol: {
+    flex: 1,
+    paddingLeft: 12,
     justifyContent: 'center',
+  },
+  topTagRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    marginTop: 10,
+    justifyContent: 'space-between',
+    marginBottom: 2,
   },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#D1DDD6',
+  categoryLabel: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 10.5,
+    color: 'rgba(255, 255, 255, 0.85)',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
   },
-  dotActive: {
-    width: 18,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#1B432C',
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.30)',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 7,
+  },
+  statusDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#34D399',
+    marginRight: 4,
+  },
+  statusBadgeText: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 9.5,
+    color: '#FFFFFF',
   },
 
-  // Modal Insights Sheet
+  // Hero Score Row
+  scoreRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginTop: 1,
+    marginBottom: 4,
+  },
+  scoreValue: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 32,
+    color: '#FFFFFF',
+    letterSpacing: -1,
+    lineHeight: 36,
+  },
+  scoreMax: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.70)',
+    marginLeft: 3,
+  },
+  scoreStatusText: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 11.5,
+    color: '#6EE7B7',
+    marginLeft: 8,
+  },
+
+  // Keyword Chips Row
+  chipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 5,
+    marginTop: 2,
+  },
+  chip: {
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.22)',
+    paddingHorizontal: 7.5,
+    paddingVertical: 3,
+    borderRadius: 7,
+  },
+  chipText: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 10,
+    color: '#FFFFFF',
+  },
+
+  // Modal Breakdown Styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(15, 36, 24, 0.5)',
-    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(5, 26, 14, 0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+    width: '100%',
+    maxHeight: '85%',
+    backgroundColor: '#0F261A',
+    borderRadius: 28,
+    borderWidth: 1.5,
+    borderColor: 'rgba(52, 211, 153, 0.35)',
     padding: 22,
-    paddingBottom: 34,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.12,
     shadowRadius: 16,
     elevation: 10,
   },
-  modalDragHandle: {
-    width: 38,
-    height: 4,
-    backgroundColor: '#D1DDD6',
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginBottom: 14,
+  modalTitle: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 22,
+    color: '#FFFFFF',
+    marginBottom: 4,
+    textAlign: 'center',
   },
-  modalHeaderRow: {
+  modalSub: {
+    fontFamily: FONTS.roundedSemiBold,
+    fontSize: 13,
+    color: '#A7F3D0',
+    textAlign: 'center',
+    marginBottom: 18,
+  },
+  scoreCircleContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 18,
+  },
+  bigScoreNumber: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 48,
+    color: '#34D399',
+    lineHeight: 52,
+  },
+  bigScoreLabel: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 11,
+    color: '#ECFDF5',
+    letterSpacing: 1,
+  },
+  pillarCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+  },
+  pillarHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 4,
   },
-  modalTitle: {
+  pillarTitle: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 19,
-    color: '#0F2418',
-    letterSpacing: -0.4,
+    fontSize: 14,
+    color: '#FFFFFF',
   },
-  modalCloseBtn: {
-    backgroundColor: '#E8F3EC',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-  },
-  modalCloseText: {
-    fontFamily: FONTS.roundedBold,
-    fontSize: 12.5,
-    color: '#1B432C',
-  },
-  insightCard: {
-    backgroundColor: '#F7FAF8',
-    borderRadius: 16,
-    padding: 12,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#E8F3EC',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  insightIconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: '#E8F3EC',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  insightTitle: {
-    fontFamily: FONTS.roundedBold,
+  pillarScore: {
+    fontFamily: FONTS.roundedBlack,
     fontSize: 13,
-    color: '#0F2418',
-    marginBottom: 2,
+    color: '#34D399',
   },
-  insightDesc: {
+  pillarDesc: {
     fontFamily: FONTS.roundedSemiBold,
-    fontSize: 11.5,
-    color: '#4A6354',
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.75)',
+    lineHeight: 16,
+  },
+  closeBtn: {
+    backgroundColor: '#10B981',
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  closeBtnText: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 15,
+    color: '#FFFFFF',
   },
 });

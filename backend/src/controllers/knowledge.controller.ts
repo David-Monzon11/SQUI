@@ -14,7 +14,7 @@ export const getArticles = async (req: Request, res: Response, next: NextFunctio
 
 export const getArticleById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const article = await knowledgeService.getArticleById(id);
     return sendSuccess(res, article, 200);
   } catch (error) {

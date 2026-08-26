@@ -10,7 +10,8 @@ Welcome to the **SQUI** codebase. All AI agents and developers working on SQUI m
 * **The SQUI Mascot**: A cheerful, intelligent, and mindful squirrel named SQUI representing **preparation, balance, discipline, and sustainable wellness**.
 * **Tone of Voice**: Friendly, encouraging, educational, calm, and supportive.
 * **Core Principle**: **"Awareness over restriction. Progress over perfection. Education over judgment."**
-* Never display judgmental or punitive messages (e.g., avoid "You failed your goal"). Use constructive, empowering phrasing (e.g., "A little high on sodium today—try balancing it with extra hydration and fresh leafy greens tomorrow!").
+* **Dietary Food Consumption Paradigm**: SQUI is a mindful dietary companion driven by **Visual Food Journaling**, NOT a clinical medical diagnostic device. It calculates the **dietary sugar and sodium consumed** through the user's daily logged meals and drinks (comparing against recommended health caps like WHO ≤25g sugar and AHA ≤2000mg sodium) rather than clinical blood/serum tests requiring medical hardware or infirmary visits.
+* Never display judgmental or punitive messages (e.g., avoid "You failed your goal"). Use constructive, empowering phrasing (e.g., "A little high on sodium from lunch today—try balancing it with extra hydration and fresh leafy greens for dinner!").
 
 ### 1.2 UI/UX Aesthetics & Visual Delight
 * **Palette**:
@@ -20,7 +21,7 @@ Welcome to the **SQUI** codebase. All AI agents and developers working on SQUI m
 * **Visual Polish**:
   * Use glassmorphic card overlays, subtle borders (`rgba(0,0,0,0.06)` or `rgba(255,255,255,0.1)`), and smooth shadows.
   * Every interactive element must provide micro-feedback (haptics, active opacity, smooth transitions).
-  * Data visualizations (weight, sugar, sodium) must have clear threshold markers, gradient fills, and tooltips.
+  * Data visualizations (weight, sugar consumed, sodium consumed) must have clear threshold markers, gradient fills, and tooltips.
 
 ---
 
@@ -73,11 +74,13 @@ mobile/
 
 ## 3. Business Logic & Nutrition Engine Standards
 
-### 3.1 Domain Calculations
-* **Daily Sugar Monitoring**:
+### 3.1 Domain Calculations (Dietary Nutrients Consumed)
+* **Daily Dietary Sugar Consumed**:
+  * Summed from all logged food items and meals for the day.
   * Default Daily Max Target: 25g (recommended) up to 50g (hard cap) for average adult.
   * Threshold status: `SAFE` (< 70% limit), `CAUTION` (70–100%), `EXCEEDED` (> 100%).
-* **Daily Sodium Monitoring**:
+* **Daily Dietary Sodium Consumed**:
+  * Summed from all logged seasonings, processed ingredients, and meals.
   * Default Daily Max Target: 2000mg (2g).
   * Real-time warning triggered when a single meal exceeds 800mg.
 * **Caloric & Macro Distribution**:

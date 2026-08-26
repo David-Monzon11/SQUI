@@ -18,6 +18,15 @@ export const IconHome: React.FC<IconProps> = ({ size = 22, color = '#1B432C', st
   </View>
 );
 
+export const IconPlus: React.FC<IconProps> = ({ size = 20, color = '#FFFFFF', strokeWidth = 2.4 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Line x1="12" y1="5" x2="12" y2="19" />
+      <Line x1="5" y1="12" x2="19" y2="12" />
+    </Svg>
+  </View>
+);
+
 export const IconFoodDiary: React.FC<IconProps> = ({ size = 22, color = '#1B432C', strokeWidth = 2 }) => (
   <View style={{ width: size, height: size }}>
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
@@ -278,122 +287,91 @@ export const IconMoon: React.FC<IconProps> = ({ size = 20, color = '#1B432C', st
 // =========================================================================
 
 /**
- * SQUI Sugar Consumed Emblem: Mindful faceted sweetness crystal with botanical sparkle
+ * SQUI Sugar Consumed Emblem: Sleek Minimalist Isometric Sugar Cube
  */
-export const IconSquiSugar: React.FC<IconProps> = ({ size = 20, color = '#F59E0B', strokeWidth = 2 }) => (
+export const IconSquiSugar: React.FC<IconProps> = ({ size = 20, color = '#FFFFFF', strokeWidth = 2 }) => (
   <View style={{ width: size, height: size }}>
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      {/* Faceted Sweetness Gem / Cane Crystal */}
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M12 3L20 7.5L12 12L4 7.5L12 3Z" fill={color} fillOpacity={0.12} />
+      <Path d="M4 7.5V16.5L12 21V12" fill={color} fillOpacity={0.06} />
+      <Path d="M20 7.5V16.5L12 21" fill={color} fillOpacity={0.18} />
+    </Svg>
+  </View>
+);
+
+/**
+ * SQUI Sodium Consumed Emblem: Sleek Minimalist Salt Shaker / Cellar
+ */
+export const IconSquiSodium: React.FC<IconProps> = ({ size = 20, color = '#FFFFFF', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      {/* Sleek Cap */}
+      <Path d="M9 3H15V6H9V3Z" fill={color} fillOpacity={0.2} />
+      {/* Tapered Cellar Body */}
+      <Path d="M9 6L6.5 18.5C6.2 20 7.5 21 9 21H15C16.5 21 17.8 20 17.5 18.5L15 6" fill={color} fillOpacity={0.1} />
+      {/* Salt Level Line */}
+      <Path d="M8 14C10 13.2 14 13.2 16 14" strokeOpacity={0.6} />
+    </Svg>
+  </View>
+);
+
+/**
+ * SQUI Weight & Body Trend: Aesthetic Waistline & Measuring Tape Silhouette
+ */
+export const IconSquiScale: React.FC<IconProps> = ({ size = 20, color = '#FFFFFF', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      {/* Left Torso / Waist Contour */}
+      <Path d="M5 3C7 7.5 7 10 5.5 14C4.5 17 4 19 4 21" />
+      {/* Right Torso / Waist Contour */}
+      <Path d="M19 3C17 7.5 17 10 18.5 14C19.5 17 20 19 20 21" />
+      {/* Measuring Tape Ribbon across Waist */}
+      <Path d="M5.8 12C9 14.5 15 14.5 18.2 12" />
+      {/* Measuring Tape Notch Marks */}
+      <Path d="M9 13.2V14.6M12 13.8V15.4M15 13.2V14.6" strokeWidth={strokeWidth * 0.85} />
+    </Svg>
+  </View>
+);
+
+/**
+ * SQUI Hydration Dewdrop: Sleek Minimalist Water Dewdrop
+ */
+export const IconSquiHydration: React.FC<IconProps> = ({ size = 20, color = '#FFFFFF', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      {/* Minimalist Dewdrop Silhouette */}
       <Path
-        d="M12 2.5L19.5 8L15.5 21H8.5L4.5 8L12 2.5Z"
-        stroke={color}
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        d="M12 2.5C12 2.5 5 11 5 15.8C5 19.8 8.1 22 12 22C15.9 22 19 19.8 19 15.8C19 11 12 2.5 12 2.5Z"
         fill={color}
         fillOpacity={0.15}
       />
+      {/* Sleek Inner Reflection Arc */}
       <Path
-        d="M12 2.5V21M4.5 8H19.5M8.5 21L12 8L15.5 21"
-        stroke={color}
-        strokeWidth={strokeWidth * 0.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeOpacity={0.65}
-      />
-      {/* Radiant Sweetness Sparkle */}
-      <Circle cx="18" cy="4.5" r="1" fill={color} />
-      <Circle cx="6" cy="18" r="0.8" fill={color} fillOpacity={0.7} />
-    </Svg>
-  </View>
-);
-
-/**
- * SQUI Sodium Consumed Emblem: Natural mineral crystal pyramid with balancing shield facets
- */
-export const IconSquiSodium: React.FC<IconProps> = ({ size = 20, color = '#10B981', strokeWidth = 2 }) => (
-  <View style={{ width: size, height: size }}>
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      {/* Hexagonal Mineral Shield / Salt Crystal Prism */}
-      <Path
-        d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z"
-        stroke={color}
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill={color}
-        fillOpacity={0.14}
-      />
-      {/* Internal Geometry & Balance Cross */}
-      <Path
-        d="M12 3V21M4 7.5L20 16.5M20 7.5L4 16.5"
-        stroke={color}
-        strokeWidth={strokeWidth * 0.75}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeOpacity={0.55}
-      />
-      {/* Center Mineral Core */}
-      <Circle cx="12" cy="12" r="2.2" fill={color} fillOpacity={0.4} stroke={color} strokeWidth={1} />
-    </Svg>
-  </View>
-);
-
-/**
- * SQUI Body & Weight Balance Scale: SQUI balance fulcrum with calibrated pans
- */
-export const IconSquiScale: React.FC<IconProps> = ({ size = 20, color = '#10B981', strokeWidth = 2 }) => (
-  <View style={{ width: size, height: size }}>
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      {/* Central Fulcrum Column & Top Pivot */}
-      <Path d="M12 3V19M8 21H16" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
-      <Circle cx="12" cy="4" r="1.5" fill={color} />
-      {/* Balanced Beam */}
-      <Path d="M4 7.5H20" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
-      {/* Left Pan (Suspended Strings + Dish) */}
-      <Path d="M4 7.5L2 13M4 7.5L6 13" stroke={color} strokeWidth={strokeWidth * 0.75} strokeLinecap="round" />
-      <Path d="M1.5 13C1.5 14.5 6.5 14.5 6.5 13H1.5Z" stroke={color} strokeWidth={strokeWidth * 0.85} fill={color} fillOpacity={0.18} strokeLinejoin="round" />
-      {/* Right Pan (Suspended Strings + Dish) */}
-      <Path d="M20 7.5L18 13M20 7.5L22 13" stroke={color} strokeWidth={strokeWidth * 0.75} strokeLinecap="round" />
-      <Path d="M17.5 13C17.5 14.5 22.5 14.5 22.5 13H17.5Z" stroke={color} strokeWidth={strokeWidth * 0.85} fill={color} fillOpacity={0.18} strokeLinejoin="round" />
-    </Svg>
-  </View>
-);
-
-/**
- * SQUI Hydration Dewdrop Emblem: Forest spring water dewdrop with internal wave curve
- */
-export const IconSquiHydration: React.FC<IconProps> = ({ size = 20, color = '#0284C7', strokeWidth = 2 }) => (
-  <View style={{ width: size, height: size }}>
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      {/* Dewdrop Outer Shape */}
-      <Path
-        d="M12 2.8C12 2.8 5 11.2 5 15.6C5 19.5 8.1 22 12 22C15.9 22 19 19.5 19 15.6C19 11.2 12 2.8 12 2.8Z"
-        stroke={color}
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill={color}
-        fillOpacity={0.16}
-      />
-      {/* Inner Fluid Wave */}
-      <Path
-        d="M7 16C8.5 15 10 17 12 17C14 17 15.5 15 17 16"
-        stroke={color}
+        d="M8.5 15C9 18 10.5 19 12 19"
         strokeWidth={strokeWidth * 0.85}
-        strokeLinecap="round"
       />
-      {/* Light Reflection Glint */}
-      <Path
-        d="M9.5 7.5C8 10 7.5 12 7.5 14"
-        stroke="#FFFFFF"
-        strokeWidth={strokeWidth * 0.8}
-        strokeLinecap="round"
-        strokeOpacity={0.8}
-      />
-      <Circle cx="12" cy="19.2" r="0.8" fill={color} fillOpacity={0.6} />
     </Svg>
   </View>
 );
+
+/**
+ * SQUI Weather & Climate Icon: Sun Peeking Behind Cloud
+ */
+export const IconWeatherSunCloud: React.FC<IconProps> = ({ size = 22, color = '#FFFFFF', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      {/* Sun Core & Rays */}
+      <Path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeWidth={strokeWidth * 0.8} opacity={0.7} />
+      <Circle cx="12" cy="12" r="4" fill={color} fillOpacity={0.2} />
+      {/* Friendly Organic Cloud Silhouette */}
+      <Path
+        d="M17.5 19H9a5 5 0 0 1-1.2-9.85A6.5 6.5 0 0 1 20.2 12 4 4 0 0 1 17.5 19z"
+        fill={color}
+        fillOpacity={0.25}
+      />
+    </Svg>
+  </View>
+);
+
 
 

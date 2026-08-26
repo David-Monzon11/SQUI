@@ -9,7 +9,7 @@ export const calculateCalories = (proteinG: number, carbsG: number, fatG: number
 };
 
 /**
- * Evaluates daily sugar intake status against targets
+ * Evaluates daily dietary sugar consumed from meals against recommended targets
  */
 export const evaluateSugarStatus = (
   consumedSugarG: number,
@@ -22,7 +22,7 @@ export const evaluateSugarStatus = (
 };
 
 /**
- * Evaluates daily sodium intake status against targets
+ * Evaluates daily dietary sodium consumed from meals against recommended caps
  */
 export const evaluateSodiumStatus = (
   consumedSodiumMg: number,
