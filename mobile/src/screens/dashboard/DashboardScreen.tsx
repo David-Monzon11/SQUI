@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,11 +7,14 @@ import {
   Modal,
   TextInput,
   Image,
+  FlatList,
+  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MascotBanner } from '../../components/dashboard/MascotBanner';
 import { WeatherCard } from '../../components/dashboard/WeatherCard';
 import { SquiLogo } from '../../components/common/SquiLogo';
+import { FONTS } from '../../constants/typography';
 import {
   IconSquiScale,
   IconSquiHydration,
@@ -44,6 +47,27 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [isNutrientDetailOpen, setIsNutrientDetailOpen] = useState(false);
   const [selectedNutrientType, setSelectedNutrientType] = useState<'SUGAR' | 'SODIUM'>('SUGAR');
   const [selectedDetailMeal, setSelectedDetailMeal] = useState<MealItem | null>(null);
+
+  // Horizontal Food Gallery Carousel Configurations
+  const { width: screenWidth } = Dimensions.get('window');
+  const carouselItemWidth = screenWidth - 64; // Adjusted to fit container card horizontal bounds
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const flatListRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    if (meals.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveSlideIndex((prevIndex) => {
+        const nextIndex = prevIndex === meals.length - 1 ? 0 : prevIndex + 1;
+        flatListRef.current?.scrollToIndex({
+          index: nextIndex,
+          animated: true,
+        });
+        return nextIndex;
+      });
+    }, 4000); // Auto-scroll every 4 seconds
+    return () => clearInterval(interval);
+  }, [meals.length]);
 
   const handleWaterIncrement = () => {
     setWaterIntakeMl((prev) => prev + 250);
@@ -303,37 +327,81 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </TouchableOpacity>
             </View>
 
-            <View style={styles.gridContainer}>
-              {meals.map((meal) => {
-                const isHighSodium = meal.nutrition.sodiumMg >= 800;
-                return (
-                  <TouchableOpacity
-                    key={meal.id}
-                    style={styles.gridCard}
-                    activeOpacity={0.9}
-                    onPress={() => setSelectedDetailMeal(meal)}
-                  >
-                    <Image source={{ uri: meal.imageUrl }} style={styles.gridCardImage} />
-                    
-                    {isHighSodium && (
-                      <View style={styles.gridCardWarningDot} />
-                    )}
-
-                    {/* Bottom Text Overlay */}
-                    <LinearGradient
-                      colors={['transparent', 'rgba(0,0,0,0.85)']}
-                      style={styles.gridCardTextOverlay}
+            <View style={{ width: carouselItemWidth, overflow: 'hidden', marginVertical: 8 }}>
+              <FlatList
+                ref={flatListRef}
+                data={meals}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.id}
+                onMomentumScrollEnd={(event) => {
+                  const scrollOffset = event.nativeEvent.contentOffset.x;
+                  const index = Math.round(scrollOffset / carouselItemWidth);
+                  setActiveSlideIndex(index);
+                }}
+                getItemLayout={(_data, index) => ({
+                  length: carouselItemWidth,
+                  offset: carouselItemWidth * index,
+                  index,
+                })}
+                renderItem={({ item }) => {
+                  const isHighSodium = item.nutrition.sodiumMg >= 800;
+                  return (
+                    <TouchableOpacity
+                      style={{ width: carouselItemWidth, paddingRight: 4 }}
+                      activeOpacity={0.9}
+                      onPress={() => setSelectedDetailMeal(item)}
                     >
-                      <Text style={styles.gridCardCategory} numberOfLines={1}>
-                        {meal.mealCategory}
-                      </Text>
-                      <Text style={styles.gridCardName} numberOfLines={1}>
-                        {meal.foodName}
-                      </Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                );
-              })}
+                      <View style={{ borderRadius: 16, overflow: 'hidden', position: 'relative' }}>
+                        <Image source={{ uri: item.imageUrl }} style={{ width: '100%', height: 160, resizeMode: 'cover' }} />
+                        {isHighSodium && (
+                          <View style={styles.gridCardWarningDot} />
+                        )}
+                      </View>
+
+                      {/* Redesigned Label and Title Below Image */}
+                      <View style={{ marginTop: 10, paddingHorizontal: 4 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <View style={{ backgroundColor: 'rgba(16, 185, 129, 0.08)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, marginRight: 8 }}>
+                            <Text style={{ fontFamily: FONTS.roundedBold, fontSize: 10, color: '#10B981', textTransform: 'uppercase' }}>
+                              {item.mealCategory}
+                            </Text>
+                          </View>
+                          {isHighSodium && (
+                            <View style={{ backgroundColor: 'rgba(239, 68, 68, 0.08)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 }}>
+                              <Text style={{ fontFamily: FONTS.roundedBold, fontSize: 10, color: '#EF4444' }}>
+                                ⚠️ HIGH SODIUM
+                              </Text>
+                            </View>
+                          )}
+                        </View>
+                        <Text style={{ fontFamily: FONTS.roundedBlack, fontSize: 14.5, color: '#0F2418', marginTop: 5 }} numberOfLines={1}>
+                          {item.foodName}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+
+              {/* Custom Dot Indicators */}
+              {meals.length > 1 && (
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10, marginBottom: 4 }}>
+                  {meals.map((_, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        width: activeSlideIndex === index ? 16 : 6,
+                        height: 6,
+                        borderRadius: 3,
+                        backgroundColor: activeSlideIndex === index ? '#1B432C' : '#D1DDD6',
+                        marginHorizontal: 3,
+                      }}
+                    />
+                  ))}
+                </View>
+              )}
             </View>
 
             {/* Bottom Status Banner inside Card */}
