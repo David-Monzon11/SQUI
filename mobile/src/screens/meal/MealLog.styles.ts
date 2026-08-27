@@ -424,11 +424,12 @@ export const mealLogStyles = StyleSheet.create({
     alignItems: 'center' as const,
   },
   gridCategoryText: {
-    fontFamily: FONTS.roundedBlack,
-    fontSize: 9,
-    color: '#A7F3D0',
-    letterSpacing: 0.3,
-    textTransform: 'uppercase' as const,
+    fontFamily: FONTS.roundedBold,
+    fontSize: 9.5,
+    color: '#FFFFFF',
+    letterSpacing: -0.1,
+    textAlign: 'center' as const,
+    paddingHorizontal: 4,
   },
   plusCard: {
     width: '31.3%' as const,

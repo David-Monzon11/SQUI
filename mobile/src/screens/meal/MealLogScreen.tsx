@@ -296,7 +296,7 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
                     style={styles.gridItemOverlay}
                   >
                     <Text style={styles.gridCategoryText} numberOfLines={1}>
-                      {meal.mealCategory}
+                      {meal.foodName}
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>
