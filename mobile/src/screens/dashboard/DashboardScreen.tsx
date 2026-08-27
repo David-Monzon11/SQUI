@@ -139,7 +139,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#2D5A47', '#13291F', '#08120E']}
+              colors={['#3B8A66', '#1E4C38', '#112D21']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
@@ -181,7 +181,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           {/* Hydration Bento Card */}
           <View style={styles.bentoTouchWrap}>
             <LinearGradient
-              colors={['#2E566E', '#112533', '#08120E']}
+              colors={['#3884B5', '#1F547A', '#11324D']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
@@ -232,7 +232,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#6E4A2E', '#2B1C11', '#08120E']}
+              colors={['#B57738', '#7A4B1F', '#4D2D11']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
@@ -277,7 +277,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#2D5A47', '#13291F', '#08120E']}
+              colors={['#3B8A66', '#1E4C38', '#112D21']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
