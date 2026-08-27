@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../constants/colors';
 import { DashboardScreen } from '../screens/dashboard/DashboardScreen';
 import { MealLogScreen } from '../screens/meal/MealLogScreen';
 import { AnalyticsScreen } from '../screens/analytics/AnalyticsScreen';
 import { MenuScreen } from '../screens/menu/MenuScreen';
-import { IconHome, IconFoodDiary, IconPulseTrend, IconSettings } from '../components/common/Icons';
+import { IconHomeLeaf, IconSquiCameraLog, IconSquiTrends, IconSquiSettings } from '../components/common/Icons';
 import { tabNavigatorStyles as styles } from './TabNavigator.styles';
 import { MealItem } from '../types';
 
@@ -112,22 +113,22 @@ export const TabNavigator: React.FC = () => {
     {
       key: 'dashboard',
       label: 'Today',
-      icon: (active) => <IconHome size={20} color={active ? COLORS.primary : COLORS.textMuted} />,
+      icon: (active) => <IconHomeLeaf size={20} color={active ? '#1B432C' : '#849C8D'} />,
     },
     {
       key: 'meal',
       label: 'Log Meal',
-      icon: (active) => <IconFoodDiary size={20} color={active ? COLORS.primary : COLORS.textMuted} />,
+      icon: (active) => <IconSquiCameraLog size={20} color={active ? '#1B432C' : '#849C8D'} />,
     },
     {
       key: 'analytics',
       label: 'Trends',
-      icon: (active) => <IconPulseTrend size={20} color={active ? COLORS.primary : COLORS.textMuted} />,
+      icon: (active) => <IconSquiTrends size={20} color={active ? '#1B432C' : '#849C8D'} />,
     },
     {
       key: 'settings',
       label: 'Settings',
-      icon: (active) => <IconSettings size={20} color={active ? COLORS.primary : COLORS.textMuted} />,
+      icon: (active) => <IconSquiSettings size={20} color={active ? '#1B432C' : '#849C8D'} />,
     },
   ];
 
@@ -136,7 +137,12 @@ export const TabNavigator: React.FC = () => {
       <View style={styles.screenContainer}>{renderScreen()}</View>
 
       {/* Streamlined 4-Tab Bottom Bar with Safe Inset */}
-      <View style={[styles.tabBar, { paddingBottom: Math.max(insets.bottom, 12) }]}>
+      <LinearGradient
+        colors={['rgba(255, 255, 255, 0.94)', 'rgba(253, 251, 247, 0.82)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.tabBar, { bottom: Math.max(insets.bottom, 16) }]}
+      >
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
@@ -155,7 +161,7 @@ export const TabNavigator: React.FC = () => {
             </TouchableOpacity>
           );
         })}
-      </View>
+      </LinearGradient>
     </View>
   );
 };
