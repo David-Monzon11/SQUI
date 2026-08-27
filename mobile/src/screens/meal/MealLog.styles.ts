@@ -10,7 +10,7 @@ export const mealLogStyles = StyleSheet.create({
   container: {
     padding: 16,
     paddingTop: 8,
-    paddingBottom: 48,
+    paddingBottom: 110,
   },
   header: {
     marginBottom: 12,

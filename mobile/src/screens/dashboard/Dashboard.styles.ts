@@ -12,7 +12,7 @@ export const dashboardStyles = {
   scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 14,
-    paddingBottom: 40,
+    paddingBottom: 110,
   },
   container: {
     paddingHorizontal: 16,

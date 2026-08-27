@@ -7,7 +7,7 @@ import { DashboardScreen } from '../screens/dashboard/DashboardScreen';
 import { MealLogScreen } from '../screens/meal/MealLogScreen';
 import { AnalyticsScreen } from '../screens/analytics/AnalyticsScreen';
 import { MenuScreen } from '../screens/menu/MenuScreen';
-import { IconHomeLeaf, IconSquiCameraLog, IconSquiTrends, IconSquiSettings } from '../components/common/Icons';
+import { IconHomeLeaf, IconSquiCameraLog, IconSquiTrends, IconSquiSettings, IconSquiAcornBackground } from '../components/common/Icons';
 import { tabNavigatorStyles as styles } from './TabNavigator.styles';
 import { MealItem } from '../types';
 
@@ -113,22 +113,22 @@ export const TabNavigator: React.FC = () => {
     {
       key: 'dashboard',
       label: 'Today',
-      icon: (active) => <IconHomeLeaf size={20} color={active ? '#1B432C' : '#849C8D'} />,
+      icon: (active) => <IconHomeLeaf size={20} color={active ? '#1B432C' : '#5C7A68'} />,
     },
     {
       key: 'meal',
       label: 'Log Meal',
-      icon: (active) => <IconSquiCameraLog size={20} color={active ? '#1B432C' : '#849C8D'} />,
+      icon: (active) => <IconSquiCameraLog size={20} color={active ? '#1B432C' : '#5C7A68'} />,
     },
     {
       key: 'analytics',
       label: 'Trends',
-      icon: (active) => <IconSquiTrends size={20} color={active ? '#1B432C' : '#849C8D'} />,
+      icon: (active) => <IconSquiTrends size={20} color={active ? '#1B432C' : '#5C7A68'} />,
     },
     {
       key: 'settings',
       label: 'Settings',
-      icon: (active) => <IconSquiSettings size={20} color={active ? '#1B432C' : '#849C8D'} />,
+      icon: (active) => <IconSquiSettings size={20} color={active ? '#1B432C' : '#5C7A68'} />,
     },
   ];
 
@@ -138,7 +138,7 @@ export const TabNavigator: React.FC = () => {
 
       {/* Streamlined 4-Tab Bottom Bar with Safe Inset */}
       <LinearGradient
-        colors={['rgba(255, 255, 255, 0.94)', 'rgba(253, 251, 247, 0.82)']}
+        colors={['#FFFFFF', '#F5F7F5']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[styles.tabBar, { bottom: Math.max(insets.bottom, 16) }]}
@@ -152,12 +152,14 @@ export const TabNavigator: React.FC = () => {
               activeOpacity={0.7}
               onPress={() => setActiveTab(tab.key)}
             >
-              <View style={[styles.iconWrapper, isActive && styles.iconWrapperActive]}>
-                {tab.icon(isActive)}
+              {isActive && (
+                <IconSquiAcornBackground size={54} color="#1B432C" />
+              )}
+              <View style={styles.tabItemContent}>
+                <View style={styles.iconWrapper}>
+                  {tab.icon(isActive)}
+                </View>
               </View>
-              <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]}>
-                {tab.label}
-              </Text>
             </TouchableOpacity>
           );
         })}

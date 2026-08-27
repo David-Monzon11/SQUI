@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 40,
+    paddingBottom: 110,
   },
 
   // Hero / Profile Section (Framed Card Container with Modern Rounded Aesthetics)
