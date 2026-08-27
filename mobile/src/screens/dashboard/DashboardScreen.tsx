@@ -115,7 +115,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#10B981', '#059669', '#047857']}
+              colors={['#475569', '#334155', '#1E293B']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
