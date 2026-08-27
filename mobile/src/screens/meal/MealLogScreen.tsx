@@ -11,6 +11,7 @@ import {
   Animated,
   Modal,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { IconSquiSugar, IconSquiSodium, IconCameraPlus } from '../../components/common/Icons';
 import { MealCategory, MealItem } from '../../types';
 import { mealLogStyles as styles } from './MealLog.styles';
@@ -289,11 +290,15 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
                   {isHigh && (
                     <View style={styles.gridWarningDot} />
                   )}
-                  <View style={styles.gridItemOverlay}>
+                  {/* Bottom Text Overlay */}
+                  <LinearGradient
+                    colors={['transparent', 'rgba(0, 0, 0, 0.85)']}
+                    style={styles.gridItemOverlay}
+                  >
                     <Text style={styles.gridCategoryText} numberOfLines={1}>
                       {meal.mealCategory}
                     </Text>
-                  </View>
+                  </LinearGradient>
                 </TouchableOpacity>
               );
             })}

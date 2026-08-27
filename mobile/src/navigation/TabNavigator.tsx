@@ -84,6 +84,7 @@ export const TabNavigator: React.FC = () => {
       case 'meal':
         return (
           <MealLogScreen
+            meals={meals}
             onMealSaved={(newMeal) => {
               setMeals((prev) => [newMeal, ...prev]);
               setActiveTab('dashboard');
