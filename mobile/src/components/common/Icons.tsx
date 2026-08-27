@@ -373,5 +373,50 @@ export const IconWeatherSunCloud: React.FC<IconProps> = ({ size = 22, color = '#
   </View>
 );
 
+// SQUI Custom Woodland Brand Navigation Icons
+export const IconHomeLeaf: React.FC<IconProps> = ({ size = 22, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M12 2.5C7.5 7.5 3.5 11.5 3.5 15.5a8.5 8.5 0 0 0 17 0c0-4-4-8-8.5-13z" />
+      <Path d="M9 15.5h6v4H9v-4z" />
+      <Path d="M12 11.5v4" />
+    </Svg>
+  </View>
+);
+
+export const IconSquiCameraLog: React.FC<IconProps> = ({ size = 22, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M21 19V9a2 2 0 0 0-2-2h-3.5L13.5 4h-3L8.5 7H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2z" />
+      <Circle cx="12" cy="14" r="3.5" />
+      <Path d="M18.5 7c0-2-1.5-3-3.5-3m3.5 3c2-1 3-3 2.5-4.5" />
+    </Svg>
+  </View>
+);
+
+export const IconSquiTrends: React.FC<IconProps> = ({ size = 22, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M3 20h18" />
+      <Path d="M6 17c5-2 9-6 12-14" />
+      <Path d="M11 14.5c2-.5 3-2 3-3.5M14.5 10c2-.5 3-2 3-3.5" />
+      <Circle cx="6" cy="17" r="1.5" fill={color} />
+    </Svg>
+  </View>
+);
+
+export const IconSquiSettings: React.FC<IconProps> = ({ size = 22, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Line x1="4" y1="8" x2="20" y2="8" />
+      <Line x1="4" y1="16" x2="20" y2="16" />
+      <Path d="M7 6a2 2 0 1 1 4 0 2 2 0 0 1-4 0z" fill={color} fillOpacity={0.2} />
+      <Circle cx="9" cy="8" r="3" />
+      <Path d="M13 14a2 2 0 1 1 4 0 2 2 0 0 1-4 0z" fill={color} fillOpacity={0.2} />
+      <Circle cx="15" cy="16" r="3" />
+    </Svg>
+  </View>
+);
+
 
 

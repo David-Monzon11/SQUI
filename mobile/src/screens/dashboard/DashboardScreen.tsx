@@ -105,7 +105,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
         {/* Row 1: Watermarked Bento Vitals Cards */}
         <View style={styles.statsRow}>
-          {/* Weight Bento Card (2-Side Emerald Gradient) */}
+          {/* Weight Bento Card */}
           <TouchableOpacity
             style={styles.bentoTouchWrap}
             activeOpacity={0.88}
@@ -115,17 +115,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#475569', '#334155', '#1E293B']}
+              colors={['#1A2E22', '#101C15', '#0A120E']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              <View style={styles.bentoWatermark}>
-                <IconSquiScale size={66} color="#FFFFFF" strokeWidth={1.8} />
+              <View style={[styles.bentoWatermark, { opacity: 0.12 }]}>
+                <IconSquiScale size={66} color="#10B981" strokeWidth={1.8} />
               </View>
 
               <View style={styles.bentoTopRow}>
-                <View style={styles.bentoIconBadge('emerald')}>
+                <View style={[styles.bentoIconBadge('emerald'), { backgroundColor: '#10B981', borderColor: '#10B981' }]}>
                   <IconSquiScale size={18} color="#FFFFFF" />
                 </View>
                 <TouchableOpacity
@@ -154,20 +154,20 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Hydration Bento Card (2-Side Azure Gradient) */}
+          {/* Hydration Bento Card */}
           <View style={styles.bentoTouchWrap}>
             <LinearGradient
-              colors={['#0EA5E9', '#0284C7', '#0369A1']}
+              colors={['#1A2E22', '#101C15', '#0A120E']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              <View style={styles.bentoWatermark}>
-                <IconSquiHydration size={66} color="#FFFFFF" strokeWidth={1.8} />
+              <View style={[styles.bentoWatermark, { opacity: 0.12 }]}>
+                <IconSquiHydration size={66} color="#0EA5E9" strokeWidth={1.8} />
               </View>
 
               <View style={styles.bentoTopRow}>
-                <View style={styles.bentoIconBadge('cyan')}>
+                <View style={[styles.bentoIconBadge('cyan'), { backgroundColor: '#0EA5E9', borderColor: '#0EA5E9' }]}>
                   <IconSquiHydration size={18} color="#FFFFFF" />
                 </View>
                 <TouchableOpacity
@@ -208,17 +208,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#F59E0B', '#EA580C', '#C2410C']}
+              colors={['#1A2E22', '#101C15', '#0A120E']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              <View style={styles.bentoWatermark}>
-                <IconSquiSugar size={66} color="#FFFFFF" strokeWidth={1.8} />
+              <View style={[styles.bentoWatermark, { opacity: 0.12 }]}>
+                <IconSquiSugar size={66} color="#F59E0B" strokeWidth={1.8} />
               </View>
 
               <View style={styles.bentoTopRow}>
-                <View style={styles.bentoIconBadge('amber')}>
+                <View style={[styles.bentoIconBadge('amber'), { backgroundColor: '#F59E0B', borderColor: '#F59E0B' }]}>
                   <IconSquiSugar size={18} color="#FFFFFF" />
                 </View>
                 <View style={styles.glassStatusBadge(sugarStatus)}>
@@ -237,7 +237,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </View>
                 <Text style={styles.bentoSubText}>of 25g daily target</Text>
                 <View style={styles.bentoTrackBg}>
-                  <View style={styles.bentoTrackFill(sugarPct, '#FFFFFF')} />
+                  <View style={[styles.bentoTrackFill(sugarPct, '#FFFFFF'), { backgroundColor: '#F59E0B' }]} />
                 </View>
               </View>
             </LinearGradient>
@@ -253,17 +253,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#10B981', '#059669', '#065F46']}
+              colors={['#1A2E22', '#101C15', '#0A120E']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.bentoCard}
             >
-              <View style={styles.bentoWatermark}>
-                <IconSquiSodium size={66} color="#FFFFFF" strokeWidth={1.8} />
+              <View style={[styles.bentoWatermark, { opacity: 0.12 }]}>
+                <IconSquiSodium size={66} color="#10B981" strokeWidth={1.8} />
               </View>
 
               <View style={styles.bentoTopRow}>
-                <View style={styles.bentoIconBadge('emerald')}>
+                <View style={[styles.bentoIconBadge('emerald'), { backgroundColor: '#10B981', borderColor: '#10B981' }]}>
                   <IconSquiSodium size={18} color="#FFFFFF" />
                 </View>
                 <View style={styles.glassStatusBadge(sodiumStatus)}>
@@ -282,7 +282,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </View>
                 <Text style={styles.bentoSubText}>of 2,000mg daily cap</Text>
                 <View style={styles.bentoTrackBg}>
-                  <View style={styles.bentoTrackFill(sodiumPct, '#FFFFFF')} />
+                  <View style={[styles.bentoTrackFill(sodiumPct, '#FFFFFF'), { backgroundColor: '#10B981' }]} />
                 </View>
               </View>
             </LinearGradient>
