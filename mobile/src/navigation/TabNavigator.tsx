@@ -11,6 +11,8 @@ import { IconHomeLeaf, IconSquiCameraLog, IconSquiTrends, IconSquiSettings, Icon
 import { tabNavigatorStyles as styles } from './TabNavigator.styles';
 import { MealItem } from '../types';
 
+
+
 export type MainTabKey = 'dashboard' | 'meal' | 'analytics' | 'settings';
 
 export const TabNavigator: React.FC = () => {
@@ -113,22 +115,22 @@ export const TabNavigator: React.FC = () => {
     {
       key: 'dashboard',
       label: 'Today',
-      icon: (active) => <IconHomeLeaf size={20} color={active ? '#1B432C' : '#5C7A68'} />,
+      icon: (active) => <IconHomeLeaf size={30} color={active ? '#1B432C' : '#5C7A68'} />,
     },
     {
       key: 'meal',
       label: 'Log Meal',
-      icon: (active) => <IconSquiCameraLog size={20} color={active ? '#1B432C' : '#5C7A68'} />,
+      icon: (active) => <IconSquiCameraLog size={30} color={active ? '#1B432C' : '#5C7A68'} />,
     },
     {
       key: 'analytics',
       label: 'Trends',
-      icon: (active) => <IconSquiTrends size={20} color={active ? '#1B432C' : '#5C7A68'} />,
+      icon: (active) => <IconSquiTrends size={30} color={active ? '#1B432C' : '#5C7A68'} />,
     },
     {
       key: 'settings',
       label: 'Settings',
-      icon: (active) => <IconSquiSettings size={20} color={active ? '#1B432C' : '#5C7A68'} />,
+      icon: (active) => <IconSquiSettings size={30} color={active ? '#1B432C' : '#5C7A68'} />,
     },
   ];
 
@@ -138,9 +140,9 @@ export const TabNavigator: React.FC = () => {
 
       {/* Streamlined 4-Tab Bottom Bar with Safe Inset */}
       <LinearGradient
-        colors={['#FFFFFF', '#F5F7F5']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        colors={['#FFFFFF', '#F6F9F6', '#EDF2ED']}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
         style={[styles.tabBar, { bottom: Math.max(insets.bottom, 16) }]}
       >
         {tabs.map((tab) => {
@@ -152,10 +154,10 @@ export const TabNavigator: React.FC = () => {
               activeOpacity={0.7}
               onPress={() => setActiveTab(tab.key)}
             >
-              {isActive && (
-                <IconSquiAcornBackground size={54} color="#1B432C" />
-              )}
               <View style={styles.tabItemContent}>
+                {isActive && (
+                  <IconSquiAcornBackground size={64} color="#1B432C" />
+                )}
                 <View style={styles.iconWrapper}>
                   {tab.icon(isActive)}
                 </View>

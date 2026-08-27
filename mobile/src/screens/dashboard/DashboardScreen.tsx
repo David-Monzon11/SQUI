@@ -44,6 +44,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [todayWeightKg, setTodayWeightKg] = useState(68.2);
   const [tempWeightInput, setTempWeightInput] = useState('68.2');
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
+  const [isWaterModalOpen, setIsWaterModalOpen] = useState(false);
+  const [tempWaterInput, setTempWaterInput] = useState('250');
   const [isNutrientDetailOpen, setIsNutrientDetailOpen] = useState(false);
   const [selectedNutrientType, setSelectedNutrientType] = useState<'SUGAR' | 'SODIUM'>('SUGAR');
   const [selectedDetailMeal, setSelectedDetailMeal] = useState<MealItem | null>(null);
@@ -69,8 +71,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     return () => clearInterval(interval);
   }, [meals.length]);
 
-  const handleWaterIncrement = () => {
-    setWaterIntakeMl((prev) => prev + 250);
+  const handleSaveWater = () => {
+    const parsed = parseInt(tempWaterInput, 10);
+    if (!isNaN(parsed) && parsed > 0 && parsed <= 5000) {
+      setWaterIntakeMl((prev) => prev + parsed);
+      setIsWaterModalOpen(false);
+    }
   };
 
   const handleSaveWeight = () => {
@@ -94,6 +100,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   const sugarStatus = totalSugar <= 17.5 ? 'SAFE' : totalSugar <= 25 ? 'CAUTION' : 'EXCEEDED';
   const sodiumStatus = totalSodium <= 1400 ? 'SAFE' : totalSodium <= 2000 ? 'CAUTION' : 'EXCEEDED';
+
+  // Weight Classification Status based on BMI (Baseline average height: 1.75m)
+  const userBmi = todayWeightKg / (1.75 * 1.75);
+  const weightStatus = userBmi < 18.5 ? 'UNDERWEIGHT' : userBmi < 25.0 ? 'NORMAL' : userBmi < 30.0 ? 'OVERWEIGHT' : 'OBESE';
+
+  // Hydration Level Status represented as completion percentage
+  const hydrationPct = Math.round((waterIntakeMl / 2500) * 100);
 
   const sugarPct = Math.min(Math.round((totalSugar / 25) * 100), 100);
   const sodiumPct = Math.min(Math.round((totalSodium / 2000) * 100), 100);
@@ -139,30 +152,23 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#3B8A66', '#1E4C38', '#112D21']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              colors={['#10B981', '#059669']}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
               style={styles.bentoCard}
             >
               <View style={[styles.bentoWatermark, { opacity: 0.12 }]}>
-                <IconSquiScale size={66} color="#10B981" strokeWidth={1.8} />
+                <IconSquiScale size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
               <View style={styles.bentoTopRow}>
-                <View style={[styles.bentoIconBadge('emerald'), { backgroundColor: '#10B981', borderColor: '#10B981' }]}>
+                <View style={[styles.bentoIconBadge('emerald'), { backgroundColor: 'rgba(255, 255, 255, 0.20)', borderColor: 'rgba(255, 255, 255, 0.30)', borderWidth: 1 }]}>
                   <IconSquiScale size={18} color="#FFFFFF" />
                 </View>
-                <TouchableOpacity
-                  style={styles.bentoFloatingPlus}
-                  activeOpacity={0.7}
-                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-                  onPress={() => {
-                    setTempWeightInput(todayWeightKg.toString());
-                    setIsWeightModalOpen(true);
-                  }}
-                >
-                  <IconPlus size={16} color="#FFFFFF" strokeWidth={2.4} />
-                </TouchableOpacity>
+                <View style={styles.glassStatusBadge(weightStatus)}>
+                  <View style={styles.statusGlowDot(weightStatus)} />
+                  <Text style={styles.statusBadgeText(weightStatus)}>{weightStatus}</Text>
+                </View>
               </View>
 
               <View style={styles.bentoContent}>
@@ -179,29 +185,32 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </TouchableOpacity>
 
           {/* Hydration Bento Card */}
-          <View style={styles.bentoTouchWrap}>
+          <TouchableOpacity
+            style={styles.bentoTouchWrap}
+            activeOpacity={0.88}
+            onPress={() => {
+              setTempWaterInput('250');
+              setIsWaterModalOpen(true);
+            }}
+          >
             <LinearGradient
-              colors={['#3884B5', '#1F547A', '#11324D']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              colors={['#0EA5E9', '#0284C7']}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
               style={styles.bentoCard}
             >
               <View style={[styles.bentoWatermark, { opacity: 0.12 }]}>
-                <IconSquiHydration size={66} color="#0EA5E9" strokeWidth={1.8} />
+                <IconSquiHydration size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
               <View style={styles.bentoTopRow}>
-                <View style={[styles.bentoIconBadge('cyan'), { backgroundColor: '#0EA5E9', borderColor: '#0EA5E9' }]}>
+                <View style={[styles.bentoIconBadge('cyan'), { backgroundColor: 'rgba(255, 255, 255, 0.20)', borderColor: 'rgba(255, 255, 255, 0.30)', borderWidth: 1 }]}>
                   <IconSquiHydration size={18} color="#FFFFFF" />
                 </View>
-                <TouchableOpacity
-                  style={styles.bentoFloatingPlus}
-                  activeOpacity={0.7}
-                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-                  onPress={handleWaterIncrement}
-                >
-                  <IconPlus size={16} color="#FFFFFF" strokeWidth={2.4} />
-                </TouchableOpacity>
+                <View style={styles.glassStatusBadge(`${hydrationPct}%`)}>
+                  <View style={styles.statusGlowDot(`${hydrationPct}%`)} />
+                  <Text style={styles.statusBadgeText(`${hydrationPct}%`)}>{hydrationPct}%</Text>
+                </View>
               </View>
 
               <View style={styles.bentoContent}>
@@ -212,10 +221,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <Text style={[styles.bentoUnit, { fontSize: 11 }]}> ml</Text>
                   </Text>
                 </View>
-                <Text style={styles.bentoSubText}>of 2,500ml target ({Math.round((waterIntakeMl / 2500) * 100)}%)</Text>
+                <Text style={styles.bentoSubText}>of 2,500ml target</Text>
               </View>
             </LinearGradient>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Section Label: Daily Nutrients Consumed */}
@@ -232,17 +241,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#B57738', '#7A4B1F', '#4D2D11']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              colors={['#F59E0B', '#EA580C']}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
               style={styles.bentoCard}
             >
               <View style={[styles.bentoWatermark, { opacity: 0.12 }]}>
-                <IconSquiSugar size={66} color="#F59E0B" strokeWidth={1.8} />
+                <IconSquiSugar size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
               <View style={styles.bentoTopRow}>
-                <View style={[styles.bentoIconBadge('amber'), { backgroundColor: '#F59E0B', borderColor: '#F59E0B' }]}>
+                <View style={[styles.bentoIconBadge('amber'), { backgroundColor: 'rgba(255, 255, 255, 0.20)', borderColor: 'rgba(255, 255, 255, 0.30)', borderWidth: 1 }]}>
                   <IconSquiSugar size={18} color="#FFFFFF" />
                 </View>
                 <View style={styles.glassStatusBadge(sugarStatus)}>
@@ -261,7 +270,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </View>
                 <Text style={styles.bentoSubText}>of 25g daily target</Text>
                 <View style={styles.bentoTrackBg}>
-                  <View style={[styles.bentoTrackFill(sugarPct, '#FFFFFF'), { backgroundColor: '#F59E0B' }]} />
+                  <View style={[styles.bentoTrackFill(sugarPct, '#FFFFFF'), { backgroundColor: '#FFFFFF' }]} />
                 </View>
               </View>
             </LinearGradient>
@@ -277,17 +286,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={['#3B8A66', '#1E4C38', '#112D21']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              colors={['#10B981', '#059669']}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
               style={styles.bentoCard}
             >
               <View style={[styles.bentoWatermark, { opacity: 0.12 }]}>
-                <IconSquiSodium size={66} color="#10B981" strokeWidth={1.8} />
+                <IconSquiSodium size={66} color="#FFFFFF" strokeWidth={1.8} />
               </View>
 
               <View style={styles.bentoTopRow}>
-                <View style={[styles.bentoIconBadge('emerald'), { backgroundColor: '#10B981', borderColor: '#10B981' }]}>
+                <View style={[styles.bentoIconBadge('emerald'), { backgroundColor: 'rgba(255, 255, 255, 0.20)', borderColor: 'rgba(255, 255, 255, 0.30)', borderWidth: 1 }]}>
                   <IconSquiSodium size={18} color="#FFFFFF" />
                 </View>
                 <View style={styles.glassStatusBadge(sodiumStatus)}>
@@ -306,7 +315,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </View>
                 <Text style={styles.bentoSubText}>of 2,000mg daily cap</Text>
                 <View style={styles.bentoTrackBg}>
-                  <View style={[styles.bentoTrackFill(sodiumPct, '#FFFFFF'), { backgroundColor: '#10B981' }]} />
+                  <View style={[styles.bentoTrackFill(sodiumPct, '#FFFFFF'), { backgroundColor: '#FFFFFF' }]} />
                 </View>
               </View>
             </LinearGradient>
@@ -404,12 +413,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               )}
             </View>
 
-            {/* Bottom Status Banner inside Card */}
-            <View style={styles.galleryCardFooterBanner}>
-              <Text style={styles.galleryCardFooterText}>
-                🐿️ SQUI: {meals.length} meal{meals.length > 1 ? 's' : ''} logged. Today's health score is {healthScore}/100!
-              </Text>
-            </View>
+
           </View>
         )}
 
@@ -531,6 +535,61 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <TouchableOpacity
                 style={styles.cancelBtn}
                 onPress={() => setIsWeightModalOpen(false)}
+              >
+                <Text style={styles.cancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Quick Water Logger Modal */}
+        <Modal visible={isWaterModalOpen} transparent animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalCard}>
+              <Text style={styles.modalTitle}>Log Water Intake</Text>
+              <Text style={styles.modalSub}>
+                Staying hydrated supports digestion, energy levels, and overall vitality.
+              </Text>
+
+              {/* Quick Presets Row */}
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 15 }}>
+                <TouchableOpacity
+                  style={{ flex: 1, backgroundColor: '#E0F2FE', paddingVertical: 10, borderRadius: 12, marginRight: 6, alignItems: 'center' }}
+                  onPress={() => setTempWaterInput('250')}
+                  activeOpacity={0.7}
+                >
+                  <Text style={{ color: '#0369A1', fontFamily: FONTS.roundedBold, fontSize: 13 }}>+ 250ml</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ flex: 1, backgroundColor: '#E0F2FE', paddingVertical: 10, borderRadius: 12, marginRight: 6, alignItems: 'center' }}
+                  onPress={() => setTempWaterInput('500')}
+                  activeOpacity={0.7}
+                >
+                  <Text style={{ color: '#0369A1', fontFamily: FONTS.roundedBold, fontSize: 13 }}>+ 500ml</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ flex: 1, backgroundColor: '#E0F2FE', paddingVertical: 10, borderRadius: 12, alignItems: 'center' }}
+                  onPress={() => setTempWaterInput('1000')}
+                  activeOpacity={0.7}
+                >
+                  <Text style={{ color: '#0369A1', fontFamily: FONTS.roundedBold, fontSize: 13 }}>+ 1L</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TextInput
+                style={styles.weightInput}
+                value={tempWaterInput}
+                onChangeText={setTempWaterInput}
+                keyboardType="number-pad"
+                placeholder="250"
+                autoFocus
+              />
+              <TouchableOpacity style={[styles.saveWeightBtn, { backgroundColor: '#0284C7' }]} onPress={handleSaveWater}>
+                <Text style={styles.saveWeightBtnText}>Add Water</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelBtn}
+                onPress={() => setIsWaterModalOpen(false)}
               >
                 <Text style={styles.cancelBtnText}>Cancel</Text>
               </TouchableOpacity>
