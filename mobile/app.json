@@ -12,14 +12,18 @@
       "backgroundColor": "#10B981"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "package": "com.squi.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/MLogo.jpg",
         "backgroundColor": "#10B981"
-      }
+      },
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/MLogo.jpg"
@@ -27,6 +31,14 @@
     "plugins": [
       "expo-asset",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c86297d6-9fdf-4f7b-93ef-47353d4d48b1"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c86297d6-9fdf-4f7b-93ef-47353d4d48b1"
+    }
   }
 }
