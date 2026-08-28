@@ -39,6 +39,8 @@
     },
     "updates": {
       "url": "https://u.expo.dev/c86297d6-9fdf-4f7b-93ef-47353d4d48b1",
+      "checkOnLaunch": "ALWAYS",
+      "fallbackToCacheTimeout": 5000,
       "requestHeaders": {
         "expo-channel-name": "production"
       }
