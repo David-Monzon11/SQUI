@@ -150,7 +150,7 @@ export const analyticsStyles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#E8F3EC',
+    backgroundColor: '#FFF2EB',
     alignItems: 'center',
     justifyContent: 'center',
   },

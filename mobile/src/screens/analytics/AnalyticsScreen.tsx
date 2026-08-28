@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { IconPulseTrend } from '../../components/common/Icons';
+import { IconFlame } from '../../components/common/Icons';
 import { analyticsStyles as styles } from './Analytics.styles';
 
 export const AnalyticsScreen: React.FC = () => {
@@ -66,7 +66,7 @@ export const AnalyticsScreen: React.FC = () => {
               <Text style={styles.streakSub}>You stayed within safe thresholds for 5 consecutive days.</Text>
             </View>
             <View style={styles.streakIconBox}>
-              <IconPulseTrend size={22} color="#1B432C" />
+              <IconFlame size={22} color="#EA580C" />
             </View>
           </View>
         </View>
