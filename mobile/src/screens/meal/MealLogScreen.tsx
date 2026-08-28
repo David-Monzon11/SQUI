@@ -264,16 +264,6 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
 
           {/* Full Grid of food photos */}
           <View style={styles.gridContainer}>
-            {/* Slot 0: special Add Card */}
-            <TouchableOpacity
-              style={styles.plusCard}
-              activeOpacity={0.8}
-              onPress={() => setActiveStep('CAMERA')}
-            >
-              <Text style={styles.plusIcon}>+</Text>
-              <Text style={styles.plusText}>Add Meal</Text>
-            </TouchableOpacity>
-
             {/* Historic Meals */}
             {meals.map((meal) => {
               const isHigh = meal.nutrition.sodiumMg >= 800;
@@ -302,6 +292,16 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
                 </TouchableOpacity>
               );
             })}
+
+            {/* Add Meal Card — always at the end */}
+            <TouchableOpacity
+              style={styles.plusCard}
+              activeOpacity={0.8}
+              onPress={() => setActiveStep('CAMERA')}
+            >
+              <Text style={styles.plusIcon}>+</Text>
+              <Text style={styles.plusText}>Add Meal</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
 
