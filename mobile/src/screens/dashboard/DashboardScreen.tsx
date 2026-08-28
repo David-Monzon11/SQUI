@@ -21,6 +21,7 @@ import {
   IconSquiSugar,
   IconSquiSodium,
   IconPlus,
+  IconBell,
 } from '../../components/common/Icons';
 import { DailyNutrientDetailScreen } from '../nutrition/DailyNutrientDetailScreen';
 import { dashboardStyles as styles } from './Dashboard.styles';
@@ -119,13 +120,27 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header with Integrated Date & Circular Avatar */}
+        {/* Header with Integrated Date & Notification Bell */}
         <View style={styles.header}>
           <View>
             <Text style={styles.greetingTitle}>Good day, Alex</Text>
             <Text style={styles.greetingSubtitle}>Friday, Aug 21 • Mindful food choices</Text>
           </View>
-          <SquiLogo size={46} variant="circle" />
+          <TouchableOpacity
+            style={{
+              width: 46,
+              height: 46,
+              borderRadius: 23,
+              backgroundColor: '#E8F3EC',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderWidth: 1.5,
+              borderColor: 'rgba(27,67,44,0.10)',
+            }}
+            activeOpacity={0.75}
+          >
+            <IconBell size={22} color="#1B432C" />
+          </TouchableOpacity>
         </View>
 
         {/* SQUI Mascot Reflection Hero Banner */}
