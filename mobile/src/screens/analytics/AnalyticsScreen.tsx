@@ -60,7 +60,7 @@ export const AnalyticsScreen: React.FC = () => {
         {/* Streak Card */}
         <View style={styles.card}>
           <View style={styles.streakRow}>
-            <View>
+            <View style={{ flex: 1, paddingRight: 12 }}>
               <Text style={styles.streakTitle}>Healthy Balance Streak</Text>
               <Text style={styles.streakValue}>5 Days Active</Text>
               <Text style={styles.streakSub}>You stayed within safe thresholds for 5 consecutive days.</Text>
