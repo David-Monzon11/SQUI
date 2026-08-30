@@ -395,7 +395,7 @@ export const AnimatedSplash: React.FC<AnimatedSplashProps> = ({
           >
             <View style={styles.logoBorderContainer}>
               <Image
-                source={require('../../../assets/squi_new_splash_mascot.jpg')}
+                source={require('../../../assets/MLogo.jpg')}
                 style={styles.logoImage}
                 resizeMode="contain"
               />

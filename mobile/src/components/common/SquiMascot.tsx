@@ -49,318 +49,233 @@ export const SquiMascot: React.FC<SquiMascotProps> = ({
   useEffect(() => {
     if (!animated) return;
 
+    // Build Phase 4 and Phase 5 animation lists dynamically to prevent bridge lag
+    const phase4Animations = [
+      Animated.timing(jumpY, {
+        toValue: 3,
+        duration: 220,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(squashScaleY, {
+        toValue: 0.85,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(squashScaleX, {
+        toValue: 1.15,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(tiltRotate, {
+        toValue: -2,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(shadowScale, {
+        toValue: 1.1,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(shadowOpacity, {
+        toValue: 0.35,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+    ];
+
+    if (showLeaves) {
+      phase4Animations.push(
+        Animated.timing(leafLeft1Y, {
+          toValue: -18,
+          duration: 220,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafLeft1Rot, {
+          toValue: -24,
+          duration: 220,
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafRight1Y, {
+          toValue: -20,
+          duration: 220,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafRight1Rot, {
+          toValue: 28,
+          duration: 220,
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafCenterY, {
+          toValue: -12,
+          duration: 200,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafCenterRot, {
+          toValue: 10,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafLeftUpperY, {
+          toValue: -26,
+          duration: 230,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafLeftUpperRot, {
+          toValue: -36,
+          duration: 230,
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafRightUpperY, {
+          toValue: -24,
+          duration: 220,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(leafRightUpperRot, {
+          toValue: 34,
+          duration: 220,
+          useNativeDriver: true,
+        })
+      );
+    }
+
+    const phase5Animations = [
+      Animated.spring(jumpY, {
+        toValue: 0,
+        friction: 4,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.spring(squashScaleY, {
+        toValue: 1.0,
+        friction: 4,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.spring(squashScaleX, {
+        toValue: 1.0,
+        friction: 4,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.spring(tiltRotate, {
+        toValue: 0,
+        friction: 4,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+    ];
+
+    if (showLeaves) {
+      phase5Animations.push(
+        Animated.spring(leafLeft1Y, {
+          toValue: 0,
+          friction: 3.5,
+          tension: 28,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafLeft1Rot, {
+          toValue: 0,
+          friction: 3.5,
+          tension: 28,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafRight1Y, {
+          toValue: 0,
+          friction: 3.2,
+          tension: 26,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafRight1Rot, {
+          toValue: 0,
+          friction: 3.2,
+          tension: 26,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafCenterY, {
+          toValue: 0,
+          friction: 4,
+          tension: 30,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafCenterRot, {
+          toValue: 0,
+          friction: 4,
+          tension: 30,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafLeftUpperY, {
+          toValue: 0,
+          friction: 3.8,
+          tension: 26,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafLeftUpperRot, {
+          toValue: 0,
+          friction: 3.8,
+          tension: 26,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafRightUpperY, {
+          toValue: 0,
+          friction: 3.6,
+          tension: 28,
+          useNativeDriver: true,
+        }),
+        Animated.spring(leafRightUpperRot, {
+          toValue: 0,
+          friction: 3.6,
+          tension: 28,
+          useNativeDriver: true,
+        })
+      );
+    }
+
     const jumpCycle = Animated.loop(
       Animated.sequence([
-        // =========================================================================
-        // Phase 1: Snappy Crouch Anticipation (200ms) - Leaves 100% STILL
-        // =========================================================================
+        // Phase 1: Snappy Crouch Anticipation (200ms)
         Animated.parallel([
-          Animated.timing(jumpY, {
-            toValue: 4,
-            duration: 200,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleY, {
-            toValue: 0.88,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleX, {
-            toValue: 1.12,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(tiltRotate, {
-            toValue: -2,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(shadowScale, {
-            toValue: 1.15,
-            duration: 200,
-            useNativeDriver: true,
-          }),
+          Animated.timing(jumpY, { toValue: 4, duration: 200, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+          Animated.timing(squashScaleY, { toValue: 0.88, duration: 200, useNativeDriver: true }),
+          Animated.timing(squashScaleX, { toValue: 1.12, duration: 200, useNativeDriver: true }),
+          Animated.timing(tiltRotate, { toValue: -2, duration: 200, useNativeDriver: true }),
+          Animated.timing(shadowScale, { toValue: 1.15, duration: 200, useNativeDriver: true }),
         ]),
-
-        // =========================================================================
-        // Phase 2: Energetic Snappy Leap Upwards (320ms) - Leaves 100% STILL
-        // =========================================================================
+        // Phase 2: Energetic Snappy Leap Upwards (320ms)
         Animated.parallel([
-          Animated.timing(jumpY, {
-            toValue: -26,
-            duration: 320,
-            easing: Easing.out(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleY, {
-            toValue: 1.16,
-            duration: 320,
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleX, {
-            toValue: 0.88,
-            duration: 320,
-            useNativeDriver: true,
-          }),
-          Animated.timing(tiltRotate, {
-            toValue: 5,
-            duration: 320,
-            useNativeDriver: true,
-          }),
-          Animated.timing(shadowScale, {
-            toValue: 0.60,
-            duration: 320,
-            useNativeDriver: true,
-          }),
-          Animated.timing(shadowOpacity, {
-            toValue: 0.12,
-            duration: 320,
-            useNativeDriver: true,
-          }),
+          Animated.timing(jumpY, { toValue: -26, duration: 320, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.timing(squashScaleY, { toValue: 1.16, duration: 320, useNativeDriver: true }),
+          Animated.timing(squashScaleX, { toValue: 0.88, duration: 320, useNativeDriver: true }),
+          Animated.timing(tiltRotate, { toValue: 5, duration: 320, useNativeDriver: true }),
+          Animated.timing(shadowScale, { toValue: 0.60, duration: 320, useNativeDriver: true }),
+          Animated.timing(shadowOpacity, { toValue: 0.12, duration: 320, useNativeDriver: true }),
         ]),
-
-        // =========================================================================
-        // Phase 3: Crisp Apex & Gravity Descent (280ms) - Leaves 100% STILL
-        // =========================================================================
+        // Phase 3: Crisp Apex & Gravity Descent (280ms)
         Animated.parallel([
-          Animated.timing(jumpY, {
-            toValue: 0,
-            duration: 280,
-            easing: Easing.in(Easing.quad),
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleY, {
-            toValue: 1.0,
-            duration: 280,
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleX, {
-            toValue: 1.0,
-            duration: 280,
-            useNativeDriver: true,
-          }),
-          Animated.timing(tiltRotate, {
-            toValue: 0,
-            duration: 280,
-            useNativeDriver: true,
-          }),
-          Animated.timing(shadowScale, {
-            toValue: 0.95,
-            duration: 280,
-            useNativeDriver: true,
-          }),
-          Animated.timing(shadowOpacity, {
-            toValue: 0.28,
-            duration: 280,
-            useNativeDriver: true,
-          }),
+          Animated.timing(jumpY, { toValue: 0, duration: 280, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+          Animated.timing(squashScaleY, { toValue: 1.0, duration: 280, useNativeDriver: true }),
+          Animated.timing(squashScaleX, { toValue: 1.0, duration: 280, useNativeDriver: true }),
+          Animated.timing(tiltRotate, { toValue: 0, duration: 280, useNativeDriver: true }),
+          Animated.timing(shadowScale, { toValue: 0.95, duration: 280, useNativeDriver: true }),
+          Animated.timing(shadowOpacity, { toValue: 0.28, duration: 280, useNativeDriver: true }),
         ]),
-
-        // =========================================================================
         // Phase 4: Touchdown Impact -> FEET HIT GROUND & LEAVES BURST UP! (220ms)
-        // =========================================================================
-        Animated.parallel([
-          Animated.timing(jumpY, {
-            toValue: 3,
-            duration: 220,
-            easing: Easing.in(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleY, {
-            toValue: 0.85,
-            duration: 220,
-            useNativeDriver: true,
-          }),
-          Animated.timing(squashScaleX, {
-            toValue: 1.15,
-            duration: 220,
-            useNativeDriver: true,
-          }),
-          Animated.timing(tiltRotate, {
-            toValue: -2,
-            duration: 220,
-            useNativeDriver: true,
-          }),
-          Animated.timing(shadowScale, {
-            toValue: 1.1,
-            duration: 220,
-            useNativeDriver: true,
-          }),
-          Animated.timing(shadowOpacity, {
-            toValue: 0.35,
-            duration: 220,
-            useNativeDriver: true,
-          }),
-
-          // 🍂 Impact shockwave kicks up horizontal leaf bed!
-          Animated.timing(leafLeft1Y, {
-            toValue: -18,
-            duration: 220,
-            easing: Easing.out(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(leafLeft1Rot, {
-            toValue: -24,
-            duration: 220,
-            useNativeDriver: true,
-          }),
-
-          Animated.timing(leafRight1Y, {
-            toValue: -20,
-            duration: 220,
-            easing: Easing.out(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(leafRight1Rot, {
-            toValue: 28,
-            duration: 220,
-            useNativeDriver: true,
-          }),
-
-          Animated.timing(leafCenterY, {
-            toValue: -12,
-            duration: 200,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
-          }),
-          Animated.timing(leafCenterRot, {
-            toValue: 10,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-
-          Animated.timing(leafLeftUpperY, {
-            toValue: -26,
-            duration: 230,
-            easing: Easing.out(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(leafLeftUpperRot, {
-            toValue: -36,
-            duration: 230,
-            useNativeDriver: true,
-          }),
-
-          Animated.timing(leafRightUpperY, {
-            toValue: -24,
-            duration: 220,
-            easing: Easing.out(Easing.cubic),
-            useNativeDriver: true,
-          }),
-          Animated.timing(leafRightUpperRot, {
-            toValue: 34,
-            duration: 220,
-            useNativeDriver: true,
-          }),
-        ]),
-
-        // =========================================================================
+        Animated.parallel(phase4Animations),
         // Phase 5: Leaves Settle Back Horizontally on Ground (400ms)
-        // =========================================================================
-        Animated.parallel([
-          Animated.spring(jumpY, {
-            toValue: 0,
-            friction: 4,
-            tension: 40,
-            useNativeDriver: true,
-          }),
-          Animated.spring(squashScaleY, {
-            toValue: 1.0,
-            friction: 4,
-            tension: 40,
-            useNativeDriver: true,
-          }),
-          Animated.spring(squashScaleX, {
-            toValue: 1.0,
-            friction: 4,
-            tension: 40,
-            useNativeDriver: true,
-          }),
-          Animated.spring(tiltRotate, {
-            toValue: 0,
-            friction: 4,
-            tension: 40,
-            useNativeDriver: true,
-          }),
-
-          // 🍂 Leaves settle smoothly back into horizontal bed
-          Animated.spring(leafLeft1Y, {
-            toValue: 0,
-            friction: 3.5,
-            tension: 28,
-            useNativeDriver: true,
-          }),
-          Animated.spring(leafLeft1Rot, {
-            toValue: 0,
-            friction: 3.5,
-            tension: 28,
-            useNativeDriver: true,
-          }),
-
-          Animated.spring(leafRight1Y, {
-            toValue: 0,
-            friction: 3.2,
-            tension: 26,
-            useNativeDriver: true,
-          }),
-          Animated.spring(leafRight1Rot, {
-            toValue: 0,
-            friction: 3.2,
-            tension: 26,
-            useNativeDriver: true,
-          }),
-
-          Animated.spring(leafCenterY, {
-            toValue: 0,
-            friction: 4,
-            tension: 30,
-            useNativeDriver: true,
-          }),
-          Animated.spring(leafCenterRot, {
-            toValue: 0,
-            friction: 4,
-            tension: 30,
-            useNativeDriver: true,
-          }),
-
-          Animated.spring(leafLeftUpperY, {
-            toValue: 0,
-            friction: 3.8,
-            tension: 26,
-            useNativeDriver: true,
-          }),
-          Animated.spring(leafLeftUpperRot, {
-            toValue: 0,
-            friction: 3.8,
-            tension: 26,
-            useNativeDriver: true,
-          }),
-
-          Animated.spring(leafRightUpperY, {
-            toValue: 0,
-            friction: 3.6,
-            tension: 28,
-            useNativeDriver: true,
-          }),
-          Animated.spring(leafRightUpperRot, {
-            toValue: 0,
-            friction: 3.6,
-            tension: 28,
-            useNativeDriver: true,
-          }),
-        ]),
-
-        // =========================================================================
-        // Phase 6: Ground Rest (3200ms) - Calm peaceful resting pause between jumps
-        // =========================================================================
+        Animated.parallel(phase5Animations),
+        // Phase 6: Ground Rest (3200ms)
         Animated.delay(3200),
       ])
     );
 
     jumpCycle.start();
     return () => jumpCycle.stop();
-  }, [animated]);
+  }, [animated, showLeaves]);
 
   const rotationInterpolate = tiltRotate.interpolate({
     inputRange: [-15, 0, 15],
@@ -501,11 +416,11 @@ export const SquiMascot: React.FC<SquiMascotProps> = ({
       >
         <Svg width={size} height={size} viewBox="0 0 120 95" fill="none">
           <Defs>
-            {/* Pure SQUI Emerald Green Body Fill */}
+            {/* SQUI Cream Brand Body Fill (matching app icon) */}
             <LinearGradient id="squiPureEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
-              <Stop offset="0%" stopColor="#34D399" />
-              <Stop offset="50%" stopColor="#10B981" />
-              <Stop offset="100%" stopColor="#059669" />
+              <Stop offset="0%" stopColor="#FDFBF7" />
+              <Stop offset="50%" stopColor="#F3EAD8" />
+              <Stop offset="100%" stopColor="#EBDEC9" />
             </LinearGradient>
           </Defs>
 
