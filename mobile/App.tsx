@@ -18,6 +18,7 @@ import {
   Nunito_900Black,
 } from '@expo-google-fonts/nunito';
 import { TabNavigator } from './src/navigation/TabNavigator';
+import { AnimatedSplash } from './src/components/common/AnimatedSplash';
 
 export default function App() {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -65,23 +66,20 @@ export default function App() {
     return () => appStateListener.remove();
   }, []);
 
-  if (!fontsLoaded || isUpdating) {
-    return (
-      <View style={{ flex: 1, backgroundColor: '#FDFBF7', justifyContent: 'center', alignItems: 'center', gap: 12 }}>
-        <ActivityIndicator size="large" color="#10B981" />
-        {isUpdating && (
-          <Text style={{ fontSize: 14, color: '#1B432C', fontWeight: '600' }}>
-            {updateStatusText}
-          </Text>
-        )}
-      </View>
-    );
-  }
+  const [animationFinished, setAnimationFinished] = useState(false);
 
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
-      <TabNavigator />
+      {fontsLoaded && <TabNavigator />}
+      {!animationFinished && (
+        <AnimatedSplash
+          isReady={fontsLoaded}
+          isUpdating={isUpdating}
+          updateStatusText={updateStatusText}
+          onFinish={() => setAnimationFinished(true)}
+        />
+      )}
     </SafeAreaProvider>
   );
 }

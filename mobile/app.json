@@ -7,9 +7,9 @@
     "icon": "./assets/MLogo.jpg",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/MLogo.jpg",
+      "image": "./assets/squi_new_splash_mascot.jpg",
       "resizeMode": "contain",
-      "backgroundColor": "#10B981"
+      "backgroundColor": "#FDFBF7"
     },
     "ios": {
       "supportsTablet": true,

@@ -7,6 +7,7 @@ import Svg, {
   Ellipse,
   Defs,
   LinearGradient,
+  RadialGradient,
   Stop,
 } from 'react-native-svg';
 
@@ -400,14 +401,23 @@ export const SquiMascot: React.FC<SquiMascotProps> = ({
         style={{
           position: 'absolute',
           bottom: 2,
-          width: 72,
-          height: 10,
-          borderRadius: 5,
-          backgroundColor: '#000000',
+          width: 76,
+          height: 12,
           opacity: shadowOpacity,
           transform: [{ scaleX: shadowScale }],
         }}
-      />
+      >
+        <Svg width="100%" height="100%" viewBox="0 0 76 12">
+          <Defs>
+            <RadialGradient id="shadowGrad" cx="50%" cy="50%" rx="50%" ry="50%">
+              <Stop offset="0%" stopColor="#1B432C" stopOpacity="0.45" />
+              <Stop offset="60%" stopColor="#1B432C" stopOpacity="0.20" />
+              <Stop offset="100%" stopColor="#1B432C" stopOpacity="0.0" />
+            </RadialGradient>
+          </Defs>
+          <Ellipse cx="38" cy="6" rx="38" ry="6" fill="url(#shadowGrad)" />
+        </Svg>
+      </Animated.View>
 
       {/* ========================================================================= */}
       {/* 🍂 LAYER 1: BACKGROUND GHOST LEAVES (Behind SQUI, zIndex 1)               */}
