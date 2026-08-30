@@ -7,7 +7,7 @@
     "icon": "./assets/MLogo.jpg",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/squi_new_splash_mascot.jpg",
+      "image": "./assets/MLogo.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#FDFBF7"
     },
