@@ -31,7 +31,7 @@ import {
   IconMailCheck,
   IconCameraSmall,
 } from '../../components/common/Icons';
-import { NotificationModal } from '../../components/common/NotificationModal';
+import { NotificationPopoverDrawer } from '../../components/common/NotificationPopoverDrawer';
 import { styles } from './Menu.styles';
 
 export const MenuScreen: React.FC = () => {
@@ -574,11 +574,12 @@ export const MenuScreen: React.FC = () => {
       </Modal>
 
       {/* ========================================================================= */}
-      {/* MODAL 3: Smart Reminders & Glassy Notification Center */}
+      {/* MODAL 3: Smart Reminders & Glassy Notification Popover Drawer */}
       {/* ========================================================================= */}
-      <NotificationModal
+      <NotificationPopoverDrawer
         visible={activeModal === 'reminders'}
         onClose={() => setActiveModal(null)}
+        unreadCount={3}
       />
 
       {/* ========================================================================= */}

@@ -24,7 +24,7 @@ import {
   IconBell,
 } from '../../components/common/Icons';
 import { DailyNutrientDetailScreen } from '../nutrition/DailyNutrientDetailScreen';
-import { NotificationModal } from '../../components/common/NotificationModal';
+import { NotificationPopoverDrawer } from '../../components/common/NotificationPopoverDrawer';
 import { dashboardStyles as styles } from './Dashboard.styles';
 import { MealItem } from '../../types';
 
@@ -130,33 +130,66 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </View>
           <TouchableOpacity
             style={{
-              width: 46,
-              height: 46,
-              borderRadius: 23,
-              backgroundColor: '#E8F3EC',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderWidth: 1.5,
-              borderColor: 'rgba(27,67,44,0.10)',
               position: 'relative',
             }}
             activeOpacity={0.75}
-            onPress={() => setIsNotificationModalOpen(true)}
+            onPress={() => setIsNotificationModalOpen((prev) => !prev)}
           >
-            <IconBell size={22} color="#1B432C" />
-            <View
+            <LinearGradient
+              colors={['rgba(255, 255, 255, 0.95)', 'rgba(232, 243, 236, 0.85)']}
+              style={{
+                width: 46,
+                height: 46,
+                borderRadius: 23,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderWidth: 1.5,
+                borderColor: 'rgba(255, 255, 255, 0.95)',
+                shadowColor: '#1B432C',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.10,
+                shadowRadius: 10,
+                elevation: 4,
+              }}
+            >
+              <IconBell size={22} color="#1B432C" />
+            </LinearGradient>
+
+            {/* Glossy Emerald Gradient Circle Counter Badge ("3") */}
+            <LinearGradient
+              colors={['#10B981', '#059669']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
               style={{
                 position: 'absolute',
-                top: 9,
-                right: 10,
-                width: 9,
-                height: 9,
-                borderRadius: 4.5,
-                backgroundColor: '#10B981',
+                top: -3,
+                right: -3,
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
                 borderWidth: 1.5,
                 borderColor: '#FFFFFF',
+                shadowColor: '#10B981',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.40,
+                shadowRadius: 5,
+                elevation: 4,
               }}
-            />
+            >
+              <Text
+                style={{
+                  fontFamily: FONTS.roundedBlack,
+                  fontSize: 10.5,
+                  color: '#FFFFFF',
+                  textAlign: 'center',
+                  marginTop: -1,
+                }}
+              >
+                3
+              </Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
 
@@ -647,11 +680,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           />
         </Modal>
 
-        {/* Glassy White Gradient Notification Center Modal */}
-        <NotificationModal
+        {/* Top Floating Glassy Notification Popover Drawer */}
+        <NotificationPopoverDrawer
           visible={isNotificationModalOpen}
           onClose={() => setIsNotificationModalOpen(false)}
           onNavigateMealLog={onNavigateToMeal}
+          unreadCount={3}
         />
       </ScrollView>
     </View>
