@@ -97,22 +97,22 @@ export const NotificationPopoverDrawer: React.FC<NotificationPopoverDrawerProps>
       case 'journal':
         return {
           bg: '#E8F3EC',
-          icon: <IconSparkles size={16} color="#1B432C" />,
+          icon: <IconSparkles size={14} color="#1B432C" />,
         };
       case 'hydration':
         return {
           bg: '#E0F2FE',
-          icon: <IconSquiHydration size={16} color="#0284C7" />,
+          icon: <IconSquiHydration size={14} color="#0284C7" />,
         };
       case 'nutrition':
         return {
           bg: '#FEF3C7',
-          icon: <IconHomeLeaf size={16} color="#D97706" />,
+          icon: <IconHomeLeaf size={14} color="#D97706" />,
         };
       case 'summary':
         return {
           bg: '#F1F5F9',
-          icon: <IconTarget size={16} color="#475569" />,
+          icon: <IconTarget size={14} color="#475569" />,
         };
     }
   };
@@ -239,7 +239,7 @@ export const NotificationPopoverDrawer: React.FC<NotificationPopoverDrawerProps>
               <>
                 <View style={styles.settingCardRow}>
                   <View style={styles.settingIconWrap}>
-                    <IconScale size={16} color="#1B432C" />
+                    <IconScale size={14} color="#1B432C" />
                   </View>
                   <View style={styles.settingTextWrap}>
                     <Text style={styles.settingTitleText}>Morning Weigh-in</Text>
@@ -255,7 +255,7 @@ export const NotificationPopoverDrawer: React.FC<NotificationPopoverDrawerProps>
 
                 <View style={styles.settingCardRow}>
                   <View style={styles.settingIconWrap}>
-                    <IconSparkles size={16} color="#1B432C" />
+                    <IconSparkles size={14} color="#1B432C" />
                   </View>
                   <View style={styles.settingTextWrap}>
                     <Text style={styles.settingTitleText}>Meal Photo Prompts</Text>
@@ -271,7 +271,7 @@ export const NotificationPopoverDrawer: React.FC<NotificationPopoverDrawerProps>
 
                 <View style={styles.settingCardRow}>
                   <View style={styles.settingIconWrap}>
-                    <IconTarget size={16} color="#1B432C" />
+                    <IconTarget size={14} color="#1B432C" />
                   </View>
                   <View style={styles.settingTextWrap}>
                     <Text style={styles.settingTitleText}>Evening Health Summary</Text>
