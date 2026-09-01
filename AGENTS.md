@@ -154,6 +154,19 @@ mobile/
   * Storage: Cloudflare R2 / S3 compatible SDK with local filesystem fallback for development mode.
   * Hosting: Render / Railway ready with standard `npm run build` and `npm start` scripts.
 
+### 6.1 Mandated Deployment & Git Push Workflow
+* **1. ALWAYS PUSH TO GITHUB FIRST**: Whenever any code, UI, asset, or configuration changes are made and verified, the AI agent MUST FIRST stage, commit, and push the changes directly to `origin main`:
+  ```bash
+  git add .
+  git commit -m "Descriptive feature or fix message"
+  git push origin main
+  ```
+* **2. ALWAYS UPDATE BOTH EAS CHANNELS AFTER PUSHING**: Immediately after pushing to `origin main`, publish EAS updates to BOTH `preview` and `production` branches so all mobile devices (whether using preview APKs or production builds) receive the update seamlessly without channel mismatches:
+  ```bash
+  npx eas-cli update --branch preview --message "Descriptive feature or fix message"
+  npx eas-cli update --branch production --message "Descriptive feature or fix message"
+  ```
+
 ---
 
 ## 7. AI & Extensibility Guidelines
