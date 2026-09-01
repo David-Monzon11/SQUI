@@ -31,6 +31,7 @@ import {
   IconMailCheck,
   IconCameraSmall,
 } from '../../components/common/Icons';
+import { NotificationModal } from '../../components/common/NotificationModal';
 import { styles } from './Menu.styles';
 
 export const MenuScreen: React.FC = () => {
@@ -573,77 +574,12 @@ export const MenuScreen: React.FC = () => {
       </Modal>
 
       {/* ========================================================================= */}
-      {/* MODAL 3: Smart Reminders */}
+      {/* MODAL 3: Smart Reminders & Glassy Notification Center */}
       {/* ========================================================================= */}
-      <Modal
+      <NotificationModal
         visible={activeModal === 'reminders'}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setActiveModal(null)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalDragHandle} />
-            <View style={styles.modalHeaderRow}>
-              <Text style={styles.modalTitle}>Smart Reminders</Text>
-              <TouchableOpacity onPress={() => setActiveModal(null)}>
-                <Text style={styles.modalCloseText}>Done</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.modalBody}>
-              <View style={[styles.menuItemRow, { paddingHorizontal: 0 }]}>
-                <View style={styles.menuItemContent}>
-                  <Text style={styles.menuItemTitle}>Morning Weigh-in Prompt</Text>
-                  <Text style={styles.menuItemSub}>07:30 AM gentle check-in</Text>
-                </View>
-                <Switch
-                  value={weightReminder}
-                  onValueChange={setWeightReminder}
-                  trackColor={{ false: '#CBD5E1', true: '#1B432C' }}
-                  thumbColor="#FFFFFF"
-                />
-              </View>
-
-              <View style={[styles.menuItemRow, { paddingHorizontal: 0 }]}>
-                <View style={styles.menuItemContent}>
-                  <Text style={styles.menuItemTitle}>Meal Photo Prompts</Text>
-                  <Text style={styles.menuItemSub}>Breakfast, Lunch & Dinner reminders</Text>
-                </View>
-                <Switch
-                  value={mealReminder}
-                  onValueChange={setMealReminder}
-                  trackColor={{ false: '#CBD5E1', true: '#1B432C' }}
-                  thumbColor="#FFFFFF"
-                />
-              </View>
-
-              <View style={[styles.menuItemRow, { paddingHorizontal: 0 }]}>
-                <View style={styles.menuItemContent}>
-                  <Text style={styles.menuItemTitle}>Evening Health Summary</Text>
-                  <Text style={styles.menuItemSub}>09:00 PM Daily Scorecard & reflections</Text>
-                </View>
-                <Switch
-                  value={summaryReminder}
-                  onValueChange={setSummaryReminder}
-                  trackColor={{ false: '#CBD5E1', true: '#1B432C' }}
-                  thumbColor="#FFFFFF"
-                />
-              </View>
-
-              <TouchableOpacity
-                style={styles.modalActionBtn}
-                onPress={() => {
-                  setActiveModal(null);
-                  Alert.alert('Saved', 'Your reminder preferences have been updated! 🔔');
-                }}
-              >
-                <Text style={styles.modalActionBtnText}>Save Preferences</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setActiveModal(null)}
+      />
 
       {/* ========================================================================= */}
       {/* MODAL 4: FAQs & Knowledge Articles */}

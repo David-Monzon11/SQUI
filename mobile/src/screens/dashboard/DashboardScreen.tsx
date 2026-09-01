@@ -24,6 +24,7 @@ import {
   IconBell,
 } from '../../components/common/Icons';
 import { DailyNutrientDetailScreen } from '../nutrition/DailyNutrientDetailScreen';
+import { NotificationModal } from '../../components/common/NotificationModal';
 import { dashboardStyles as styles } from './Dashboard.styles';
 import { MealItem } from '../../types';
 
@@ -48,6 +49,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [isWaterModalOpen, setIsWaterModalOpen] = useState(false);
   const [tempWaterInput, setTempWaterInput] = useState('250');
   const [isNutrientDetailOpen, setIsNutrientDetailOpen] = useState(false);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [selectedNutrientType, setSelectedNutrientType] = useState<'SUGAR' | 'SODIUM'>('SUGAR');
   const [selectedDetailMeal, setSelectedDetailMeal] = useState<MealItem | null>(null);
 
@@ -136,10 +138,25 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               justifyContent: 'center',
               borderWidth: 1.5,
               borderColor: 'rgba(27,67,44,0.10)',
+              position: 'relative',
             }}
             activeOpacity={0.75}
+            onPress={() => setIsNotificationModalOpen(true)}
           >
             <IconBell size={22} color="#1B432C" />
+            <View
+              style={{
+                position: 'absolute',
+                top: 9,
+                right: 10,
+                width: 9,
+                height: 9,
+                borderRadius: 4.5,
+                backgroundColor: '#10B981',
+                borderWidth: 1.5,
+                borderColor: '#FFFFFF',
+              }}
+            />
           </TouchableOpacity>
         </View>
 
@@ -629,6 +646,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             }))}
           />
         </Modal>
+
+        {/* Glassy White Gradient Notification Center Modal */}
+        <NotificationModal
+          visible={isNotificationModalOpen}
+          onClose={() => setIsNotificationModalOpen(false)}
+          onNavigateMealLog={onNavigateToMeal}
+        />
       </ScrollView>
     </View>
   );
