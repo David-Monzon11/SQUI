@@ -15,12 +15,14 @@ interface SquiMascotProps {
   size?: number;
   animated?: boolean;
   showLeaves?: boolean;
+  delayBeforeFirstJump?: number;
 }
 
 export const SquiMascot: React.FC<SquiMascotProps> = ({
   size = 115,
   animated = true,
   showLeaves = true,
+  delayBeforeFirstJump = 2000,
 }) => {
 // Squirrel Jump Physics
   const jumpY = useRef(new Animated.Value(0)).current;
@@ -273,9 +275,20 @@ export const SquiMascot: React.FC<SquiMascotProps> = ({
       ])
     );
 
-    jumpCycle.start();
-    return () => jumpCycle.stop();
-  }, [animated, showLeaves]);
+    let startTimer: NodeJS.Timeout | null = null;
+    if (delayBeforeFirstJump > 0) {
+      startTimer = setTimeout(() => {
+        jumpCycle.start();
+      }, delayBeforeFirstJump);
+    } else {
+      jumpCycle.start();
+    }
+
+    return () => {
+      if (startTimer) clearTimeout(startTimer);
+      jumpCycle.stop();
+    };
+  }, [animated, showLeaves, delayBeforeFirstJump]);
 
   const rotationInterpolate = tiltRotate.interpolate({
     inputRange: [-15, 0, 15],

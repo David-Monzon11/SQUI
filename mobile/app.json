@@ -4,10 +4,10 @@
     "slug": "squi-health-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/MLogo.jpg",
+    "icon": "./assets/splash_logo.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/MLogo.jpg",
+      "image": "./assets/splash_logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#FDFBF7"
     },
@@ -20,8 +20,8 @@
     "android": {
       "package": "com.squi.app",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/MLogo.jpg",
-        "backgroundColor": "#10B981"
+        "foregroundImage": "./assets/splash_logo.png",
+        "backgroundColor": "#FDFBF7"
       },
       "runtimeVersion": "1.0.0"
     },

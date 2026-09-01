@@ -182,10 +182,10 @@ export const AnimatedSplash: React.FC<AnimatedSplashProps> = ({
   // Monitor app loading state to trigger the morph transition
   useEffect(() => {
     if (isReady && !isUpdating) {
-      // Allow the animation to play fully before collapsing (minimum 3 seconds)
+      // Allow the 2s pause + jump animation to play fully before collapsing (3.8 seconds)
       const delayTimer = setTimeout(() => {
         triggerMorphTransition();
-      }, 3000);
+      }, 3800);
 
       return () => clearTimeout(delayTimer);
     }
@@ -395,7 +395,7 @@ export const AnimatedSplash: React.FC<AnimatedSplashProps> = ({
           >
             <View style={styles.logoBorderContainer}>
               <Image
-                source={require('../../../assets/MLogo.jpg')}
+                source={require('../../../assets/splash_logo.png')}
                 style={styles.logoImage}
                 resizeMode="contain"
               />
