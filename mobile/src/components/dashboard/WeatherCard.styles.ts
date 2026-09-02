@@ -27,13 +27,14 @@ export const styles = StyleSheet.create({
     color: '#4A6354',
   },
 
-  // Sculpted Wave Glassmorphic Top Weather Card (Increased Corner Radius to 46px for Extra Smoothness)
+  // Sculpted Wave Glassmorphic Top Weather Card
   waveCardWrapper: {
     position: 'relative',
     minHeight: 154,
-    borderRadius: 46, // Increased radius from 34px to 46px per user request!
+    borderRadius: 46,
     backgroundColor: 'transparent',
     overflow: 'hidden',
+    width: '100%',
   },
 
   // Absolute Wave SVG Background
@@ -134,25 +135,26 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // ↔️ Horizontal Scrollable Strip Container (Cards Under Untouched!)
+  // ↔️ Horizontal Scrollable Strip Container (Flush 100% with Top Card Left & Right Boundaries)
   scrollContainer: {
     marginTop: 14,
-    overflow: 'visible',
+    width: '100%',
   },
   scrollContentContainer: {
-    paddingHorizontal: 6,
+    paddingLeft: 0, // Leftmost card aligns flush with top card's left edge
+    paddingRight: 0, // Rightmost card aligns flush with top card's right edge (Red Line Alignment!)
     paddingTop: 8,
-    paddingBottom: 24,
+    paddingBottom: 24, // Generous bottom padding for unclipped soft shadows
     flexDirection: 'row',
-    gap: 12,
+    gap: 10,
   },
   glassForecastPill: {
-    width: 92,
-    height: 180,
+    width: 84, // Proportional fixed width
+    height: 180, // Generous fixed height
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.06)',
-    borderRadius: 30, // Forecast cards below remain exactly at 30px
+    borderRadius: 28,
     paddingVertical: 16,
     paddingHorizontal: 4,
     alignItems: 'center',
@@ -175,20 +177,20 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(245, 247, 246, 0.40)',
-    borderRadius: 30,
+    borderRadius: 28,
     zIndex: 1,
   },
 
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 14,
+    fontSize: 13.5,
     color: '#0F2418',
     letterSpacing: 0.2,
     zIndex: 2,
   },
   forecastIconWrap: {
     width: '100%',
-    height: 68,
+    height: 64,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'visible',
@@ -204,7 +206,7 @@ export const styles = StyleSheet.create({
 
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 12.5,
+    fontSize: 12,
     color: '#059669',
     letterSpacing: 0.2,
     backgroundColor: 'transparent',
@@ -212,7 +214,7 @@ export const styles = StyleSheet.create({
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 20,
+    fontSize: 19,
     color: '#0F2418',
     letterSpacing: -0.5,
     zIndex: 2,
