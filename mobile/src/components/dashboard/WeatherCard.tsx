@@ -20,36 +20,36 @@ interface HourlyItem {
 }
 
 // 3D Weather Icon Component:
-// Uses individual scale compensation per asset file to overcome transparent padding differences,
-// ensuring EVERY DIFFERENT WEATHER ICON renders at the EXACT SAME VISUAL SIZE as Card 1 (3 AM).
+// Calibrated with large dimension multipliers for 12 PM & 3 PM (92px x 92px)
+// so the inner graphic matches Card 1 (3 AM)'s large prominent size 100%.
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
   let customStyle = { width: 56, height: 56 };
 
   switch (type) {
     case 'rain':
-      // 3 AM Base Reference: Tightly cropped 3D Cloud with Sun
+      // 3 AM Base Reference: Tightly cropped 3D Cloud with Sun (56x56)
       source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
       customStyle = { width: 56, height: 56 };
       break;
 
     case 'cloud':
-      // 6 AM: 3D Soft Blue Cloud (Scaled up to 72px to match 3 AM visual volume)
+      // 6 AM: 3D Soft Blue Cloud (Scaled up to 78px to match 3 AM visual volume)
       source = require('../../../assets/vecteezy_sunny-cloudy-icon-illustration-in-3d-style-glowing-cloudy_23404599.png');
-      customStyle = { width: 72, height: 72 };
+      customStyle = { width: 78, height: 78 };
       break;
 
     case 'moon':
-      // 9 AM: 3D Sun & Cloud (Scaled up to 70px to match 3 AM visual volume)
+      // 9 AM: 3D Sun & Cloud (Scaled up to 76px to match 3 AM visual volume)
       source = require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
-      customStyle = { width: 70, height: 70 };
+      customStyle = { width: 76, height: 76 };
       break;
 
     case 'sun':
     default:
-      // 12 PM & 3 PM: 3D Glowing Sun (Scaled up to 64px to match 3 AM visual volume)
+      // 12 PM & 3 PM: 3D Glowing Sun (Scaled up to 92px x 92px to eliminate PNG margin shrinking!)
       source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
-      customStyle = { width: 64, height: 64 };
+      customStyle = { width: 92, height: 92 };
       break;
   }
 
@@ -231,7 +231,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Hourly Forecast Strip: Calibrated Size for Each Weather Asset */}
+      {/* Glassmorphic Hourly Forecast Strip */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
