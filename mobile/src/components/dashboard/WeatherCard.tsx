@@ -15,19 +15,49 @@ interface HourlyItem {
   time: string;
   temp: string;
   chance?: string;
+  iconType: 'rain' | 'sun' | 'cloud' | 'moon';
   isActive?: boolean;
 }
 
 // 3D Weather Icon Component:
-// Strictly uses the EXACT 3D CLOUD IMAGE from the FIRST CARD (3 AM) across ALL 5 forecast cards
-// so that every single card has identical 3D cloud sizing, artwork, ratio, and placement (56x56).
-// No hard shape views or pill artifacts underneath.
-const WeatherIcon: React.FC = () => {
+// Uses individual scale compensation per asset file to overcome transparent padding differences,
+// ensuring EVERY DIFFERENT WEATHER ICON renders at the EXACT SAME VISUAL SIZE as Card 1 (3 AM).
+const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
+  let source;
+  let customStyle = { width: 56, height: 56 };
+
+  switch (type) {
+    case 'rain':
+      // 3 AM Base Reference: Tightly cropped 3D Cloud with Sun
+      source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
+      customStyle = { width: 56, height: 56 };
+      break;
+
+    case 'cloud':
+      // 6 AM: 3D Soft Blue Cloud (Scaled up to 72px to match 3 AM visual volume)
+      source = require('../../../assets/vecteezy_sunny-cloudy-icon-illustration-in-3d-style-glowing-cloudy_23404599.png');
+      customStyle = { width: 72, height: 72 };
+      break;
+
+    case 'moon':
+      // 9 AM: 3D Sun & Cloud (Scaled up to 70px to match 3 AM visual volume)
+      source = require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
+      customStyle = { width: 70, height: 70 };
+      break;
+
+    case 'sun':
+    default:
+      // 12 PM & 3 PM: 3D Glowing Sun (Scaled up to 64px to match 3 AM visual volume)
+      source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
+      customStyle = { width: 64, height: 64 };
+      break;
+  }
+
   return (
     <View style={styles.forecastIconWrap}>
       <Image
-        source={require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png')}
-        style={styles.weatherIconImage}
+        source={source}
+        style={[styles.weatherIconImage, customStyle]}
       />
     </View>
   );
@@ -35,11 +65,11 @@ const WeatherIcon: React.FC = () => {
 
 export const WeatherCard: React.FC = () => {
   const hourlyForecast: HourlyItem[] = [
-    { time: '3 AM', temp: '18°', chance: '40%' },
-    { time: '6 AM', temp: '17°', chance: '30%' },
-    { time: '9 AM', temp: '21°', chance: '10%' },
-    { time: '12 PM', temp: '24°', chance: '0%', isActive: true },
-    { time: '3 PM', temp: '23°', chance: '10%' },
+    { time: '3 AM', temp: '18°', chance: '40%', iconType: 'rain' },
+    { time: '6 AM', temp: '17°', chance: '30%', iconType: 'cloud' },
+    { time: '9 AM', temp: '21°', chance: '10%', iconType: 'moon' },
+    { time: '12 PM', temp: '24°', chance: '0%', iconType: 'sun', isActive: true },
+    { time: '3 PM', temp: '23°', chance: '10%', iconType: 'sun' },
   ];
 
   return (
@@ -201,7 +231,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Hourly Forecast Strip: All 5 Cards Share 100% Identical 3D Cloud Image & Size from First Card */}
+      {/* Glassmorphic Hourly Forecast Strip: Calibrated Size for Each Weather Asset */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
@@ -213,7 +243,7 @@ export const WeatherCard: React.FC = () => {
               {item.time}
             </Text>
 
-            <WeatherIcon />
+            <WeatherIcon type={item.iconType} />
 
             {item.chance ? (
               <Text style={[styles.forecastChance, item.isActive && styles.forecastChanceActive]}>

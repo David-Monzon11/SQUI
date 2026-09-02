@@ -142,7 +142,7 @@ export const styles = StyleSheet.create({
   },
   glassForecastPill: {
     flex: 1,
-    height: 146, // Shared fixed height for 100% top & bottom edge alignment
+    height: 148, // Shared fixed height for 100% top & bottom edge alignment
     backgroundColor: 'rgba(255, 255, 255, 0.88)',
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.95)',
@@ -182,12 +182,11 @@ export const styles = StyleSheet.create({
     height: 56,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'visible',
   },
 
-  // Natural 3D Cloud Drop Shadow (No hard shape view!)
+  // Natural 3D Cloud Drop Shadow
   weatherIconImage: {
-    width: 56,
-    height: 56,
     resizeMode: 'contain',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
