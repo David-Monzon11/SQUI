@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Shared Forecast Strip & Glassmorphic Cards with Dark Glass Texture
+  // Shared Forecast Strip & Blended Glassmorphic Cards (Soft Rim)
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
@@ -144,8 +144,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     height: 148,
     backgroundColor: 'rgba(255, 255, 255, 0.86)',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.95)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.40)', // Soft blended rim (No harsh white outline line!)
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 4,
@@ -162,7 +162,8 @@ export const styles = StyleSheet.create({
     elevation: 8,
   },
   glassForecastPillActive: {
-    backgroundColor: 'rgba(12, 52, 33, 0.96)', // Deep Emerald Black Active Card
+    backgroundColor: 'rgba(12, 52, 33, 0.96)',
+    borderWidth: 1.5,
     borderColor: '#10B981',
     shadowColor: '#10B981',
     shadowOffset: { width: 0, height: 12 },
@@ -178,7 +179,7 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(15, 38, 26, 0.10)', // Dark Glass Texture tint inside!
+    backgroundColor: 'rgba(15, 38, 26, 0.10)',
     borderRadius: 24,
     zIndex: 1,
   },
