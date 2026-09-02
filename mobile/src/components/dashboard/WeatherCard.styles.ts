@@ -152,12 +152,15 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     
-    // Directional Soft Ambient Layered Shadow
+    // Directional Soft Ambient Layered Shadow for iOS & Android Native
     shadowColor: '#092415',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.14,
     shadowRadius: 16,
     elevation: 6,
+
+    // Web Multi-Layered CSS Shadow (Contact + Mid Ambient + Far Luminous Glow)
+    boxShadow: '0px 2px 4px rgba(9, 36, 21, 0.06), 0px 8px 18px rgba(9, 36, 21, 0.10), 0px 18px 32px rgba(9, 36, 21, 0.06)',
   },
   glassForecastPillActive: {
     backgroundColor: 'rgba(15, 60, 38, 0.95)', // Emerald active card background
@@ -167,6 +170,9 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.28,
     shadowRadius: 18,
     elevation: 8,
+
+    // Web Multi-Layered Active Emerald Glow Shadow
+    boxShadow: '0px 4px 8px rgba(16, 185, 129, 0.20), 0px 10px 24px rgba(16, 185, 129, 0.25), 0px 20px 40px rgba(10, 38, 24, 0.20)',
   },
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
