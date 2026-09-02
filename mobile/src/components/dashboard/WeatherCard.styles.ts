@@ -133,22 +133,25 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Shared Forecast Strip & Unified Design Glassmorphic Cards (All 5 Cards Share 100% Identical Design)
-  forecastStrip: {
+  // ↔️ Horizontal Scrollable Strip & Large Proportional Glass Cards (92px Width x 186px Height)
+  scrollContainer: {
     marginTop: 16,
+    marginHorizontal: -4,
+  },
+  scrollContentContainer: {
+    paddingHorizontal: 4,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 6,
+    gap: 12, // Generous spacing between thick, large cards
   },
   glassForecastPill: {
-    flex: 1,
-    height: 164, // Shared fixed height for 100% top & bottom edge alignment
-    backgroundColor: 'rgba(255, 255, 255, 0.86)',
+    width: 92, // Generous fixed width per card!
+    height: 186, // Generous fixed height per card!
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.40)', // Soft blended rim
-    borderRadius: 26,
-    paddingVertical: 14,
-    paddingHorizontal: 2,
+    borderColor: 'rgba(255, 255, 255, 0.45)', // Soft blended rim
+    borderRadius: 28,
+    paddingVertical: 16,
+    paddingHorizontal: 6,
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'relative',
@@ -156,10 +159,10 @@ export const styles = StyleSheet.create({
     
     // Deep 3D Directional Ambient Shadow
     shadowColor: '#051A0E',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.22,
-    shadowRadius: 18,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.24,
+    shadowRadius: 20,
+    elevation: 10,
   },
 
   // Inner Dark Glass Texture Overlay
@@ -170,20 +173,20 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(15, 38, 26, 0.10)',
-    borderRadius: 26,
+    borderRadius: 28,
     zIndex: 1,
   },
 
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 13.5,
+    fontSize: 14,
     color: '#0F2418',
     letterSpacing: 0.2,
     zIndex: 2,
   },
   forecastIconWrap: {
-    width: 60,
-    height: 60,
+    width: 68,
+    height: 68,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'visible',
@@ -194,14 +197,14 @@ export const styles = StyleSheet.create({
   weatherIconImage: {
     resizeMode: 'contain',
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 5 },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.22,
-    shadowRadius: 7,
+    shadowRadius: 8,
   },
 
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 12,
+    fontSize: 12.5,
     color: '#059669',
     letterSpacing: 0.2,
     backgroundColor: 'transparent',
@@ -209,9 +212,9 @@ export const styles = StyleSheet.create({
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 18,
+    fontSize: 20,
     color: '#0F2418',
-    letterSpacing: -0.3,
+    letterSpacing: -0.5,
     zIndex: 2,
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import Svg, {
   Path,
   Defs,
@@ -19,36 +19,35 @@ interface HourlyItem {
 }
 
 // 3D Weather Icon Component:
-// Calibrated with large dimension multipliers for 12 PM & 3 PM (92px x 92px)
-// so the inner graphic matches Card 1 (3 AM)'s large prominent size 100%.
+// Large, bold 3D artwork scaled proportionally for 92px x 186px forecast cards
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
-  let customStyle = { width: 56, height: 56 };
+  let customStyle = { width: 64, height: 64 };
 
   switch (type) {
     case 'rain':
-      // 3 AM Base Reference: Tightly cropped 3D Cloud with Sun (56x56)
+      // 3 AM Base Reference: Tightly cropped 3D Cloud with Sun (64x64)
       source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
-      customStyle = { width: 56, height: 56 };
+      customStyle = { width: 64, height: 64 };
       break;
 
     case 'cloud':
-      // 6 AM: 3D Soft Blue Cloud (Scaled up to 78px to match 3 AM visual volume)
+      // 6 AM: 3D Soft Blue Cloud (Scaled up to 86px for visual volume)
       source = require('../../../assets/vecteezy_sunny-cloudy-icon-illustration-in-3d-style-glowing-cloudy_23404599.png');
-      customStyle = { width: 78, height: 78 };
+      customStyle = { width: 86, height: 86 };
       break;
 
     case 'moon':
-      // 9 AM: 3D Sun & Cloud (Scaled up to 76px to match 3 AM visual volume)
+      // 9 AM: 3D Sun & Cloud (Scaled up to 84px for visual volume)
       source = require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
-      customStyle = { width: 76, height: 76 };
+      customStyle = { width: 84, height: 84 };
       break;
 
     case 'sun':
     default:
-      // 12 PM & 3 PM: 3D Glowing Sun (Scaled up to 92px x 92px to eliminate PNG margin shrinking!)
+      // 12 PM & 3 PM: 3D Glowing Sun (Scaled up to 102px for visual volume)
       source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
-      customStyle = { width: 92, height: 92 };
+      customStyle = { width: 102, height: 102 };
       break;
   }
 
@@ -230,8 +229,13 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Hourly Forecast Strip: All 5 Cards Share 100% Unified Design */}
-      <View style={styles.forecastStrip}>
+      {/* ↔️ Horizontal Scrollable Forecast Strip: Large Generous Cards (92px Width x 186px Height) */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContentContainer}
+      >
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
             key={index}
@@ -260,7 +264,7 @@ export const WeatherCard: React.FC = () => {
             </Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 };
