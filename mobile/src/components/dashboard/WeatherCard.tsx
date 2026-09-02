@@ -16,7 +16,6 @@ interface HourlyItem {
   temp: string;
   chance?: string;
   iconType: 'rain' | 'sun' | 'cloud' | 'moon';
-  isActive?: boolean;
 }
 
 // 3D Weather Icon Component:
@@ -68,7 +67,7 @@ export const WeatherCard: React.FC = () => {
     { time: '3 AM', temp: '18°', chance: '40%', iconType: 'rain' },
     { time: '6 AM', temp: '17°', chance: '30%', iconType: 'cloud' },
     { time: '9 AM', temp: '21°', chance: '10%', iconType: 'moon' },
-    { time: '12 PM', temp: '24°', chance: '0%', iconType: 'sun', isActive: true },
+    { time: '12 PM', temp: '24°', chance: '0%', iconType: 'sun' },
     { time: '3 PM', temp: '23°', chance: '10%', iconType: 'sun' },
   ];
 
@@ -231,37 +230,32 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Hourly Forecast Strip with Dark Glass Texture Overlay */}
+      {/* Glassmorphic Hourly Forecast Strip: All 5 Cards Share 100% Unified Design */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
             key={index}
             activeOpacity={0.85}
-            style={[styles.glassForecastPill, item.isActive && styles.glassForecastPillActive]}
+            style={styles.glassForecastPill}
           >
             {/* Inner Dark Glass Texture Overlay */}
-            <View
-              style={[
-                styles.glassTextureOverlay,
-                item.isActive && styles.glassTextureOverlayActive,
-              ]}
-            />
+            <View style={styles.glassTextureOverlay} />
 
-            <Text style={[styles.forecastTime, item.isActive && styles.forecastTimeActive]}>
+            <Text style={styles.forecastTime}>
               {item.time}
             </Text>
 
             <WeatherIcon type={item.iconType} />
 
             {item.chance ? (
-              <Text style={[styles.forecastChance, item.isActive && styles.forecastChanceActive]}>
+              <Text style={styles.forecastChance}>
                 {item.chance}
               </Text>
             ) : (
               <Text style={[styles.forecastChance, { opacity: 0 }]}>-</Text>
             )}
 
-            <Text style={[styles.forecastTemp, item.isActive && styles.forecastTempActive]}>
+            <Text style={styles.forecastTemp}>
               {item.temp}
             </Text>
           </TouchableOpacity>

@@ -133,16 +133,16 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Shared Forecast Strip & Increased Dimensions Glassmorphic Cards (Wider & Taller: 164px Height)
+  // Shared Forecast Strip & Unified Design Glassmorphic Cards (All 5 Cards Share 100% Identical Design)
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 6, // Slightly tighter strip gap so all 5 cards expand wider
+    gap: 6,
   },
   glassForecastPill: {
     flex: 1,
-    height: 164, // Increased height from 148px to 164px for taller & wider proportions
+    height: 164, // Shared fixed height for 100% top & bottom edge alignment
     backgroundColor: 'rgba(255, 255, 255, 0.86)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.40)', // Soft blended rim
@@ -161,16 +161,6 @@ export const styles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 8,
   },
-  glassForecastPillActive: {
-    backgroundColor: 'rgba(12, 52, 33, 0.96)',
-    borderWidth: 1.5,
-    borderColor: '#10B981',
-    shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.40,
-    shadowRadius: 20,
-    elevation: 10,
-  },
 
   // Inner Dark Glass Texture Overlay
   glassTextureOverlay: {
@@ -183,9 +173,6 @@ export const styles = StyleSheet.create({
     borderRadius: 26,
     zIndex: 1,
   },
-  glassTextureOverlayActive: {
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-  },
 
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
@@ -193,9 +180,6 @@ export const styles = StyleSheet.create({
     color: '#0F2418',
     letterSpacing: 0.2,
     zIndex: 2,
-  },
-  forecastTimeActive: {
-    color: '#6EE7B7',
   },
   forecastIconWrap: {
     width: 60,
@@ -223,17 +207,11 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     zIndex: 2,
   },
-  forecastChanceActive: {
-    color: '#34D399',
-  },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 18,
     color: '#0F2418',
     letterSpacing: -0.3,
     zIndex: 2,
-  },
-  forecastTempActive: {
-    color: '#FFFFFF',
   },
 });
