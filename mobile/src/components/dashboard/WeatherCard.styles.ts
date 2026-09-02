@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Shared Forecast Strip & Crisp White Glassmorphic Cards (Emphasized 3D Elevation)
+  // Shared Forecast Strip & Glassmorphic Cards with Dark Glass Texture
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
@@ -142,37 +142,56 @@ export const styles = StyleSheet.create({
   },
   glassForecastPill: {
     flex: 1,
-    height: 148, // Shared fixed height for 100% top & bottom edge alignment
-    backgroundColor: '#FFFFFF', // Crisp White Glass Container (Reverted from green!)
+    height: 148,
+    backgroundColor: 'rgba(255, 255, 255, 0.86)',
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.95)', // Clean white glass rim highlight
+    borderColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
+    position: 'relative',
+    overflow: 'hidden',
     
-    // Deep Emphasized Layered Shadow for Soft 3D Elevation
-    shadowColor: '#072013',
+    // Deep 3D Directional Ambient Shadow
+    shadowColor: '#051A0E',
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.20,
+    shadowOpacity: 0.22,
     shadowRadius: 18,
     elevation: 8,
   },
   glassForecastPillActive: {
-    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Deep Emerald for Selected 12 PM card
+    backgroundColor: 'rgba(12, 52, 33, 0.96)', // Deep Emerald Black Active Card
     borderColor: '#10B981',
     shadowColor: '#10B981',
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.38,
+    shadowOpacity: 0.40,
     shadowRadius: 20,
     elevation: 10,
   },
+
+  // Inner Dark Glass Texture Overlay
+  glassTextureOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(15, 38, 26, 0.10)', // Dark Glass Texture tint inside!
+    borderRadius: 24,
+    zIndex: 1,
+  },
+  glassTextureOverlayActive: {
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+  },
+
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 13,
     color: '#0F2418',
     letterSpacing: 0.2,
+    zIndex: 2,
   },
   forecastTimeActive: {
     color: '#6EE7B7',
@@ -183,6 +202,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'visible',
+    zIndex: 2,
   },
 
   // Natural 3D Cloud Drop Shadow
@@ -200,6 +220,7 @@ export const styles = StyleSheet.create({
     color: '#059669',
     letterSpacing: 0.2,
     backgroundColor: 'transparent',
+    zIndex: 2,
   },
   forecastChanceActive: {
     color: '#34D399',
@@ -209,6 +230,7 @@ export const styles = StyleSheet.create({
     fontSize: 17,
     color: '#0F2418',
     letterSpacing: -0.3,
+    zIndex: 2,
   },
   forecastTempActive: {
     color: '#FFFFFF',

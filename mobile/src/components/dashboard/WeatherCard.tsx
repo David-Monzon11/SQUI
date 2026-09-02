@@ -231,7 +231,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Hourly Forecast Strip */}
+      {/* Glassmorphic Hourly Forecast Strip with Dark Glass Texture Overlay */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
@@ -239,6 +239,14 @@ export const WeatherCard: React.FC = () => {
             activeOpacity={0.85}
             style={[styles.glassForecastPill, item.isActive && styles.glassForecastPillActive]}
           >
+            {/* Inner Dark Glass Texture Overlay */}
+            <View
+              style={[
+                styles.glassTextureOverlay,
+                item.isActive && styles.glassTextureOverlayActive,
+              ]}
+            />
+
             <Text style={[styles.forecastTime, item.isActive && styles.forecastTimeActive]}>
               {item.time}
             </Text>
