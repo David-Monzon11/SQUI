@@ -20,7 +20,7 @@ interface HourlyItem {
 }
 
 // 3D Weather Icon Component:
-// All weather icons render within a fixed 50x50 container with volumetric ground depth shadow
+// All weather icons render within a fixed 52x52 container with volumetric depth shadow
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
   switch (type) {
@@ -47,7 +47,7 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
       {/* 3D Volumetric Ground Shadow under the cloud for realistic depth */}
       <View style={styles.cloudGroundShadow} />
 
-      {/* Clean 3D Asset Image with no margin artifacts */}
+      {/* Clean 3D Asset Image with native drop shadow */}
       <Image source={source} style={styles.weatherIconImage} />
     </View>
   );
@@ -210,10 +210,10 @@ export const WeatherCard: React.FC = () => {
               </View>
             </View>
 
-            {/* Right: 3D Weather Art from Asset */}
+            {/* Right: Original 3D Weather Art from Asset */}
             <View style={styles.rightCol}>
               <Image
-                source={require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png')}
+                source={require('../../../assets/vecteezy_3d-icon-of-a-sun-behind-a-cloud-partly-cloudy-weather_66228107.png')}
                 style={styles.weatherImage}
               />
             </View>
@@ -221,41 +221,34 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Hourly Forecast Strip: All 5 Cards Share 100% Fixed Geometry & Layered 3D Elevation */}
+      {/* Glassmorphic Hourly Forecast Strip */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
-          <View key={index} style={styles.cardWrapper}>
-            {/* Layered Shadow System (Contact + Ambient + Far Luminous Glow) */}
-            <View style={styles.shadowFar} />
-            <View style={[styles.shadowAmbient, item.isActive && styles.shadowAmbientActive]} />
-            <View style={styles.shadowContact} />
+          <TouchableOpacity
+            key={index}
+            activeOpacity={0.85}
+            style={[styles.glassForecastPill, item.isActive && styles.glassForecastPillActive]}
+          >
+            <Text style={[styles.forecastTime, item.isActive && styles.forecastTimeActive]}>
+              {item.time}
+            </Text>
 
-            {/* Physical Card Body (Single Source of Truth Geometry) */}
-            <TouchableOpacity
-              activeOpacity={0.85}
-              style={[styles.glassForecastPill, item.isActive && styles.glassForecastPillActive]}
-            >
-              <Text style={[styles.forecastTime, item.isActive && styles.forecastTimeActive]}>
-                {item.time}
+            <View style={styles.forecastIconWrap}>
+              <WeatherIcon type={item.iconType} />
+            </View>
+
+            {item.chance ? (
+              <Text style={[styles.forecastChance, item.isActive && styles.forecastChanceActive]}>
+                {item.chance}
               </Text>
+            ) : (
+              <Text style={[styles.forecastChance, { opacity: 0 }]}>-</Text>
+            )}
 
-              <View style={styles.forecastIconWrap}>
-                <WeatherIcon type={item.iconType} />
-              </View>
-
-              {item.chance ? (
-                <Text style={[styles.forecastChance, item.isActive && styles.forecastChanceActive]}>
-                  {item.chance}
-                </Text>
-              ) : (
-                <Text style={[styles.forecastChance, { opacity: 0 }]}>-</Text>
-              )}
-
-              <Text style={[styles.forecastTemp, item.isActive && styles.forecastTempActive]}>
-                {item.temp}
-              </Text>
-            </TouchableOpacity>
-          </View>
+            <Text style={[styles.forecastTemp, item.isActive && styles.forecastTempActive]}>
+              {item.temp}
+            </Text>
+          </TouchableOpacity>
         ))}
       </View>
     </View>
