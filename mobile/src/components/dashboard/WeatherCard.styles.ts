@@ -133,47 +133,48 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // ↔️ Horizontal Scrollable Strip & Large Proportional Glass Cards (92px Width x 186px Height)
+  // ↔️ Horizontal Scrollable Strip Container (With Generous Bottom Padding for Soft Blended Shadows)
   scrollContainer: {
-    marginTop: 16,
-    marginHorizontal: -4,
+    marginTop: 14,
+    overflow: 'visible',
   },
   scrollContentContainer: {
-    paddingHorizontal: 4,
+    paddingHorizontal: 6,
+    paddingTop: 8,
+    paddingBottom: 24, // Generous bottom padding so bottom rounded corners & shadows are NEVER cut off!
     flexDirection: 'row',
-    gap: 12, // Generous spacing between thick, large cards
+    gap: 12,
   },
   glassForecastPill: {
-    width: 92, // Generous fixed width per card!
-    height: 186, // Generous fixed height per card!
-    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    width: 92, // Large fixed width per card
+    height: 180, // Large fixed height per card
+    backgroundColor: '#FFFFFF', // Crisp clean frosted white background
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.45)', // Soft blended rim
-    borderRadius: 28,
+    borderColor: 'rgba(0, 0, 0, 0.06)', // Soft subtle border
+    borderRadius: 30, // Fully rounded capsule corners
     paddingVertical: 16,
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'relative',
-    overflow: 'hidden',
     
-    // Deep 3D Directional Ambient Shadow
+    // Soft, Blended, Realistic Ambient Shadow (No harsh drop shadow or cut-off edge)
     shadowColor: '#051A0E',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.24,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 5,
   },
 
-  // Inner Dark Glass Texture Overlay
+  // Inner Glass Highlight Overlay (Uniform full-width cover)
   glassTextureOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(15, 38, 26, 0.10)',
-    borderRadius: 28,
+    backgroundColor: 'rgba(245, 247, 246, 0.40)',
+    borderRadius: 30,
     zIndex: 1,
   },
 
@@ -185,21 +186,19 @@ export const styles = StyleSheet.create({
     zIndex: 2,
   },
   forecastIconWrap: {
-    width: 68,
+    width: '100%',
     height: 68,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'visible',
+    backgroundColor: 'transparent',
     zIndex: 2,
   },
 
-  // Natural 3D Cloud Drop Shadow
+  // Natural 3D Weather Icon Image
   weatherIconImage: {
     resizeMode: 'contain',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.22,
-    shadowRadius: 8,
+    backgroundColor: 'transparent',
   },
 
   forecastChance: {
