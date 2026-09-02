@@ -20,36 +20,31 @@ interface HourlyItem {
 }
 
 // 3D Weather Icon Component:
-// All cloud weather conditions follow the EXACT size, placement, and visual volume of the FIRST card (3 AM).
-// Completely eliminates any white margin artifacts and includes a ground shadow for realistic 3D depth.
+// All weather icons render within a fixed 52x52 container with volumetric depth shadow
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
   switch (type) {
     case 'rain':
-      // First card (3 AM) 3D gray cloud asset
       source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
       break;
 
     case 'cloud':
-      // 6 AM 3D blue cloud asset (matching 3 AM scale)
       source = require('../../../assets/vecteezy_sunny-cloudy-icon-illustration-in-3d-style-glowing-cloudy_23404599.png');
       break;
 
     case 'moon':
-      // 9 AM 3D sun & cloud asset (matching 3 AM scale)
       source = require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
       break;
 
     case 'sun':
     default:
-      // 12 PM / 3 PM 3D glowing sun asset
       source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
       break;
   }
 
   return (
     <View style={styles.iconWithDepthContainer}>
-      {/* 3D Volumetric Ground Shadow under the cloud for dramatic depth */}
+      {/* 3D Volumetric Ground Shadow under the cloud for realistic depth */}
       <View style={styles.cloudGroundShadow} />
 
       {/* Clean 3D Asset Image with native drop shadow */}
@@ -226,7 +221,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Frosted Hourly Forecast Cards with Clean 3D Clouds & Depth Shadows */}
+      {/* Glassmorphic Hourly Forecast Strip: All 5 Cards Share 100% Fixed Dimensions & Perfect Edge Alignment */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity

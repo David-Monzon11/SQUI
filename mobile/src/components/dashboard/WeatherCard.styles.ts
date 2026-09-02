@@ -133,37 +133,39 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Glassmorphic Hourly Forecast Pill Strip (Glass Shadow & Clean 52px Icons)
+  // Shared Forecast Strip & Fixed Geometry Cards (Identical Dimensions for All 5 Cards)
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 8,
   },
   glassForecastPill: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.84)', // Clean translucent frosted white glass
-    borderWidth: 1.8,
+    height: 146, // Explicit fixed height for 100% top and bottom edge alignment
+    backgroundColor: 'rgba(255, 255, 255, 0.86)',
+    borderWidth: 1.5, // Fixed border width for active and inactive cards
     borderColor: 'rgba(255, 255, 255, 0.95)', // Luminous rim highlight
-    borderRadius: 26,
+    borderRadius: 24,
     paddingVertical: 14,
-    paddingHorizontal: 2,
-    minHeight: 142,
+    paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: '#1B432C',
+    
+    // Directional Soft Ambient Layered Shadow
+    shadowColor: '#092415',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.18,
-    shadowRadius: 14,
+    shadowOpacity: 0.14,
+    shadowRadius: 16,
     elevation: 6,
   },
   glassForecastPillActive: {
-    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Vibrant Emerald Glass Active Card
-    borderColor: '#10B981',
-    borderWidth: 2,
+    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Emerald active card background
+    borderColor: '#10B981', // Only border color changes (NO geometry/borderWidth change)
     shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.28,
+    shadowRadius: 18,
     elevation: 8,
   },
   forecastTime: {
@@ -176,17 +178,16 @@ export const styles = StyleSheet.create({
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    width: 54,
-    height: 54,
-    marginVertical: 4,
+    width: 52,
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  // 3D Icon Depth Shadow Styling
+  // 3D Cloud Depth Shadow
   iconWithDepthContainer: {
-    width: 54,
-    height: 54,
+    width: 52,
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -194,22 +195,22 @@ export const styles = StyleSheet.create({
   cloudGroundShadow: {
     position: 'absolute',
     bottom: 1,
-    width: 34,
-    height: 7,
-    borderRadius: 14,
-    backgroundColor: 'rgba(0, 0, 0, 0.16)',
+    width: 32,
+    height: 6,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.14)',
     transform: [{ scaleX: 1.1 }],
     zIndex: 1,
   },
   weatherIconImage: {
-    width: 52,
-    height: 52,
+    width: 50,
+    height: 50,
     resizeMode: 'contain',
     zIndex: 2,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
+    shadowOpacity: 0.20,
+    shadowRadius: 5,
   },
 
   forecastChance: {
