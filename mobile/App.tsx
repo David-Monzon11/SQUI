@@ -19,6 +19,13 @@ import {
 } from '@expo-google-fonts/nunito';
 import { TabNavigator } from './src/navigation/TabNavigator';
 import { AnimatedSplash } from './src/components/common/AnimatedSplash';
+import { AuthProvider, useAuth } from './src/contexts/AuthContext';
+import { AuthScreen } from './src/screens/auth/AuthScreen';
+
+const MainNavigator: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <TabNavigator /> : <AuthScreen />;
+};
 
 export default function App() {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -71,15 +78,18 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
-      {fontsLoaded && <TabNavigator />}
-      {!animationFinished && (
-        <AnimatedSplash
-          isReady={fontsLoaded}
-          isUpdating={isUpdating}
-          updateStatusText={updateStatusText}
-          onFinish={() => setAnimationFinished(true)}
-        />
-      )}
+      <AuthProvider>
+        {fontsLoaded && <MainNavigator />}
+        {!animationFinished && (
+          <AnimatedSplash
+            isReady={fontsLoaded}
+            isUpdating={isUpdating}
+            updateStatusText={updateStatusText}
+            onFinish={() => setAnimationFinished(true)}
+          />
+        )}
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }
+

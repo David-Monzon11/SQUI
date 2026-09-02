@@ -34,10 +34,14 @@ import {
 import { NotificationPopoverDrawer } from '../../components/common/NotificationPopoverDrawer';
 import { styles } from './Menu.styles';
 
+import { useAuth } from '../../contexts/AuthContext';
+
 export const MenuScreen: React.FC = () => {
+  const { user, logout } = useAuth();
+
   // User Profile State
-  const [fullName, setFullName] = useState('Alex Rivera');
-  const [email, setEmail] = useState('alex@squi.app');
+  const [fullName, setFullName] = useState(user?.fullName || 'Alex Rivera');
+  const [email, setEmail] = useState(user?.email || 'alex@squi.app');
   const [currentWeight, setCurrentWeight] = useState('68.2');
   const [targetWeight, setTargetWeight] = useState('65.0');
   const [authProvider, setAuthProvider] = useState<'google' | 'apple' | 'facebook' | 'email'>('google');
@@ -105,7 +109,7 @@ export const MenuScreen: React.FC = () => {
       {
         text: 'Log Out',
         style: 'destructive',
-        onPress: () => Alert.alert('Logged Out', 'You have been signed out. See you soon! 🌿'),
+        onPress: () => logout(),
       },
     ]);
   };
