@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Glassmorphic Hourly Forecast Pill Strip (Taller Height, Thicker Bigger Fonts)
+  // Glassmorphic Hourly Forecast Pill Strip (Uniform 44px Icon Size & Taller Proportionate Card)
   forecastStrip: {
     marginTop: 14,
     flexDirection: 'row',
@@ -145,8 +145,9 @@ export const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'rgba(27, 67, 44, 0.12)',
     borderRadius: 22,
-    paddingVertical: 14,
-    minHeight: 116,
+    paddingVertical: 12,
+    paddingHorizontal: 2,
+    minHeight: 128,
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: '#1B432C',
@@ -173,6 +174,8 @@ export const styles = StyleSheet.create({
     color: '#6EE7B7',
   },
   forecastIconWrap: {
+    width: 44,
+    height: 44,
     marginVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',

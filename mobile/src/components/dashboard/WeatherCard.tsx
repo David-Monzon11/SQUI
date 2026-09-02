@@ -19,7 +19,7 @@ interface HourlyItem {
   isActive?: boolean;
 }
 
-// 3D Weather Icon Component consuming official high-resolution 3D asset PNGs from assets
+// 3D Weather Icon Component consuming official 3D assets with uniform 44x44 proportions
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
   switch (type) {
@@ -42,8 +42,8 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
     <Image
       source={source}
       style={{
-        width: 38,
-        height: 38,
+        width: 44,
+        height: 44,
         resizeMode: 'contain',
       }}
     />
@@ -218,7 +218,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Taller Glassmorphic Hourly Forecast Cards with 3D PNG Cloud Assets & Thick Fonts */}
+      {/* Glassmorphic Hourly Forecast Cards with Bigger, Uniform 44px 3D Icons */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
