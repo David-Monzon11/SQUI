@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 10,
     paddingHorizontal: 2,
   },
   sectionTitle: {
@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Glassmorphic Hourly Forecast Pill Strip (Uniform 44px Icon Size & Taller Proportionate Card)
+  // Glassmorphic Hourly Forecast Pill Strip (Glassy Frosted Design & Big Uniform 48px Icons)
   forecastStrip: {
     marginTop: 14,
     flexDirection: 'row',
@@ -141,48 +141,50 @@ export const styles = StyleSheet.create({
   },
   glassForecastPill: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.75)', // Glassy frosted translucent white
     borderWidth: 1.5,
-    borderColor: 'rgba(27, 67, 44, 0.12)',
-    borderRadius: 22,
-    paddingVertical: 12,
+    borderColor: 'rgba(255, 255, 255, 0.90)', // Luminous glass highlight border
+    borderRadius: 24,
+    paddingVertical: 14,
     paddingHorizontal: 2,
-    minHeight: 128,
+    minHeight: 136,
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.07,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   glassForecastPillActive: {
-    backgroundColor: '#0F3C26',
+    backgroundColor: 'rgba(15, 60, 38, 0.92)', // Vibrant Emerald Glass Active Card
     borderColor: '#10B981',
     borderWidth: 2,
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 6,
   },
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 12.5,
-    color: '#1E3A2B',
+    fontSize: 13,
+    color: '#0F2418',
     letterSpacing: 0.2,
   },
   forecastTimeActive: {
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    width: 44,
-    height: 44,
+    width: 48,
+    height: 48,
     marginVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 11,
+    fontSize: 11.5,
     color: '#059669',
     letterSpacing: 0.2,
   },
@@ -191,7 +193,7 @@ export const styles = StyleSheet.create({
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 16,
+    fontSize: 17,
     color: '#0F2418',
     letterSpacing: -0.3,
   },

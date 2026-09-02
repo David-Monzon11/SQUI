@@ -19,7 +19,7 @@ interface HourlyItem {
   isActive?: boolean;
 }
 
-// 3D Weather Icon Component consuming official 3D assets with uniform 44x44 proportions
+// 3D Weather Icon Component: Uses high-res 3D PNG cloud/sun assets scaled uniformly to 48x48
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
   switch (type) {
@@ -27,14 +27,14 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
       source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
       break;
     case 'cloud':
-      source = require('../../../assets/vecteezy_sunny-cloudy-icon-illustration-in-3d-style-glowing-cloudy_23404599.png');
+      source = require('../../../assets/vecteezy_cloudy-sunny-on-transparent-background_19781527.png');
       break;
     case 'sun':
       source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
       break;
     case 'moon':
     default:
-      source = require('../../../assets/vecteezy_3d-icon-of-a-sun-behind-a-cloud-partly-cloudy-weather_66228107.png');
+      source = require('../../../assets/vecteezy_cloudy-sunny-on-transparent-background_19781527.png');
       break;
   }
 
@@ -42,8 +42,8 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
     <Image
       source={source}
       style={{
-        width: 44,
-        height: 44,
+        width: 48,
+        height: 48,
         resizeMode: 'contain',
       }}
     />
@@ -218,7 +218,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Hourly Forecast Cards with Bigger, Uniform 44px 3D Icons */}
+      {/* Glassmorphic Frosted Hourly Forecast Cards with Equal Large 48px 3D Icons */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
