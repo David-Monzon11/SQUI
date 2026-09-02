@@ -34,8 +34,6 @@ export const styles = StyleSheet.create({
     borderRadius: 34,
     backgroundColor: 'transparent',
   },
-
-  // Absolute Wave SVG Background
   waveSvgBg: {
     position: 'absolute',
     top: 0,
@@ -44,8 +42,6 @@ export const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 34,
   },
-
-  // Card Content Overlay
   cardContent: {
     paddingHorizontal: 16,
     paddingTop: 16,
@@ -54,8 +50,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     zIndex: 3,
   },
-
-  // Top Section: Left Temp + Right 3D Illustration resting in the Wave
   mainRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -87,8 +81,6 @@ export const styles = StyleSheet.create({
     marginTop: 4,
     letterSpacing: -0.2,
   },
-
-  // Creative Weather Status badge
   weatherStatusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -115,8 +107,6 @@ export const styles = StyleSheet.create({
     backgroundColor: '#38dbff',
     marginRight: 6,
   },
-
-  // Right Side 3D Weather Art
   rightCol: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -133,47 +123,92 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Shared Forecast Strip & Fixed Geometry Cards (Identical Dimensions for All 5 Cards)
+  // ---------------------------------------------------------------------------
+  // FORECAST STRIP & SHARED CARD GEOMETRY (Single Source of Truth)
+  // ---------------------------------------------------------------------------
+
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 8,
+    alignItems: 'center',
+    gap: 8, // Fixed 8px gap between all 5 cards
   },
-  glassForecastPill: {
+
+  // Outer Wrapper controlling equal flex distribution & position context for multi-layer shadows
+  cardWrapper: {
     flex: 1,
-    height: 146, // Explicit fixed height for 100% top and bottom edge alignment
-    backgroundColor: 'rgba(255, 255, 255, 0.86)',
-    borderWidth: 1.5, // Fixed border width for active and inactive cards
-    borderColor: 'rgba(255, 255, 255, 0.95)', // Luminous rim highlight
+    height: 144, // Fixed height baseline for 100% top/bottom edge alignment
+    position: 'relative',
+  },
+
+  // Shadow Layer 1: Tight Contact Shadow directly beneath the card edge
+  shadowContact: {
+    position: 'absolute',
+    bottom: 0,
+    left: 4,
+    right: 4,
+    height: 8,
+    borderRadius: 12,
+    backgroundColor: 'rgba(9, 36, 21, 0.18)',
+    zIndex: 1,
+  },
+
+  // Shadow Layer 2: Medium Ambient Directional Shadow extending downward
+  shadowAmbient: {
+    position: 'absolute',
+    top: 6,
+    bottom: -6,
+    left: 2,
+    right: 2,
     borderRadius: 24,
+    backgroundColor: 'rgba(9, 36, 21, 0.10)',
+    zIndex: 1,
+  },
+  shadowAmbientActive: {
+    backgroundColor: 'rgba(16, 185, 129, 0.28)',
+    bottom: -8,
+  },
+
+  // Shadow Layer 3: Soft Luminous Far Diffusion Glow around lower edges
+  shadowFar: {
+    position: 'absolute',
+    top: 12,
+    bottom: -12,
+    left: 0,
+    right: 0,
+    borderRadius: 24,
+    backgroundColor: 'rgba(9, 36, 21, 0.06)',
+    zIndex: 0,
+  },
+  shadowFarActive: {
+    backgroundColor: 'rgba(16, 185, 129, 0.20)',
+    bottom: -14,
+  },
+
+  // BASE CARD COMPONENT: Fixed physical dimensions & glass styling
+  glassForecastPill: {
+    width: '100%',
+    height: 144, // Shared FIXED height for 100% edge alignment
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    borderWidth: 1.5, // Explicit fixed border width
+    borderColor: 'rgba(255, 255, 255, 0.95)', // Luminous rim highlight
+    borderRadius: 24, // Explicit fixed border radius
     paddingVertical: 14,
-    paddingHorizontal: 4,
+    paddingHorizontal: 2,
     alignItems: 'center',
     justifyContent: 'space-between',
-    
-    // Directional Soft Ambient Layered Shadow for iOS & Android Native
-    shadowColor: '#092415',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.14,
-    shadowRadius: 16,
-    elevation: 6,
-
-    // Web Multi-Layered CSS Shadow (Contact + Mid Ambient + Far Luminous Glow)
-    boxShadow: '0px 2px 4px rgba(9, 36, 21, 0.06), 0px 8px 18px rgba(9, 36, 21, 0.10), 0px 18px 32px rgba(9, 36, 21, 0.06)',
+    zIndex: 2,
+    margin: 0,
   },
+
+  // ACTIVE CARD STYLING: Only changes visual properties (background, border color)
+  // ABSOLUTELY NO GEOMETRY OVERRIDES (height, width, padding, margin, or border-width remain untouched)
   glassForecastPillActive: {
-    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Emerald active card background
-    borderColor: '#10B981', // Only border color changes (NO geometry/borderWidth change)
-    shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.28,
-    shadowRadius: 18,
-    elevation: 8,
-
-    // Web Multi-Layered Active Emerald Glow Shadow
-    boxShadow: '0px 4px 8px rgba(16, 185, 129, 0.20), 0px 10px 24px rgba(16, 185, 129, 0.25), 0px 20px 40px rgba(10, 38, 24, 0.20)',
+    backgroundColor: 'rgba(15, 60, 38, 0.95)',
+    borderColor: '#10B981',
   },
+
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 13,
@@ -184,16 +219,16 @@ export const styles = StyleSheet.create({
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    width: 52,
-    height: 52,
+    width: 50,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   // 3D Cloud Depth Shadow
   iconWithDepthContainer: {
-    width: 52,
-    height: 52,
+    width: 50,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -209,14 +244,10 @@ export const styles = StyleSheet.create({
     zIndex: 1,
   },
   weatherIconImage: {
-    width: 50,
-    height: 50,
+    width: 48,
+    height: 48,
     resizeMode: 'contain',
     zIndex: 2,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.20,
-    shadowRadius: 5,
   },
 
   forecastChance: {
