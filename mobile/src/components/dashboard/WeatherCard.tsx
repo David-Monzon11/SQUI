@@ -18,34 +18,28 @@ interface HourlyItem {
   iconType: 'rain' | 'sun' | 'cloud' | 'moon';
 }
 
-// 3D Weather Icon Component:
-// Large, bold 3D artwork scaled proportionally for 92px x 186px forecast cards
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
   let customStyle = { width: 64, height: 64 };
 
   switch (type) {
     case 'rain':
-      // 3 AM Base Reference: Tightly cropped 3D Cloud with Sun (64x64)
       source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
       customStyle = { width: 64, height: 64 };
       break;
 
     case 'cloud':
-      // 6 AM: 3D Soft Blue Cloud (Scaled up to 86px for visual volume)
       source = require('../../../assets/vecteezy_sunny-cloudy-icon-illustration-in-3d-style-glowing-cloudy_23404599.png');
       customStyle = { width: 86, height: 86 };
       break;
 
     case 'moon':
-      // 9 AM: 3D Sun & Cloud (Scaled up to 84px for visual volume)
       source = require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
       customStyle = { width: 84, height: 84 };
       break;
 
     case 'sun':
     default:
-      // 12 PM & 3 PM: 3D Glowing Sun (Scaled up to 102px for visual volume)
       source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
       customStyle = { width: 102, height: 102 };
       break;
@@ -78,9 +72,8 @@ export const WeatherCard: React.FC = () => {
         <Text style={styles.sectionSub}>Weather & Hydration Balance</Text>
       </View>
 
-      {/* 🌊 Sculpted Organic Wave Glassmorphic Card (SQUI Forest Emerald System) */}
+      {/* 🌊 Sculpted Organic Wave Glassmorphic Card (With Extra Rounded Corners rx="46") */}
       <View style={styles.waveCardWrapper}>
-        {/* Background SVG with Sculpted Top Wave Dip + Glassmorphic Gradient */}
         <Svg
           width="100%"
           height="100%"
@@ -126,13 +119,13 @@ export const WeatherCard: React.FC = () => {
             </SvgRadialGradient>
           </Defs>
 
-          {/* 3D Sky Backdrop filling the negative space */}
+          {/* 3D Sky Backdrop with Extra Rounded rx="46" Corner Radius */}
           <Rect
             x="0"
             y="0"
             width="350"
             height="235"
-            rx="34"
+            rx="46"
             fill="url(#skyBgGrad)"
           />
 
@@ -159,33 +152,33 @@ export const WeatherCard: React.FC = () => {
             fill="rgba(3, 37, 56, 0.22)"
           />
 
-          {/* 🌊 Sculpted Wave Card Body */}
+          {/* 🌊 Sculpted Wave Card Body with Smooth Extra Rounded 46px Corners */}
           <Path
-            d="M 34 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200 L 350 201 C 350 220 334 235 316 235 L 34 235 C 15 235 0 220 0 201 L 0 34 C 0 15 15 0 34 0 Z"
+            d="M 46 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 189 C 350 214 330 235 304 235 L 46 235 C 21 235 0 214 0 189 L 0 46 C 0 21 21 0 46 0 Z"
             fill="url(#squiWaveGrad)"
           />
 
           {/* Glassmorphic Ambient Luminous Overlay */}
           <Path
-            d="M 34 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200 L 350 201 C 350 220 334 235 316 235 L 34 235 C 15 235 0 220 0 201 L 0 34 C 0 15 15 0 34 0 Z"
+            d="M 46 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 189 C 350 214 330 235 304 235 L 46 235 C 21 235 0 214 0 189 L 0 46 C 0 21 21 0 46 0 Z"
             fill="url(#squiGlassGlow)"
           />
 
           {/* Frosted Glass Perimeter Border with Sculpted Wave Edge */}
           <Path
-            d="M 34 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200 L 350 201 C 350 220 334 235 316 235 L 34 235 C 15 235 0 220 0 201 L 0 34 C 0 15 15 0 34 0 Z"
+            d="M 46 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 189 C 350 214 330 235 304 235 L 46 235 C 21 235 0 214 0 189 L 0 46 C 0 21 21 0 46 0 Z"
             fill="none"
             stroke="url(#waveRimHighlight)"
             strokeWidth={1.5}
           />
 
-          {/* Frosted Outer Card Border */}
+          {/* Frosted Outer Card Border (rx="46") */}
           <Rect
             x="0"
             y="0"
             width="350"
             height="235"
-            rx="34"
+            rx="46"
             fill="none"
             stroke="rgba(255, 255, 255, 0.22)"
             strokeWidth={1.5}
@@ -229,7 +222,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* ↔️ Horizontal Scrollable Forecast Strip: Large Generous Cards (92px Width x 186px Height) */}
+      {/* ↔️ Horizontal Scrollable Forecast Strip (Cards Under Remained 100% Untouched) */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

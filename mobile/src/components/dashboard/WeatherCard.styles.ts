@@ -27,12 +27,13 @@ export const styles = StyleSheet.create({
     color: '#4A6354',
   },
 
-  // Sculpted Wave Glassmorphic Card Container
+  // Sculpted Wave Glassmorphic Top Weather Card (Increased Corner Radius to 46px for Extra Smoothness)
   waveCardWrapper: {
     position: 'relative',
     minHeight: 154,
-    borderRadius: 34,
+    borderRadius: 46, // Increased radius from 34px to 46px per user request!
     backgroundColor: 'transparent',
+    overflow: 'hidden',
   },
 
   // Absolute Wave SVG Background
@@ -42,12 +43,12 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    borderRadius: 34,
+    borderRadius: 46,
   },
 
   // Card Content Overlay
   cardContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     paddingTop: 16,
     paddingBottom: 16,
     minHeight: 154,
@@ -133,7 +134,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // ↔️ Horizontal Scrollable Strip Container (With Generous Bottom Padding for Soft Blended Shadows)
+  // ↔️ Horizontal Scrollable Strip Container (Cards Under Untouched!)
   scrollContainer: {
     marginTop: 14,
     overflow: 'visible',
@@ -141,24 +142,24 @@ export const styles = StyleSheet.create({
   scrollContentContainer: {
     paddingHorizontal: 6,
     paddingTop: 8,
-    paddingBottom: 24, // Generous bottom padding so bottom rounded corners & shadows are NEVER cut off!
+    paddingBottom: 24,
     flexDirection: 'row',
     gap: 12,
   },
   glassForecastPill: {
-    width: 92, // Large fixed width per card
-    height: 180, // Large fixed height per card
-    backgroundColor: '#FFFFFF', // Crisp clean frosted white background
+    width: 92,
+    height: 180,
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.06)', // Soft subtle border
-    borderRadius: 30, // Fully rounded capsule corners
+    borderColor: 'rgba(0, 0, 0, 0.06)',
+    borderRadius: 30, // Forecast cards below remain exactly at 30px
     paddingVertical: 16,
     paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'relative',
     
-    // Soft, Blended, Realistic Ambient Shadow (No harsh drop shadow or cut-off edge)
+    // Soft Ambient Shadow
     shadowColor: '#051A0E',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.08,
@@ -166,7 +167,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  // Inner Glass Highlight Overlay (Uniform full-width cover)
+  // Inner Glass Texture Overlay
   glassTextureOverlay: {
     position: 'absolute',
     top: 0,
