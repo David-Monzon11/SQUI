@@ -133,22 +133,22 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Shared Forecast Strip & Blended Glassmorphic Cards (Soft Rim)
+  // Shared Forecast Strip & Increased Dimensions Glassmorphic Cards (Wider & Taller: 164px Height)
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: 6, // Slightly tighter strip gap so all 5 cards expand wider
   },
   glassForecastPill: {
     flex: 1,
-    height: 148,
+    height: 164, // Increased height from 148px to 164px for taller & wider proportions
     backgroundColor: 'rgba(255, 255, 255, 0.86)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.40)', // Soft blended rim (No harsh white outline line!)
-    borderRadius: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 4,
+    borderColor: 'rgba(255, 255, 255, 0.40)', // Soft blended rim
+    borderRadius: 26,
+    paddingVertical: 14,
+    paddingHorizontal: 2,
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'relative',
@@ -180,7 +180,7 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(15, 38, 26, 0.10)',
-    borderRadius: 24,
+    borderRadius: 26,
     zIndex: 1,
   },
   glassTextureOverlayActive: {
@@ -189,7 +189,7 @@ export const styles = StyleSheet.create({
 
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 13,
+    fontSize: 13.5,
     color: '#0F2418',
     letterSpacing: 0.2,
     zIndex: 2,
@@ -198,8 +198,8 @@ export const styles = StyleSheet.create({
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    width: 56,
-    height: 56,
+    width: 60,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'visible',
@@ -217,7 +217,7 @@ export const styles = StyleSheet.create({
 
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 11.5,
+    fontSize: 12,
     color: '#059669',
     letterSpacing: 0.2,
     backgroundColor: 'transparent',
@@ -228,7 +228,7 @@ export const styles = StyleSheet.create({
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 17,
+    fontSize: 18,
     color: '#0F2418',
     letterSpacing: -0.3,
     zIndex: 2,
