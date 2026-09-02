@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Shared Forecast Strip & Fixed Geometry Cards (Identical Dimensions for All 5 Cards)
+  // Shared Forecast Strip & Dark Glassmorphic Cards with Rich Depth
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
@@ -143,35 +143,35 @@ export const styles = StyleSheet.create({
   glassForecastPill: {
     flex: 1,
     height: 148, // Shared fixed height for 100% top & bottom edge alignment
-    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    backgroundColor: 'rgba(16, 38, 27, 0.88)', // Darker Emerald Frosted Glass
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.95)',
+    borderColor: 'rgba(52, 211, 153, 0.28)', // Luminous subtle emerald glass rim
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
     
-    // Soft Natural Layered Ambient Shadow
-    shadowColor: '#092415',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.14,
-    shadowRadius: 16,
-    elevation: 6,
-  },
-  glassForecastPillActive: {
-    backgroundColor: 'rgba(15, 60, 38, 0.95)',
-    borderColor: '#10B981',
-    shadowColor: '#10B981',
+    // Deep Rich Directional Ambient Shadow for 3D Depth
+    shadowColor: '#021209',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.28,
     shadowRadius: 18,
     elevation: 8,
   },
+  glassForecastPillActive: {
+    backgroundColor: 'rgba(6, 44, 27, 0.98)', // Deep Emerald Black Active Glass
+    borderColor: '#10B981', // Glowing Emerald Active Rim
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.42,
+    shadowRadius: 22,
+    elevation: 12,
+  },
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 13,
-    color: '#0F2418',
+    color: '#E2E8F0', // Crisp light typography for dark glass
     letterSpacing: 0.2,
   },
   forecastTimeActive: {
@@ -189,25 +189,25 @@ export const styles = StyleSheet.create({
   weatherIconImage: {
     resizeMode: 'contain',
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.22,
+    shadowRadius: 7,
   },
 
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 11.5,
-    color: '#059669',
+    color: '#34D399',
     letterSpacing: 0.2,
     backgroundColor: 'transparent',
   },
   forecastChanceActive: {
-    color: '#34D399',
+    color: '#6EE7B7',
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 17,
-    color: '#0F2418',
+    color: '#FFFFFF',
     letterSpacing: -0.3,
   },
   forecastTempActive: {
