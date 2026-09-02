@@ -72,7 +72,7 @@ export const WeatherCard: React.FC = () => {
         <Text style={styles.sectionSub}>Weather & Hydration Balance</Text>
       </View>
 
-      {/* 🌊 Sculpted Organic Wave Glassmorphic Card (With Extra Rounded Corners rx="46") */}
+      {/* 🌊 Sculpted Organic Wave Glassmorphic Card (Seamless Left Edge) */}
       <View style={styles.waveCardWrapper}>
         <Svg
           width="100%"
@@ -152,27 +152,27 @@ export const WeatherCard: React.FC = () => {
             fill="rgba(3, 37, 56, 0.22)"
           />
 
-          {/* 🌊 Sculpted Wave Card Body with Smooth Extra Rounded 46px Corners */}
+          {/* 🌊 Sculpted Wave Card Body (Bleeds past left/bottom edge to eliminate seams 100%) */}
           <Path
-            d="M 46 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 189 C 350 214 330 235 304 235 L 46 235 C 21 235 0 214 0 189 L 0 46 C 0 21 21 0 46 0 Z"
+            d="M 46 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
             fill="url(#squiWaveGrad)"
           />
 
           {/* Glassmorphic Ambient Luminous Overlay */}
           <Path
-            d="M 46 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 189 C 350 214 330 235 304 235 L 46 235 C 21 235 0 214 0 189 L 0 46 C 0 21 21 0 46 0 Z"
+            d="M 46 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
             fill="url(#squiGlassGlow)"
           />
 
-          {/* Frosted Glass Perimeter Border with Sculpted Wave Edge */}
+          {/* Frosted Wave Rim Highlight (Strokes ONLY the diagonal wave curve, completely avoiding left/bottom edges) */}
           <Path
-            d="M 46 0 L 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 189 C 350 214 330 235 304 235 L 46 235 C 21 235 0 214 0 189 L 0 46 C 0 21 21 0 46 0 Z"
+            d="M 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200"
             fill="none"
             stroke="url(#waveRimHighlight)"
             strokeWidth={1.5}
           />
 
-          {/* Frosted Outer Card Border (rx="46") */}
+          {/* Subtle Outer Card Rim */}
           <Rect
             x="0"
             y="0"
@@ -180,8 +180,8 @@ export const WeatherCard: React.FC = () => {
             height="235"
             rx="46"
             fill="none"
-            stroke="rgba(255, 255, 255, 0.22)"
-            strokeWidth={1.5}
+            stroke="rgba(255, 255, 255, 0.20)"
+            strokeWidth={1}
           />
 
           {/* Subtle Monoline Ghost Leaves Watermark in Background */}
@@ -222,7 +222,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* ↔️ Horizontal Scrollable Forecast Strip (Cards Under Remained 100% Untouched) */}
+      {/* ↔️ Horizontal Scrollable Forecast Strip */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
