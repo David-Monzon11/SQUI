@@ -133,38 +133,38 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Glassmorphic Hourly Forecast Pill Strip (Glassy Frosted Design & Big Uniform 48px Icons)
+  // Glassmorphic Hourly Forecast Pill Strip (Emphasized Glass Shadow & Big Uniform 52px Icons)
   forecastStrip: {
-    marginTop: 14,
+    marginTop: 16,
     flexDirection: 'row',
     gap: 8,
   },
   glassForecastPill: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.75)', // Glassy frosted translucent white
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.90)', // Luminous glass highlight border
-    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.82)', // Translucent Frosted Glass
+    borderWidth: 1.8,
+    borderColor: 'rgba(255, 255, 255, 0.95)', // Luminous Glass Border Highlight
+    borderRadius: 26,
     paddingVertical: 14,
     paddingHorizontal: 2,
-    minHeight: 136,
+    minHeight: 142,
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.18, // Emphasized drop shadow for strong 3D floating glass effect
+    shadowRadius: 14,
+    elevation: 6,
   },
   glassForecastPillActive: {
-    backgroundColor: 'rgba(15, 60, 38, 0.92)', // Vibrant Emerald Glass Active Card
+    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Deep Emerald Glass Active Card
     borderColor: '#10B981',
     borderWidth: 2,
     shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35, // Emphasized emerald glass glow shadow
+    shadowRadius: 14,
+    elevation: 8,
   },
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
@@ -176,8 +176,8 @@ export const styles = StyleSheet.create({
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    width: 48,
-    height: 48,
+    width: 52,
+    height: 52,
     marginVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',

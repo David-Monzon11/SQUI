@@ -19,31 +19,24 @@ interface HourlyItem {
   isActive?: boolean;
 }
 
-// 3D Weather Icon Component: Uses high-res 3D PNG cloud/sun assets scaled uniformly to 48x48
+// 3D Weather Icon Component:
+// Strictly uses the exact 3D cloud asset PNG circled by the user for ALL cloud cards
+// so every single card has identical 3D cloud sizing, scale, placement, and artwork (52x52).
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
-  switch (type) {
-    case 'rain':
-      source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
-      break;
-    case 'cloud':
-      source = require('../../../assets/vecteezy_cloudy-sunny-on-transparent-background_19781527.png');
-      break;
-    case 'sun':
-      source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
-      break;
-    case 'moon':
-    default:
-      source = require('../../../assets/vecteezy_cloudy-sunny-on-transparent-background_19781527.png');
-      break;
+  if (type === 'sun') {
+    source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
+  } else {
+    // Exact 3D Cloud PNG asset circled in red by the user in 6 AM card
+    source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
   }
 
   return (
     <Image
       source={source}
       style={{
-        width: 48,
-        height: 48,
+        width: 52,
+        height: 52,
         resizeMode: 'contain',
       }}
     />
@@ -54,9 +47,9 @@ export const WeatherCard: React.FC = () => {
   const hourlyForecast: HourlyItem[] = [
     { time: '3 AM', temp: '18°', chance: '40%', iconType: 'rain' },
     { time: '6 AM', temp: '17°', chance: '30%', iconType: 'cloud' },
-    { time: '9 AM', temp: '21°', chance: '10%', iconType: 'sun' },
-    { time: '12 PM', temp: '24°', chance: '0%', iconType: 'sun', isActive: true },
-    { time: '3 PM', temp: '23°', chance: '10%', iconType: 'sun' },
+    { time: '9 AM', temp: '21°', chance: '10%', iconType: 'cloud' },
+    { time: '12 PM', temp: '24°', chance: '0%', iconType: 'cloud', isActive: true },
+    { time: '3 PM', temp: '23°', chance: '10%', iconType: 'cloud' },
   ];
 
   return (
@@ -218,7 +211,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Frosted Hourly Forecast Cards with Equal Large 48px 3D Icons */}
+      {/* Glassmorphic Frosted Hourly Forecast Cards with Emphasized Glass Shadows & Identical 52px 3D Cloud Assets */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
