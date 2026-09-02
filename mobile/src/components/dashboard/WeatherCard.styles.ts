@@ -142,17 +142,17 @@ export const styles = StyleSheet.create({
   },
   glassForecastPill: {
     flex: 1,
-    height: 152, // Shared fixed height for 100% top & bottom edge alignment
+    height: 146, // Shared fixed height for 100% top & bottom edge alignment
     backgroundColor: 'rgba(255, 255, 255, 0.88)',
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.95)',
-    borderRadius: 26,
+    borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
     
-    // Directional Soft Ambient Layered Shadow
+    // Soft Natural Layered Ambient Shadow
     shadowColor: '#092415',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.14,
@@ -178,40 +178,21 @@ export const styles = StyleSheet.create({
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    width: 60,
-    height: 60,
+    width: 56,
+    height: 56,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  // Soft Blended Realistic 3D Cloud Ground Depth Shadow
-  iconWithDepthContainer: {
-    width: 60,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  cloudGroundShadow: {
-    position: 'absolute',
-    bottom: 0,
-    width: 38,
-    height: 7,
-    borderRadius: 18,
-    backgroundColor: 'rgba(9, 36, 21, 0.09)', // Soft blended gradient shadow
-    shadowColor: '#05180D',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    transform: [{ scaleX: 1.15 }],
-    zIndex: 1,
-  },
+  // Natural 3D Cloud Drop Shadow (No hard shape view!)
   weatherIconImage: {
-    zIndex: 2,
+    width: 56,
+    height: 56,
+    resizeMode: 'contain',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.18,
-    shadowRadius: 5,
+    shadowRadius: 6,
   },
 
   forecastChance: {
