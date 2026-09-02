@@ -59,9 +59,9 @@ export const AuthScreen: React.FC = () => {
     ]).start();
   }, []);
 
-  // Form inputs state
-  const [loginIdentifier, setLoginIdentifier] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  // Form inputs state (Pre-filled for instant static testing)
+  const [loginIdentifier, setLoginIdentifier] = useState('mindful.squirrel@squi.health');
+  const [loginPassword, setLoginPassword] = useState('password123');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   const [firstName, setFirstName] = useState('');
