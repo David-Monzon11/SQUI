@@ -5,7 +5,7 @@ import { COLORS } from '../../constants/colors';
 export const styles = StyleSheet.create({
   container: {
     marginTop: 18,
-    marginBottom: 10,
+    marginBottom: 16,
     position: 'relative',
   },
   sectionHeader: {
@@ -17,13 +17,13 @@ export const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 16,
+    fontSize: 17,
     color: '#0F2418',
     letterSpacing: -0.3,
   },
   sectionSub: {
     fontFamily: FONTS.roundedSemiBold,
-    fontSize: 11.5,
+    fontSize: 12,
     color: '#4A6354',
   },
 
@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
     position: 'relative',
     minHeight: 154,
     borderRadius: 34,
-    backgroundColor: 'transparent', // 100% transparent container - no rectangular elevation/shadow box
+    backgroundColor: 'transparent',
   },
 
   // Absolute Wave SVG Background
@@ -68,23 +68,23 @@ export const styles = StyleSheet.create({
   },
   temperatureText: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 50,
+    fontSize: 52,
     color: '#FFFFFF',
     letterSpacing: -2,
-    lineHeight: 54,
+    lineHeight: 56,
   },
   highLowText: {
     fontFamily: FONTS.roundedBold,
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.75)',
+    fontSize: 12.5,
+    color: 'rgba(255, 255, 255, 0.85)',
     marginTop: 1,
     letterSpacing: 0.2,
   },
   locationText: {
     fontFamily: FONTS.roundedBold,
-    fontSize: 13.5,
+    fontSize: 14,
     color: '#FFFFFF',
-    marginTop: 3,
+    marginTop: 4,
     letterSpacing: -0.2,
   },
 
@@ -92,18 +92,18 @@ export const styles = StyleSheet.create({
   weatherStatusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.24)',
+    borderColor: 'rgba(255, 255, 255, 0.30)',
     borderRadius: 14,
     paddingHorizontal: 10,
-    paddingVertical: 4.5,
+    paddingVertical: 5,
     alignSelf: 'flex-start',
     marginTop: 8,
   },
   weatherStatusText: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 10.5,
+    fontSize: 11,
     color: '#FFFFFF',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -112,81 +112,85 @@ export const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#38dbff', // Soft sky blue rain glow dot
+    backgroundColor: '#38dbff',
     marginRight: 6,
   },
 
-  // Right Side 3D Weather Art nestled in the wave dip
+  // Right Side 3D Weather Art
   rightCol: {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
     width: 132,
     height: 112,
-    marginTop: -20, // Sits comfortably in the open air above the sloping wave
+    marginTop: -20,
     marginRight: 0,
     zIndex: 5,
   },
   weatherImage: {
-    width: 105,
-    height: 105,
+    width: 108,
+    height: 108,
     resizeMode: 'contain',
   },
 
-  // Glassmorphic Hourly Forecast Pill Strip
+  // Glassmorphic Hourly Forecast Pill Strip (Taller Height, Thicker Bigger Fonts)
   forecastStrip: {
-    marginTop: 12,
+    marginTop: 14,
     flexDirection: 'row',
-    gap: 7,
+    gap: 8,
   },
   glassForecastPill: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    borderWidth: 1.2,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
     borderColor: 'rgba(27, 67, 44, 0.12)',
-    borderRadius: 18,
-    paddingVertical: 9,
+    borderRadius: 22,
+    paddingVertical: 14,
+    minHeight: 116,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    elevation: 3,
   },
   glassForecastPillActive: {
     backgroundColor: '#0F3C26',
     borderColor: '#10B981',
-    borderWidth: 1.5,
+    borderWidth: 2,
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
+    elevation: 5,
   },
   forecastTime: {
-    fontFamily: FONTS.roundedBold,
-    fontSize: 10,
-    color: '#4A6354',
-    marginBottom: 3,
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 12.5,
+    color: '#1E3A2B',
+    letterSpacing: 0.2,
   },
   forecastTimeActive: {
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    marginVertical: 2,
+    marginVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 8.5,
+    fontSize: 11,
     color: '#059669',
-    marginTop: 1,
+    letterSpacing: 0.2,
   },
   forecastChanceActive: {
     color: '#34D399',
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 12.5,
+    fontSize: 16,
     color: '#0F2418',
-    marginTop: 2,
+    letterSpacing: -0.3,
   },
   forecastTempActive: {
     color: '#FFFFFF',
