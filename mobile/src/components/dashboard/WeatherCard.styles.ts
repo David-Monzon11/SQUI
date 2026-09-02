@@ -142,12 +142,12 @@ export const styles = StyleSheet.create({
   },
   glassForecastPill: {
     flex: 1,
-    height: 146, // Explicit fixed height for 100% top and bottom edge alignment
-    backgroundColor: 'rgba(255, 255, 255, 0.86)',
-    borderWidth: 1.5, // Fixed border width for active and inactive cards
-    borderColor: 'rgba(255, 255, 255, 0.95)', // Luminous rim highlight
-    borderRadius: 24,
-    paddingVertical: 14,
+    height: 152, // Shared fixed height for 100% top & bottom edge alignment
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 26,
+    paddingVertical: 12,
     paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -160,8 +160,8 @@ export const styles = StyleSheet.create({
     elevation: 6,
   },
   glassForecastPillActive: {
-    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Emerald active card background
-    borderColor: '#10B981', // Only border color changes (NO geometry/borderWidth change)
+    backgroundColor: 'rgba(15, 60, 38, 0.95)',
+    borderColor: '#10B981',
     shadowColor: '#10B981',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.28,
@@ -178,38 +178,39 @@ export const styles = StyleSheet.create({
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    width: 52,
-    height: 52,
+    width: 60,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  // 3D Cloud Depth Shadow
+  // Soft Blended Realistic 3D Cloud Ground Depth Shadow
   iconWithDepthContainer: {
-    width: 52,
-    height: 52,
+    width: 60,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   cloudGroundShadow: {
     position: 'absolute',
-    bottom: 1,
-    width: 32,
-    height: 6,
-    borderRadius: 12,
-    backgroundColor: 'rgba(0, 0, 0, 0.14)',
-    transform: [{ scaleX: 1.1 }],
+    bottom: 0,
+    width: 38,
+    height: 7,
+    borderRadius: 18,
+    backgroundColor: 'rgba(9, 36, 21, 0.09)', // Soft blended gradient shadow
+    shadowColor: '#05180D',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    transform: [{ scaleX: 1.15 }],
     zIndex: 1,
   },
   weatherIconImage: {
-    width: 50,
-    height: 50,
-    resizeMode: 'contain',
     zIndex: 2,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.20,
+    shadowOpacity: 0.18,
     shadowRadius: 5,
   },
 
@@ -218,6 +219,7 @@ export const styles = StyleSheet.create({
     fontSize: 11.5,
     color: '#059669',
     letterSpacing: 0.2,
+    backgroundColor: 'transparent',
   },
   forecastChanceActive: {
     color: '#34D399',
