@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   Platform,
   ActivityIndicator,
   Modal,
+  Animated,
+  Easing,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
@@ -22,7 +24,42 @@ export const AuthScreen: React.FC = () => {
   const { login, register, loginWithGoogle, isLoading } = useAuth();
   const [mode, setMode] = useState<AuthMode>('login');
 
-  // Form inputs
+  // Entrance Animation for Header Logo (Animates from Splash Position to Header)
+  const logoScale = useRef(new Animated.Value(1.3)).current;
+  const logoY = useRef(new Animated.Value(40)).current;
+  const logoOpacity = useRef(new Animated.Value(0.2)).current;
+  const formOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(logoOpacity, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.spring(logoScale, {
+          toValue: 1,
+          tension: 16,
+          friction: 6,
+          useNativeDriver: true,
+        }),
+        Animated.timing(logoY, {
+          toValue: 0,
+          duration: 600,
+          easing: Easing.out(Easing.back(1.2)),
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.timing(formOpacity, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  // Form inputs state
   const [loginIdentifier, setLoginIdentifier] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -90,7 +127,7 @@ export const AuthScreen: React.FC = () => {
       return;
     }
     if (registerPassword !== confirmPassword) {
-      setErrorMessage('Passwords do not match. Please verify your confirm password.');
+      setErrorMessage('Passwords do not match. Please check your confirm password.');
       return;
     }
 
@@ -114,27 +151,27 @@ export const AuthScreen: React.FC = () => {
     }
   };
 
-  // Recovery triggers
+  // Recovery handlers
   const handleForgotPassSubmit = async () => {
     if (!recoveryEmail.trim() || !recoveryEmail.includes('@')) {
-      setErrorMessage('Please enter a valid email address for password reset.');
+      setErrorMessage('Please enter a valid email address.');
       return;
     }
     setRecoveryLoading(true);
     await new Promise((res) => setTimeout(res, 800));
     setRecoveryLoading(false);
-    setRecoverySuccessMessage(`Password reset link sent to ${recoveryEmail.trim()}! Please check your inbox.`);
+    setRecoverySuccessMessage(`Password reset link sent to ${recoveryEmail.trim()}! Check your inbox.`);
   };
 
   const handleForgotUserSubmit = async () => {
     if (!recoveryEmail.trim() || !recoveryEmail.includes('@')) {
-      setErrorMessage('Please enter a valid email address to find your username.');
+      setErrorMessage('Please enter a valid email address.');
       return;
     }
     setRecoveryLoading(true);
     await new Promise((res) => setTimeout(res, 800));
     setRecoveryLoading(false);
-    setRecoverySuccessMessage(`Your registered username has been sent to ${recoveryEmail.trim()}.`);
+    setRecoverySuccessMessage(`Your username has been sent to ${recoveryEmail.trim()}.`);
   };
 
   const closeRecoveryModal = () => {
@@ -156,22 +193,30 @@ export const AuthScreen: React.FC = () => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* SQUI Header Section */}
-          <View style={styles.headerContainer}>
+          {/* Animated SQUI Top Header (Logo animates into top header position) */}
+          <Animated.View
+            style={[
+              styles.headerContainer,
+              {
+                opacity: logoOpacity,
+                transform: [{ translateY: logoY }, { scale: logoScale }],
+              },
+            ]}
+          >
             <View style={styles.mascotBadge}>
-              <IconSquiAcornBackground size={48} color={COLORS.primary} />
+              <IconSquiAcornBackground size={52} color={COLORS.primary} />
             </View>
             <Text style={styles.brandTitle}>SQUI</Text>
-            <Text style={styles.brandTagline}>Mindful Dietary Journaling & Wellness</Text>
-          </View>
+            <Text style={styles.brandTagline}>Mindful Dietary Journaling & Health</Text>
+          </Animated.View>
 
-          {/* Authentication Card */}
-          <View style={styles.card}>
-            {/* Segmented Mode Switcher */}
+          {/* Form Content - Directly using Phone Frame Canvas (No Inner Card Box) */}
+          <Animated.View style={[styles.formContainer, { opacity: formOpacity }]}>
+            {/* Segmented Mode Switcher (Log In vs Register) */}
             <View style={styles.tabContainer}>
               <TouchableOpacity
                 style={[styles.tabButton, mode === 'login' && styles.tabButtonActive]}
-                activeOpacity={0.8}
+                activeOpacity={0.85}
                 onPress={() => handleToggleMode('login')}
               >
                 <Text style={[styles.tabText, mode === 'login' && styles.tabTextActive]}>
@@ -181,35 +226,13 @@ export const AuthScreen: React.FC = () => {
 
               <TouchableOpacity
                 style={[styles.tabButton, mode === 'register' && styles.tabButtonActive]}
-                activeOpacity={0.8}
+                activeOpacity={0.85}
                 onPress={() => handleToggleMode('register')}
               >
                 <Text style={[styles.tabText, mode === 'register' && styles.tabTextActive]}>
                   Register in SQUI
                 </Text>
               </TouchableOpacity>
-            </View>
-
-            {/* Google Authentication Feature */}
-            <TouchableOpacity
-              style={styles.googleButton}
-              activeOpacity={0.85}
-              onPress={handleGoogleSubmit}
-              disabled={isLoading}
-            >
-              <View style={styles.googleIconWrapper}>
-                <Text style={styles.googleIconText}>G</Text>
-              </View>
-              <Text style={styles.googleButtonText}>
-                {mode === 'login' ? 'Sign in with Google' : 'Connect with Google'}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Divider */}
-            <View style={styles.dividerContainer}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>or using email</Text>
-              <View style={styles.dividerLine} />
             </View>
 
             {/* Error Message Box */}
@@ -219,9 +242,8 @@ export const AuthScreen: React.FC = () => {
               </View>
             ) : null}
 
-            {/* Forms */}
+            {/* LOG IN FORM */}
             {mode === 'login' ? (
-              /* LOGIN FORM */
               <View>
                 <View style={styles.fieldGroup}>
                   <Text style={styles.label}>Username or Email</Text>
@@ -258,7 +280,7 @@ export const AuthScreen: React.FC = () => {
                   </View>
                 </View>
 
-                {/* Quick Recovery Links */}
+                {/* Recovery Action Links */}
                 <View style={styles.linksRow}>
                   <TouchableOpacity
                     activeOpacity={0.7}
@@ -281,10 +303,10 @@ export const AuthScreen: React.FC = () => {
                   </TouchableOpacity>
                 </View>
 
-                {/* Submit Button */}
+                {/* Primary Log In Button */}
                 <TouchableOpacity
                   style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
-                  activeOpacity={0.85}
+                  activeOpacity={0.88}
                   onPress={handleLoginSubmit}
                   disabled={isLoading}
                 >
@@ -293,6 +315,26 @@ export const AuthScreen: React.FC = () => {
                   ) : (
                     <Text style={styles.submitButtonText}>Log In</Text>
                   )}
+                </TouchableOpacity>
+
+                {/* OR Divider Line */}
+                <View style={styles.dividerContainer}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>or continue with</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                {/* Google Sign In Button */}
+                <TouchableOpacity
+                  style={styles.googleButton}
+                  activeOpacity={0.85}
+                  onPress={handleGoogleSubmit}
+                  disabled={isLoading}
+                >
+                  <View style={styles.googleIconWrapper}>
+                    <Text style={styles.googleIconText}>G</Text>
+                  </View>
+                  <Text style={styles.googleButtonText}>Sign in with Google</Text>
                 </TouchableOpacity>
               </View>
             ) : (
@@ -386,10 +428,10 @@ export const AuthScreen: React.FC = () => {
                   </View>
                 </View>
 
-                {/* Submit Register */}
+                {/* Submit Register Button */}
                 <TouchableOpacity
                   style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
-                  activeOpacity={0.85}
+                  activeOpacity={0.88}
                   onPress={handleRegisterSubmit}
                   disabled={isLoading}
                 >
@@ -399,19 +441,39 @@ export const AuthScreen: React.FC = () => {
                     <Text style={styles.submitButtonText}>Create SQUI Account</Text>
                   )}
                 </TouchableOpacity>
+
+                {/* OR Divider Line */}
+                <View style={styles.dividerContainer}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>or connect with</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                {/* Google Connect Button */}
+                <TouchableOpacity
+                  style={styles.googleButton}
+                  activeOpacity={0.85}
+                  onPress={handleGoogleSubmit}
+                  disabled={isLoading}
+                >
+                  <View style={styles.googleIconWrapper}>
+                    <Text style={styles.googleIconText}>G</Text>
+                  </View>
+                  <Text style={styles.googleButtonText}>Connect with Google</Text>
+                </TouchableOpacity>
               </View>
             )}
 
-            {/* SQUI Mascot Encouragement Note */}
+            {/* SQUI Mindful Mascot Encouragement Banner */}
             <View style={styles.mascotNote}>
               <View style={styles.mascotIconWrapper}>
-                <Text style={{ fontSize: 18 }}>🐿️</Text>
+                <Text style={{ fontSize: 19 }}>🐿️</Text>
               </View>
               <Text style={styles.mascotNoteText}>
-                "Awareness over restriction. Progress over perfection. SQUI is ready to guide your journey!"
+                "Awareness over restriction. Progress over perfection. SQUI is ready to guide your wellness!"
               </Text>
             </View>
-          </View>
+          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
 
@@ -432,7 +494,7 @@ export const AuthScreen: React.FC = () => {
             </View>
 
             <Text style={styles.modalDescription}>
-              Enter your email address registered with SQUI, and we'll send you a password reset link.
+              Enter your registered SQUI email address and we will send you password reset instructions.
             </Text>
 
             {recoverySuccessMessage ? (
@@ -463,7 +525,7 @@ export const AuthScreen: React.FC = () => {
                 </View>
 
                 <TouchableOpacity
-                  style={[styles.submitButton, recoveryLoading && styles.submitButtonDisabled]}
+                  style={[styles.submitButton, recoveryLoading && styles.submitButtonDisabled, { marginBottom: 0 }]}
                   onPress={handleForgotPassSubmit}
                   disabled={recoveryLoading}
                 >
@@ -496,7 +558,7 @@ export const AuthScreen: React.FC = () => {
             </View>
 
             <Text style={styles.modalDescription}>
-              Forgot your username? Enter your registered email address and we'll send your username right over.
+              Enter your registered email address to find and receive your SQUI username.
             </Text>
 
             {recoverySuccessMessage ? (
@@ -527,7 +589,7 @@ export const AuthScreen: React.FC = () => {
                 </View>
 
                 <TouchableOpacity
-                  style={[styles.submitButton, recoveryLoading && styles.submitButtonDisabled]}
+                  style={[styles.submitButton, recoveryLoading && styles.submitButtonDisabled, { marginBottom: 0 }]}
                   onPress={handleForgotUserSubmit}
                   disabled={recoveryLoading}
                 >
