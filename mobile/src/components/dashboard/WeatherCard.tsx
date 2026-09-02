@@ -62,6 +62,7 @@ export const WeatherCard: React.FC = () => {
     { time: '9 AM', temp: '21°', chance: '10%', iconType: 'moon' },
     { time: '12 PM', temp: '24°', chance: '0%', iconType: 'sun' },
     { time: '3 PM', temp: '23°', chance: '10%', iconType: 'sun' },
+    { time: '6 PM', temp: '20°', chance: '20%', iconType: 'cloud' },
   ];
 
   return (
@@ -222,7 +223,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* ↔️ Horizontal Scrollable Forecast Strip */}
+      {/* ↔️ Horizontal Scrollable Forecast Strip (6 Total Hourly Cards) */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
