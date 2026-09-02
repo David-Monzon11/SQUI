@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Shared Forecast Strip & Dark Glassmorphic Cards with Rich Depth
+  // Shared Forecast Strip & Crisp White Glassmorphic Cards (Emphasized 3D Elevation)
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
@@ -143,35 +143,35 @@ export const styles = StyleSheet.create({
   glassForecastPill: {
     flex: 1,
     height: 148, // Shared fixed height for 100% top & bottom edge alignment
-    backgroundColor: 'rgba(16, 38, 27, 0.88)', // Darker Emerald Frosted Glass
+    backgroundColor: '#FFFFFF', // Crisp White Glass Container (Reverted from green!)
     borderWidth: 1.5,
-    borderColor: 'rgba(52, 211, 153, 0.28)', // Luminous subtle emerald glass rim
+    borderColor: 'rgba(255, 255, 255, 0.95)', // Clean white glass rim highlight
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
     
-    // Deep Rich Directional Ambient Shadow for 3D Depth
-    shadowColor: '#021209',
+    // Deep Emphasized Layered Shadow for Soft 3D Elevation
+    shadowColor: '#072013',
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.28,
+    shadowOpacity: 0.20,
     shadowRadius: 18,
     elevation: 8,
   },
   glassForecastPillActive: {
-    backgroundColor: 'rgba(6, 44, 27, 0.98)', // Deep Emerald Black Active Glass
-    borderColor: '#10B981', // Glowing Emerald Active Rim
+    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Deep Emerald for Selected 12 PM card
+    borderColor: '#10B981',
     shadowColor: '#10B981',
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.42,
-    shadowRadius: 22,
-    elevation: 12,
+    shadowOpacity: 0.38,
+    shadowRadius: 20,
+    elevation: 10,
   },
   forecastTime: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 13,
-    color: '#E2E8F0', // Crisp light typography for dark glass
+    color: '#0F2418',
     letterSpacing: 0.2,
   },
   forecastTimeActive: {
@@ -197,17 +197,17 @@ export const styles = StyleSheet.create({
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 11.5,
-    color: '#34D399',
+    color: '#059669',
     letterSpacing: 0.2,
     backgroundColor: 'transparent',
   },
   forecastChanceActive: {
-    color: '#6EE7B7',
+    color: '#34D399',
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 17,
-    color: '#FFFFFF',
+    color: '#0F2418',
     letterSpacing: -0.3,
   },
   forecastTempActive: {
