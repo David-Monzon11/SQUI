@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // Glassmorphic Hourly Forecast Pill Strip (Emphasized Glass Shadow & Big Uniform 52px Icons)
+  // Glassmorphic Hourly Forecast Pill Strip (Glass Shadow & Clean 52px Icons)
   forecastStrip: {
     marginTop: 16,
     flexDirection: 'row',
@@ -141,9 +141,9 @@ export const styles = StyleSheet.create({
   },
   glassForecastPill: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.82)', // Translucent Frosted Glass
+    backgroundColor: 'rgba(255, 255, 255, 0.84)', // Clean translucent frosted white glass
     borderWidth: 1.8,
-    borderColor: 'rgba(255, 255, 255, 0.95)', // Luminous Glass Border Highlight
+    borderColor: 'rgba(255, 255, 255, 0.95)', // Luminous rim highlight
     borderRadius: 26,
     paddingVertical: 14,
     paddingHorizontal: 2,
@@ -152,17 +152,17 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     shadowColor: '#1B432C',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.18, // Emphasized drop shadow for strong 3D floating glass effect
+    shadowOpacity: 0.18,
     shadowRadius: 14,
     elevation: 6,
   },
   glassForecastPillActive: {
-    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Deep Emerald Glass Active Card
+    backgroundColor: 'rgba(15, 60, 38, 0.95)', // Vibrant Emerald Glass Active Card
     borderColor: '#10B981',
     borderWidth: 2,
     shadowColor: '#10B981',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35, // Emphasized emerald glass glow shadow
+    shadowOpacity: 0.35,
     shadowRadius: 14,
     elevation: 8,
   },
@@ -176,12 +176,42 @@ export const styles = StyleSheet.create({
     color: '#6EE7B7',
   },
   forecastIconWrap: {
-    width: 52,
-    height: 52,
+    width: 54,
+    height: 54,
     marginVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  // 3D Icon Depth Shadow Styling
+  iconWithDepthContainer: {
+    width: 54,
+    height: 54,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  cloudGroundShadow: {
+    position: 'absolute',
+    bottom: 1,
+    width: 34,
+    height: 7,
+    borderRadius: 14,
+    backgroundColor: 'rgba(0, 0, 0, 0.16)',
+    transform: [{ scaleX: 1.1 }],
+    zIndex: 1,
+  },
+  weatherIconImage: {
+    width: 52,
+    height: 52,
+    resizeMode: 'contain',
+    zIndex: 2,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+  },
+
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 11.5,

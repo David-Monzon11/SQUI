@@ -20,38 +20,40 @@ interface HourlyItem {
 }
 
 // 3D Weather Icon Component:
-// Renders UNIQUE 3D assets for each weather condition (Rain, Cloud, Partly Sunny, Sun),
-// with individually calibrated dimensions so ALL icons have the EXACT SAME VISUAL SIZE AND PLACEMENT!
+// All cloud weather conditions follow the EXACT size, placement, and visual volume of the FIRST card (3 AM).
+// Completely eliminates any white margin artifacts and includes a ground shadow for realistic 3D depth.
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
-  let customStyle = { width: 50, height: 50, resizeMode: 'contain' as const };
-
   switch (type) {
     case 'rain':
+      // First card (3 AM) 3D gray cloud asset
       source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
-      customStyle = { width: 52, height: 52, resizeMode: 'contain' };
       break;
 
     case 'cloud':
+      // 6 AM 3D blue cloud asset (matching 3 AM scale)
       source = require('../../../assets/vecteezy_sunny-cloudy-icon-illustration-in-3d-style-glowing-cloudy_23404599.png');
-      customStyle = { width: 54, height: 54, resizeMode: 'contain' };
       break;
 
     case 'moon':
+      // 9 AM 3D sun & cloud asset (matching 3 AM scale)
       source = require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
-      customStyle = { width: 52, height: 52, resizeMode: 'contain' };
       break;
 
     case 'sun':
     default:
+      // 12 PM / 3 PM 3D glowing sun asset
       source = require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
-      customStyle = { width: 48, height: 48, resizeMode: 'contain' };
       break;
   }
 
   return (
-    <View style={{ width: 52, height: 52, alignItems: 'center', justifyContent: 'center' }}>
-      <Image source={source} style={customStyle} />
+    <View style={styles.iconWithDepthContainer}>
+      {/* 3D Volumetric Ground Shadow under the cloud for dramatic depth */}
+      <View style={styles.cloudGroundShadow} />
+
+      {/* Clean 3D Asset Image with native drop shadow */}
+      <Image source={source} style={styles.weatherIconImage} />
     </View>
   );
 };
@@ -216,7 +218,7 @@ export const WeatherCard: React.FC = () => {
             {/* Right: 3D Weather Art from Asset */}
             <View style={styles.rightCol}>
               <Image
-                source={require('../../../assets/vecteezy_3d-icon-of-a-sun-behind-a-cloud-partly-cloudy-weather_66228107.png')}
+                source={require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png')}
                 style={styles.weatherImage}
               />
             </View>
@@ -224,7 +226,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* Glassmorphic Frosted Hourly Forecast Cards with Calibrated Equal-Size 3D Icons per Weather Condition */}
+      {/* Glassmorphic Frosted Hourly Forecast Cards with Clean 3D Clouds & Depth Shadows */}
       <View style={styles.forecastStrip}>
         {hourlyForecast.map((item, index) => (
           <TouchableOpacity
