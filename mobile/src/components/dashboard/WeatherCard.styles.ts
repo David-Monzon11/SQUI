@@ -178,23 +178,24 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
 
-  // 💧 Sculpted Borderless Liquid Glass Subcards
+  // 💧 Sculpted Luminous Emerald Liquid Glass Subcards
   liquidGlassPillWrapper: {
     width: 88,
     height: 194,
     borderRadius: 26,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 0,
+    backgroundColor: '#E6F8F0',
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.18)',
     marginRight: 2,
     position: 'relative',
     overflow: 'hidden',
 
-    // Soft organic ambient shadow without harsh borders
-    shadowColor: '#052E16',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.07,
-    shadowRadius: 12,
-    elevation: 3,
+    // Deep aquatic emerald shadow
+    shadowColor: '#064E3B',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.10,
+    shadowRadius: 14,
+    elevation: 4,
   },
   liquidGradientBg: {
     position: 'absolute',

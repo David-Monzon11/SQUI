@@ -376,15 +376,20 @@ export const WeatherCard: React.FC = () => {
             activeOpacity={0.88}
             style={styles.liquidGlassPillWrapper}
           >
-            {/* 💧 Pure Liquid Glass Vertical Gradient (100% horizontally uniform - no center stripe/margin artifact) */}
+            {/* 💧 Rich Nature Emerald Liquid Glass Gradient (Horizontally uniform, rich mint-emerald depth) */}
             <LinearGradient
-              colors={['#FFFFFF', 'rgba(244, 253, 249, 0.94)', 'rgba(230, 248, 242, 0.90)']}
+              colors={[
+                'rgba(255, 255, 255, 0.92)',
+                'rgba(209, 250, 229, 0.75)',
+                'rgba(167, 243, 208, 0.82)',
+              ]}
+              locations={[0, 0.45, 1]}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={styles.liquidGradientBg}
             />
 
-            {/* 🌊 Liquid Refraction & Surface Sheen (Borderless) */}
+            {/* 🌊 Liquid Refraction & Prismatic Aquatic Glow */}
             <Svg
               width="100%"
               height="100%"
@@ -393,27 +398,45 @@ export const WeatherCard: React.FC = () => {
               style={styles.liquidSvgOverlay}
             >
               <Defs>
-                <SvgRadialGradient
-                  id={`domeGlow-${index}`}
-                  cx="50%"
-                  cy="15%"
-                  rx="50%"
-                  ry="25%"
-                  fx="50%"
-                  fy="10%"
-                >
-                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.7} />
+                {/* Surface droplet gloss sheen */}
+                <SvgLinearGradient id={`topSheen-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.80} />
+                  <Stop offset="50%" stopColor="#FFFFFF" stopOpacity={0.15} />
                   <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
+                </SvgLinearGradient>
+
+                {/* Ambient emerald droplet refraction */}
+                <SvgRadialGradient
+                  id={`bottomGlow-${index}`}
+                  cx="50%"
+                  cy="92%"
+                  rx="60%"
+                  ry="40%"
+                  fx="50%"
+                  fy="95%"
+                >
+                  <Stop offset="0%" stopColor="#10B981" stopOpacity={0.28} />
+                  <Stop offset="60%" stopColor="#059669" stopOpacity={0.12} />
+                  <Stop offset="100%" stopColor="#059669" stopOpacity={0} />
                 </SvgRadialGradient>
               </Defs>
 
-              {/* Liquid Surface Tension Dome Sheen */}
+              {/* Surface Sheen */}
               <Rect
                 x="0"
                 y="0"
                 width="88"
-                height="60"
-                fill={`url(#domeGlow-${index})`}
+                height="65"
+                fill={`url(#topSheen-${index})`}
+              />
+
+              {/* Liquid Emerald Pool Glow */}
+              <Rect
+                x="0"
+                y="110"
+                width="88"
+                height="84"
+                fill={`url(#bottomGlow-${index})`}
               />
             </Svg>
 
