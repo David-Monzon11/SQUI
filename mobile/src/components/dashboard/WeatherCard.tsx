@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import Svg, {
   Path,
@@ -339,7 +340,7 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* ↔️ Horizontal Scrollable Strip: 6 Upcoming Days (Sat, Sun, Mon, etc.) */}
+      {/* ↔️ Horizontal Scrollable Strip: 6 Upcoming Days with Liquid Glass Texture */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -349,34 +350,102 @@ export const WeatherCard: React.FC = () => {
         {displayForecast.map((item, index) => (
           <TouchableOpacity
             key={index}
-            activeOpacity={0.85}
-            style={styles.glassForecastPill}
+            activeOpacity={0.88}
+            style={styles.liquidGlassPillWrapper}
           >
-            {/* Inner Dark Glass Texture Overlay */}
-            <View style={styles.glassTextureOverlay} />
+            {/* 💧 Translucent Liquid Glass Base Gradient */}
+            <LinearGradient
+              colors={['#FFFFFF', 'rgba(240, 253, 250, 0.70)', 'rgba(230, 248, 244, 0.85)', '#FFFFFF']}
+              locations={[0, 0.35, 0.75, 1]}
+              start={{ x: 0.1, y: 0 }}
+              end={{ x: 0.9, y: 1 }}
+              style={styles.liquidGradientBg}
+            />
 
-            <View style={{ alignItems: 'center' }}>
-              <Text style={styles.forecastTime}>
-                {item.day}
-              </Text>
-              <Text style={styles.forecastDateSub}>
-                {item.date}
-              </Text>
+            {/* 🌊 Liquid Refraction & Prismatic Caustic Highlights */}
+            <Svg
+              width="100%"
+              height="100%"
+              viewBox="0 0 88 194"
+              preserveAspectRatio="none"
+              style={styles.liquidSvgOverlay}
+            >
+              <Defs>
+                <SvgLinearGradient id={`rimGrad-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.95} />
+                  <Stop offset="30%" stopColor="#6EE7B7" stopOpacity={0.65} />
+                  <Stop offset="65%" stopColor="#FFFFFF" stopOpacity={0.4} />
+                  <Stop offset="100%" stopColor="#A7F3D0" stopOpacity={0.8} />
+                </SvgLinearGradient>
+
+                <SvgLinearGradient id={`causticGrad-${index}`} x1="0%" y1="0%" x2="100%" y2="80%">
+                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.48} />
+                  <Stop offset="50%" stopColor="#FFFFFF" stopOpacity={0.08} />
+                  <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
+                </SvgLinearGradient>
+              </Defs>
+
+              {/* Liquid Caustic Reflection Arc */}
+              <Path
+                d="M 0 0 C 35 0 65 18 88 55 L 88 0 Z"
+                fill={`url(#causticGrad-${index})`}
+              />
+
+              {/* Water Droplet Glow Curve at Bottom */}
+              <Path
+                d="M 0 162 C 25 184 63 184 88 162 L 88 194 L 0 194 Z"
+                fill="rgba(16, 185, 129, 0.05)"
+              />
+
+              {/* Prismatic Liquid Glass Border */}
+              <Rect
+                x="0.75"
+                y="0.75"
+                width="86.5"
+                height="192.5"
+                rx="27.25"
+                fill="none"
+                stroke={`url(#rimGrad-${index})`}
+                strokeWidth={1.5}
+              />
+            </Svg>
+
+            {/* Pill Content Overlay */}
+            <View style={styles.pillContentWrap}>
+              {/* Day & Date Header */}
+              <View style={styles.pillHeader}>
+                <Text style={styles.forecastDayText}>
+                  {item.day}
+                </Text>
+                <View style={styles.pillDateBadge}>
+                  <Text style={styles.forecastDateSub}>
+                    {item.date}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Dynamic 3D Weather Icon */}
+              <WeatherIcon type={item.iconType} />
+
+              {/* Bottom: Rain Chance Pill + Big Temp */}
+              <View style={styles.pillFooter}>
+                {item.chance ? (
+                  <View style={styles.chancePill}>
+                    <Text style={styles.forecastChance}>
+                      {item.chance}
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={[styles.chancePill, { opacity: 0 }]}>
+                    <Text style={styles.forecastChance}>-</Text>
+                  </View>
+                )}
+
+                <Text style={styles.forecastTemp}>
+                  {item.temp}
+                </Text>
+              </View>
             </View>
-
-            <WeatherIcon type={item.iconType} />
-
-            {item.chance ? (
-              <Text style={styles.forecastChance}>
-                {item.chance}
-              </Text>
-            ) : (
-              <Text style={[styles.forecastChance, { opacity: 0 }]}>-</Text>
-            )}
-
-            <Text style={styles.forecastTemp}>
-              {item.temp}
-            </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>

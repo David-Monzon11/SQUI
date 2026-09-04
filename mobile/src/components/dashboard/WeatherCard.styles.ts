@@ -168,53 +168,67 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
-  glassForecastPill: {
-    width: 84, // Proportional fixed width
-    height: 180, // Generous fixed height
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.06)',
-    borderRadius: 28,
-    paddingVertical: 16,
-    paddingHorizontal: 4,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    position: 'relative',
-    
-    // Soft Ambient Shadow
-    shadowColor: '#051A0E',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 14,
-    elevation: 5,
-  },
 
-  // Inner Glass Texture Overlay
-  glassTextureOverlay: {
+  // 💧 Sculpted Liquid Glass Subcards
+  liquidGlassPillWrapper: {
+    width: 88,
+    height: 194,
+    borderRadius: 28,
+    marginRight: 2,
+    position: 'relative',
+    overflow: 'hidden',
+
+    // Liquid Glass Ambient Shadow
+    shadowColor: '#052E16',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    elevation: 6,
+  },
+  liquidGradientBg: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(245, 247, 246, 0.40)',
-    borderRadius: 28,
-    zIndex: 1,
   },
-
-  forecastTime: {
+  liquidSvgOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 28,
+  },
+  pillContentWrap: {
+    flex: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    zIndex: 2,
+  },
+  pillHeader: {
+    alignItems: 'center',
+  },
+  forecastDayText: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 13.5,
+    fontSize: 14,
     color: '#0F2418',
     letterSpacing: 0.2,
-    zIndex: 2,
+  },
+  pillDateBadge: {
+    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 1.5,
+    marginTop: 2,
   },
   forecastDateSub: {
     fontFamily: FONTS.roundedBold,
-    fontSize: 10,
-    color: '#64748B',
-    marginTop: -2,
-    letterSpacing: 0.1,
-    zIndex: 2,
+    fontSize: 9.5,
+    color: '#047857',
+    letterSpacing: 0.2,
   },
   forecastIconWrap: {
     width: '100%',
@@ -232,19 +246,29 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 
+  pillFooter: {
+    alignItems: 'center',
+    width: '100%',
+  },
+  chancePill: {
+    backgroundColor: 'rgba(16, 185, 129, 0.09)',
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.22)',
+    borderRadius: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    marginBottom: 4,
+  },
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 12,
+    fontSize: 11,
     color: '#059669',
     letterSpacing: 0.2,
-    backgroundColor: 'transparent',
-    zIndex: 2,
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 19,
+    fontSize: 19.5,
     color: '#0F2418',
     letterSpacing: -0.5,
-    zIndex: 2,
   },
 });
