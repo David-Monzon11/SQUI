@@ -87,15 +87,25 @@ export interface HourlyWeatherItem {
   iconType: 'rain' | 'sun' | 'cloud' | 'moon';
 }
 
+export interface DailyForecastItem {
+  day: string;
+  date: string;
+  temp: string;
+  chance: string;
+  iconType: 'rain' | 'sun' | 'cloud' | 'moon';
+}
+
 export interface WeatherData {
   temperature: number;
   high: number;
   low: number;
   location: string;
+  dateStr?: string;
   statusText: string;
   iconType: 'rain' | 'sun' | 'cloud' | 'moon';
   humidity: number;
   hourly: HourlyWeatherItem[];
+  dailyForecast?: DailyForecastItem[];
   hydratingTip?: string;
 }
 

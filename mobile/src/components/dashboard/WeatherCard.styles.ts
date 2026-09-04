@@ -90,7 +90,14 @@ export const styles = StyleSheet.create({
     letterSpacing: -0.2,
   },
 
-  // Creative Weather Status badge
+  // Creative Weather Status badge & Date Row
+  badgeDateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    marginTop: 8,
+    flexWrap: 'wrap',
+  },
   weatherStatusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -98,14 +105,13 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.30)',
     borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 9,
+    paddingVertical: 4.5,
     alignSelf: 'flex-start',
-    marginTop: 8,
   },
   weatherStatusText: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 11,
+    fontSize: 10.5,
     color: '#FFFFFF',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -115,7 +121,21 @@ export const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     backgroundColor: '#38dbff',
-    marginRight: 6,
+    marginRight: 5,
+  },
+  weatherDatePill: {
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.30)',
+    borderRadius: 14,
+    paddingHorizontal: 9,
+    paddingVertical: 4.5,
+  },
+  weatherDateText: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 10.5,
+    color: '#FFFFFF',
+    letterSpacing: 0.2,
   },
 
   // Right Side 3D Weather Art
@@ -186,6 +206,14 @@ export const styles = StyleSheet.create({
     fontSize: 13.5,
     color: '#0F2418',
     letterSpacing: 0.2,
+    zIndex: 2,
+  },
+  forecastDateSub: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 10,
+    color: '#64748B',
+    marginTop: -2,
+    letterSpacing: 0.1,
     zIndex: 2,
   },
   forecastIconWrap: {

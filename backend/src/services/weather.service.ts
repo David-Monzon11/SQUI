@@ -164,7 +164,7 @@ export class WeatherService {
         ? Promise.resolve(locationName)
         : this.reverseGeocode(roundedLat, roundedLon);
 
-      const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${roundedLat}&longitude=${roundedLon}&current=temperature_2m,relative_humidity_2m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
+      const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${roundedLat}&longitude=${roundedLon}&current=temperature_2m,relative_humidity_2m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
 
       const weatherPromise = fetch(openMeteoUrl, {
         signal: AbortSignal.timeout(5000),
@@ -186,6 +186,38 @@ export class WeatherService {
 
       const high = Math.round(weatherJson.daily?.temperature_2m_max?.[0] ?? currentTemp + 4);
       const low = Math.round(weatherJson.daily?.temperature_2m_min?.[0] ?? currentTemp - 4);
+
+      // Format Today's Date: e.g. "Fri, Sep 4"
+      const now = new Date();
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const dateStr = `${dayNames[now.getDay()]}, ${monthNames[now.getMonth()]} ${now.getDate()}`;
+
+      // Build 6 upcoming days forecast (e.g. Sat, Sun, Mon, Tue, Wed, Thu)
+      const dailyForecast = [];
+      const dailyTimes = weatherJson.daily?.time || [];
+      const dailyCodes = weatherJson.daily?.weather_code || [];
+      const dailyMaxTemps = weatherJson.daily?.temperature_2m_max || [];
+      const dailyChances = weatherJson.daily?.precipitation_probability_max || [];
+
+      for (let i = 1; i < dailyTimes.length && dailyForecast.length < 6; i++) {
+        const parts = dailyTimes[i].split("-");
+        const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        const dayLabel = dayNames[d.getDay()];
+        const dateSub = `${monthNames[d.getMonth()]} ${d.getDate()}`;
+        const code = dailyCodes[i] ?? 0;
+        const mapped = mapWmoToSqui(code, 1);
+        const maxT = Math.round(dailyMaxTemps[i] ?? currentTemp);
+        const chance = dailyChances[i] !== undefined ? `${Math.round(dailyChances[i])}%` : "15%";
+
+        dailyForecast.push({
+          day: dayLabel,
+          date: dateSub,
+          temp: `${maxT}°`,
+          chance,
+          iconType: mapped.iconType,
+        });
+      }
 
       // Build 6-hour forecast strip starting from current hour
       const hourlyTimes: string[] = weatherJson.hourly?.time || [];
@@ -218,28 +250,17 @@ export class WeatherService {
         }
       }
 
-      // If hourly wasn't available, provide sensible fallback items
-      if (hourly.length === 0) {
-        const fallbackHours = ["Now", "+1h", "+2h", "+3h", "+4h", "+5h"];
-        fallbackHours.forEach((h) => {
-          hourly.push({
-            time: h,
-            temp: `${currentTemp}°`,
-            chance: "10%",
-            iconType,
-          });
-        });
-      }
-
       const result: WeatherData = {
         temperature: currentTemp,
         high,
         low,
         location: resolvedLoc || "Local Area",
+        dateStr,
         statusText,
         iconType,
         humidity,
         hourly,
+        dailyForecast,
         hydratingTip: generateHydrationTip(currentTemp, humidity, statusText),
       };
 

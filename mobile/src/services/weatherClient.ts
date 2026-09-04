@@ -1,4 +1,4 @@
-import { WeatherData, HourlyWeatherItem } from '../types';
+import { WeatherData, HourlyWeatherItem, DailyForecastItem } from '../types';
 
 export function mapWmoCode(
   code: number,
@@ -55,9 +55,8 @@ export function generateHydrationTip(temp: number, humidity: number, statusText:
 }
 
 /**
- * Direct Open-Meteo client fallback.
- * Allows physical mobile devices to fetch real-time weather even if the local backend
- * server is unreachable (e.g. phone on cellular data or different network than dev machine).
+ * Direct HTTPS Open-Meteo client fallback.
+ * Uses HTTPS endpoints only so Android / iOS never block for cleartext traffic.
  */
 export async function fetchDirectOpenMeteo(
   lat?: number,
@@ -67,7 +66,7 @@ export async function fetchDirectOpenMeteo(
   let resolvedLon = lon;
   let locationName = '';
 
-  // If no GPS coordinates, resolve location from free IP geolocator
+  // If no GPS coordinates, resolve location from free HTTPS IP geolocator (ipwho.is)
   if (
     resolvedLat === undefined ||
     resolvedLon === undefined ||
@@ -75,29 +74,28 @@ export async function fetchDirectOpenMeteo(
     isNaN(resolvedLon)
   ) {
     try {
-      const ipRes = await fetch(
-        'http://ip-api.com/json/?fields=status,country,countryCode,city,lat,lon',
-        { signal: AbortSignal.timeout(3500) }
-      );
+      const ipRes = await fetch('https://ipwho.is/', {
+        signal: AbortSignal.timeout(4000),
+      });
       if (ipRes.ok) {
         const ipData = await ipRes.json();
-        if (ipData.status === 'success' && typeof ipData.lat === 'number') {
-          resolvedLat = ipData.lat;
-          resolvedLon = ipData.lon;
+        if (ipData.success !== false && typeof ipData.latitude === 'number') {
+          resolvedLat = ipData.latitude;
+          resolvedLon = ipData.longitude;
           locationName = ipData.city
-            ? `${ipData.city}, ${ipData.countryCode || ipData.country}`
+            ? `${ipData.city}, ${ipData.country_code || ipData.country}`
             : ipData.country || 'Local Area';
         }
       }
     } catch {
-      // If IP lookup fails, use default Montreal
-      resolvedLat = 45.5017;
-      resolvedLon = -73.5673;
-      locationName = 'Montreal, Canada';
+      // Fallback coordinates (Philippines Central)
+      resolvedLat = 15.48;
+      resolvedLon = 120.60;
+      locationName = 'Local Climate';
     }
   }
 
-  // Reverse geocode coordinates to City, Country
+  // Reverse geocode coordinates to City, Country via HTTPS
   if (!locationName && resolvedLat && resolvedLon) {
     try {
       const geoRes = await fetch(
@@ -116,7 +114,7 @@ export async function fetchDirectOpenMeteo(
     }
   }
 
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${resolvedLat}&longitude=${resolvedLon}&current=temperature_2m,relative_humidity_2m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${resolvedLat}&longitude=${resolvedLon}&current=temperature_2m,relative_humidity_2m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
 
   const weatherRes = await fetch(url, { signal: AbortSignal.timeout(5000) });
   if (!weatherRes.ok) {
@@ -133,6 +131,39 @@ export async function fetchDirectOpenMeteo(
   const high = Math.round(weatherJson.daily?.temperature_2m_max?.[0] ?? currentTemp + 3);
   const low = Math.round(weatherJson.daily?.temperature_2m_min?.[0] ?? currentTemp - 3);
 
+  // Today's Date formatted e.g. "Fri, Sep 4"
+  const now = new Date();
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dateStr = `${dayNames[now.getDay()]}, ${monthNames[now.getMonth()]} ${now.getDate()}`;
+
+  // Build upcoming 6-day daily forecast (Sat, Sun, Mon, Tue, etc.)
+  const dailyForecast: DailyForecastItem[] = [];
+  const dailyTimes = weatherJson.daily?.time || [];
+  const dailyCodes = weatherJson.daily?.weather_code || [];
+  const dailyMaxTemps = weatherJson.daily?.temperature_2m_max || [];
+  const dailyChances = weatherJson.daily?.precipitation_probability_max || [];
+
+  for (let i = 1; i < dailyTimes.length && dailyForecast.length < 6; i++) {
+    const parts = dailyTimes[i].split('-');
+    const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    const dayLabel = dayNames[d.getDay()];
+    const dateSub = `${monthNames[d.getMonth()]} ${d.getDate()}`;
+    const code = dailyCodes[i] ?? 0;
+    const mapped = mapWmoCode(code, 1);
+    const maxT = Math.round(dailyMaxTemps[i] ?? currentTemp);
+    const chance = dailyChances[i] !== undefined ? `${Math.round(dailyChances[i])}%` : '20%';
+
+    dailyForecast.push({
+      day: dayLabel,
+      date: dateSub,
+      temp: `${maxT}°`,
+      chance,
+      iconType: mapped.iconType,
+    });
+  }
+
+  // Also build 6-hour forecast
   const hourlyTimes: string[] = weatherJson.hourly?.time || [];
   const hourlyTemps: number[] = weatherJson.hourly?.temperature_2m || [];
   const hourlyChances: number[] = weatherJson.hourly?.precipitation_probability || [];
@@ -168,10 +199,12 @@ export async function fetchDirectOpenMeteo(
     high,
     low,
     location: locationName || 'Local Climate',
+    dateStr,
     statusText,
     iconType,
     humidity,
     hourly,
+    dailyForecast,
     hydratingTip: generateHydrationTip(currentTemp, humidity, statusText),
   };
 }

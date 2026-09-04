@@ -12,7 +12,7 @@ import Svg, {
 } from 'react-native-svg';
 import { styles } from './WeatherCard.styles';
 import { apiClient } from '../../services/apiClient';
-import { WeatherData, HourlyWeatherItem } from '../../types';
+import { WeatherData, DailyForecastItem } from '../../types';
 
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
@@ -65,25 +65,44 @@ const getMainWeatherImage = (iconType: 'rain' | 'sun' | 'cloud' | 'moon') => {
   }
 };
 
-const defaultHourly: HourlyWeatherItem[] = [
-  { time: '3 AM', temp: '18°', chance: '40%', iconType: 'rain' },
-  { time: '6 AM', temp: '17°', chance: '30%', iconType: 'cloud' },
-  { time: '9 AM', temp: '21°', chance: '10%', iconType: 'moon' },
-  { time: '12 PM', temp: '24°', chance: '0%', iconType: 'sun' },
-  { time: '3 PM', temp: '23°', chance: '10%', iconType: 'sun' },
-  { time: '6 PM', temp: '20°', chance: '20%', iconType: 'cloud' },
-];
+const getInitialDateStr = (): string => {
+  const now = new Date();
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${dayNames[now.getDay()]}, ${monthNames[now.getMonth()]} ${now.getDate()}`;
+};
+
+const getInitialDailyForecast = (): DailyForecastItem[] => {
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const result: DailyForecastItem[] = [];
+  const now = new Date();
+  for (let i = 1; i <= 6; i++) {
+    const nextDate = new Date(now);
+    nextDate.setDate(now.getDate() + i);
+    result.push({
+      day: dayNames[nextDate.getDay()],
+      date: `${monthNames[nextDate.getMonth()]} ${nextDate.getDate()}`,
+      temp: '28°',
+      chance: '20%',
+      iconType: i % 2 === 0 ? 'sun' : 'cloud',
+    });
+  }
+  return result;
+};
 
 const initialWeather: WeatherData = {
-  temperature: 20,
-  high: 24,
-  low: 18,
-  location: 'Locating...',
-  statusText: 'Mindful Weather',
+  temperature: 26,
+  high: 30,
+  low: 23,
+  location: 'Local Climate',
+  dateStr: getInitialDateStr(),
+  statusText: 'Mindful Climate',
   iconType: 'cloud',
-  humidity: 50,
-  hourly: defaultHourly,
-  hydratingTip: 'Stay balanced and mindful with your hydration throughout the day.',
+  humidity: 65,
+  hourly: [],
+  dailyForecast: getInitialDailyForecast(),
+  hydratingTip: 'Mindful climate active. Stay naturally hydrated at your steady pace today!',
 };
 
 export const WeatherCard: React.FC = () => {
@@ -91,6 +110,7 @@ export const WeatherCard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchWeather = useCallback(async () => {
+    setLoading(true);
     try {
       let lat: number | undefined = undefined;
       let lon: number | undefined = undefined;
@@ -105,13 +125,21 @@ export const WeatherCard: React.FC = () => {
           lon = loc.coords.longitude;
         }
       } catch (locErr) {
-        // Permission denied, GPS disabled, or unsupported: backend falls back to IP
-        console.log('[WeatherCard] GPS not available, using IP/backend location fallback');
+        // Handled gracefully: backend / direct client will resolve via HTTPS IP geolocation
+        console.log('[WeatherCard] Location permission bypassed, resolving via network IP');
       }
 
       const data = await apiClient.getWeather(lat, lon);
       if (data && typeof data.temperature === 'number') {
-        setWeather(data);
+        setWeather((prev) => ({
+          ...prev,
+          ...data,
+          dateStr: data.dateStr || prev.dateStr || getInitialDateStr(),
+          dailyForecast:
+            data.dailyForecast && data.dailyForecast.length > 0
+              ? data.dailyForecast
+              : prev.dailyForecast,
+        }));
       }
     } catch (err: any) {
       console.warn('[WeatherCard] Live weather fetch error:', err?.message || err);
@@ -123,6 +151,12 @@ export const WeatherCard: React.FC = () => {
   useEffect(() => {
     fetchWeather();
   }, [fetchWeather]);
+
+  // Display daily forecast cards (fallback to initial if empty)
+  const displayForecast =
+    weather.dailyForecast && weather.dailyForecast.length > 0
+      ? weather.dailyForecast
+      : getInitialDailyForecast();
 
   return (
     <View style={styles.container}>
@@ -212,7 +246,7 @@ export const WeatherCard: React.FC = () => {
             fill="rgba(3, 37, 56, 0.22)"
           />
 
-          {/* 🌊 Sculpted Wave Card Body (Bleeds past left/bottom edge to eliminate seams 100%) */}
+          {/* 🌊 Sculpted Wave Card Body */}
           <Path
             d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
             fill="url(#squiWaveGrad)"
@@ -258,7 +292,7 @@ export const WeatherCard: React.FC = () => {
         <View style={styles.cardContent}>
           {/* Top Row: Temp Info (Left) + 3D Weather Illustration (Right) */}
           <View style={styles.mainRow}>
-            {/* Left: Temperature & Location */}
+            {/* Left: Temperature, High/Low, Location & Prominent Date */}
             <View style={styles.leftCol}>
               <Text style={styles.temperatureText}>{weather.temperature}°</Text>
               <Text style={styles.highLowText}>
@@ -268,25 +302,33 @@ export const WeatherCard: React.FC = () => {
                 {weather.location}
               </Text>
 
-              {/* Creative Weather Status Badge (Tap to refresh) */}
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={fetchWeather}
-                style={styles.weatherStatusBadge}
-              >
-                <View style={styles.weatherStatusDot} />
-                <Text style={styles.weatherStatusText}>{weather.statusText}</Text>
-                {loading && (
-                  <ActivityIndicator
-                    size="small"
-                    color="#FFFFFF"
-                    style={{ marginLeft: 6, transform: [{ scale: 0.7 }] }}
-                  />
-                )}
-              </TouchableOpacity>
+              {/* Status Badge & Prominent Date Row */}
+              <View style={styles.badgeDateRow}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={fetchWeather}
+                  style={styles.weatherStatusBadge}
+                >
+                  <View style={styles.weatherStatusDot} />
+                  <Text style={styles.weatherStatusText}>{weather.statusText}</Text>
+                  {loading && (
+                    <ActivityIndicator
+                      size="small"
+                      color="#FFFFFF"
+                      style={{ marginLeft: 5, transform: [{ scale: 0.65 }] }}
+                    />
+                  )}
+                </TouchableOpacity>
+
+                {weather.dateStr ? (
+                  <View style={styles.weatherDatePill}>
+                    <Text style={styles.weatherDateText}>{weather.dateStr}</Text>
+                  </View>
+                ) : null}
+              </View>
             </View>
 
-            {/* Right: Dynamic 3D Weather Art based on live condition */}
+            {/* Right: Dynamic 3D Weather Art matching real conditions */}
             <View style={styles.rightCol}>
               <Image
                 source={getMainWeatherImage(weather.iconType)}
@@ -297,14 +339,14 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* ↔️ Horizontal Scrollable Forecast Strip (Dynamic 6-Hour Window) */}
+      {/* ↔️ Horizontal Scrollable Strip: 6 Upcoming Days (Sat, Sun, Mon, etc.) */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.scrollContainer}
         contentContainerStyle={styles.scrollContentContainer}
       >
-        {weather.hourly.map((item, index) => (
+        {displayForecast.map((item, index) => (
           <TouchableOpacity
             key={index}
             activeOpacity={0.85}
@@ -313,9 +355,14 @@ export const WeatherCard: React.FC = () => {
             {/* Inner Dark Glass Texture Overlay */}
             <View style={styles.glassTextureOverlay} />
 
-            <Text style={styles.forecastTime}>
-              {item.time}
-            </Text>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={styles.forecastTime}>
+                {item.day}
+              </Text>
+              <Text style={styles.forecastDateSub}>
+                {item.date}
+              </Text>
+            </View>
 
             <WeatherIcon type={item.iconType} />
 
