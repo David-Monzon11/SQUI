@@ -1,5 +1,6 @@
 import { API_CONFIG } from '../constants/config';
 import { DailySummary, MealItem, UserProfile, WeatherData } from '../types';
+import { fetchDirectOpenMeteo } from './weatherClient';
 
 class ApiClient {
   private baseUrl = API_CONFIG.BASE_URL;
@@ -110,7 +111,12 @@ class ApiClient {
       lat !== undefined && lon !== undefined && !isNaN(lat) && !isNaN(lon)
         ? `?lat=${lat}&lon=${lon}`
         : '';
-    return this.request<WeatherData>(`/api/weather${query}`);
+    try {
+      return await this.request<WeatherData>(`/api/weather${query}`);
+    } catch {
+      // Backend is unreachable from phone or offline: fetch directly from Open-Meteo
+      return await fetchDirectOpenMeteo(lat, lon);
+    }
   }
 }
 

@@ -1,5 +1,12 @@
+import { Platform } from 'react-native';
+
+const DEV_API_URL = Platform.select({
+  web: 'http://localhost:3000',
+  default: 'http://192.168.0.244:3000',
+});
+
 export const API_CONFIG = {
-  BASE_URL: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000',
+  BASE_URL: process.env.EXPO_PUBLIC_API_URL || DEV_API_URL,
   TIMEOUT_MS: 10000,
 };
 
