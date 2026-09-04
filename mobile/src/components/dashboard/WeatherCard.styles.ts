@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
   // Sculpted Wave Glassmorphic Top Weather Card
   waveCardWrapper: {
     position: 'relative',
-    minHeight: 154,
+    minHeight: 164,
     borderRadius: 24,
     backgroundColor: 'transparent',
     overflow: 'hidden',
@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 16,
     paddingBottom: 16,
-    minHeight: 154,
+    minHeight: 164,
     justifyContent: 'space-between',
     zIndex: 3,
   },
@@ -183,9 +183,9 @@ export const styles = StyleSheet.create({
     width: 88,
     height: 194,
     borderRadius: 26,
-    backgroundColor: '#E6F8F0',
-    borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.18)',
+    backgroundColor: '#D1FAE5',
+    borderWidth: 1.2,
+    borderColor: 'rgba(16, 185, 129, 0.35)',
     marginRight: 2,
     position: 'relative',
     overflow: 'hidden',
@@ -193,9 +193,9 @@ export const styles = StyleSheet.create({
     // Deep aquatic emerald shadow
     shadowColor: '#064E3B',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.10,
+    shadowOpacity: 0.14,
     shadowRadius: 14,
-    elevation: 4,
+    elevation: 5,
   },
   liquidGradientBg: {
     position: 'absolute',
@@ -230,11 +230,13 @@ export const styles = StyleSheet.create({
   forecastDayText: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 14,
-    color: '#0F2418',
+    color: '#064E3B',
     letterSpacing: 0.2,
   },
   pillDateBadge: {
-    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.25)',
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 1.5,
@@ -243,7 +245,7 @@ export const styles = StyleSheet.create({
   forecastDateSub: {
     fontFamily: FONTS.roundedBold,
     fontSize: 9.5,
-    color: '#047857',
+    color: '#065F46',
     letterSpacing: 0.2,
   },
   forecastIconWrap: {
@@ -267,9 +269,9 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   chancePill: {
-    backgroundColor: 'rgba(16, 185, 129, 0.09)',
+    backgroundColor: 'rgba(255, 255, 255, 0.70)',
     borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.22)',
+    borderColor: 'rgba(16, 185, 129, 0.30)',
     borderRadius: 10,
     paddingHorizontal: 7,
     paddingVertical: 2,
@@ -278,13 +280,13 @@ export const styles = StyleSheet.create({
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
     fontSize: 11,
-    color: '#059669',
+    color: '#065F46',
     letterSpacing: 0.2,
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 19.5,
-    color: '#0F2418',
+    fontSize: 20,
+    color: '#064E3B',
     letterSpacing: -0.5,
   },
 });

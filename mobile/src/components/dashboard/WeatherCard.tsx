@@ -376,14 +376,15 @@ export const WeatherCard: React.FC = () => {
             activeOpacity={0.88}
             style={styles.liquidGlassPillWrapper}
           >
-            {/* 💧 Rich Nature Emerald Liquid Glass Gradient (Horizontally uniform, rich mint-emerald depth) */}
+            {/* 💧 Rich Nature Emerald Liquid Glass Gradient (Unmistakable vibrant mint/emerald depth) */}
             <LinearGradient
               colors={[
-                'rgba(255, 255, 255, 0.92)',
-                'rgba(209, 250, 229, 0.75)',
-                'rgba(167, 243, 208, 0.82)',
+                'rgba(255, 255, 255, 0.90)',
+                '#D1FAE5',
+                '#A7F3D0',
+                '#6EE7B7',
               ]}
-              locations={[0, 0.45, 1]}
+              locations={[0, 0.35, 0.70, 1.0]}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={styles.liquidGradientBg}
@@ -400,12 +401,12 @@ export const WeatherCard: React.FC = () => {
               <Defs>
                 {/* Surface droplet gloss sheen */}
                 <SvgLinearGradient id={`topSheen-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.80} />
-                  <Stop offset="50%" stopColor="#FFFFFF" stopOpacity={0.15} />
+                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.85} />
+                  <Stop offset="50%" stopColor="#FFFFFF" stopOpacity={0.20} />
                   <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
                 </SvgLinearGradient>
 
-                {/* Ambient emerald droplet refraction */}
+                {/* Deep liquid emerald pool glow */}
                 <SvgRadialGradient
                   id={`bottomGlow-${index}`}
                   cx="50%"
@@ -415,9 +416,9 @@ export const WeatherCard: React.FC = () => {
                   fx="50%"
                   fy="95%"
                 >
-                  <Stop offset="0%" stopColor="#10B981" stopOpacity={0.28} />
-                  <Stop offset="60%" stopColor="#059669" stopOpacity={0.12} />
-                  <Stop offset="100%" stopColor="#059669" stopOpacity={0} />
+                  <Stop offset="0%" stopColor="#059669" stopOpacity={0.25} />
+                  <Stop offset="60%" stopColor="#10B981" stopOpacity={0.10} />
+                  <Stop offset="100%" stopColor="#10B981" stopOpacity={0} />
                 </SvgRadialGradient>
               </Defs>
 
