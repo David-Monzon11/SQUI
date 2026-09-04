@@ -120,13 +120,13 @@ export const WeatherCard: React.FC = () => {
             </SvgRadialGradient>
           </Defs>
 
-          {/* 3D Sky Backdrop with Extra Rounded rx="46" Corner Radius */}
+          {/* 3D Sky Backdrop with rx="24" Corner Radius (Matches Food Gallery Card) */}
           <Rect
             x="0"
             y="0"
             width="350"
             height="235"
-            rx="46"
+            rx="24"
             fill="url(#skyBgGrad)"
           />
 
@@ -155,13 +155,13 @@ export const WeatherCard: React.FC = () => {
 
           {/* 🌊 Sculpted Wave Card Body (Bleeds past left/bottom edge to eliminate seams 100%) */}
           <Path
-            d="M 46 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
+            d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
             fill="url(#squiWaveGrad)"
           />
 
           {/* Glassmorphic Ambient Luminous Overlay */}
           <Path
-            d="M 46 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
+            d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
             fill="url(#squiGlassGlow)"
           />
 
@@ -179,7 +179,7 @@ export const WeatherCard: React.FC = () => {
             y="0"
             width="350"
             height="235"
-            rx="46"
+            rx="24"
             fill="none"
             stroke="rgba(255, 255, 255, 0.20)"
             strokeWidth={1}
