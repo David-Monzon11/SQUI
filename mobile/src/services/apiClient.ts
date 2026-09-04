@@ -1,5 +1,5 @@
 import { API_CONFIG } from '../constants/config';
-import { DailySummary, MealItem, UserProfile } from '../types';
+import { DailySummary, MealItem, UserProfile, WeatherData } from '../types';
 
 class ApiClient {
   private baseUrl = API_CONFIG.BASE_URL;
@@ -102,6 +102,15 @@ class ApiClient {
   async getKnowledgeArticles(category?: string) {
     const query = category ? `?category=${category}` : '';
     return this.request<any[]>(`/api/knowledge${query}`);
+  }
+
+  // Real-time Location Weather endpoint
+  async getWeather(lat?: number, lon?: number): Promise<WeatherData> {
+    const query =
+      lat !== undefined && lon !== undefined && !isNaN(lat) && !isNaN(lon)
+        ? `?lat=${lat}&lon=${lon}`
+        : '';
+    return this.request<WeatherData>(`/api/weather${query}`);
   }
 }
 

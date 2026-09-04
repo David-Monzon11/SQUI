@@ -51,3 +51,23 @@ export interface UserProfile {
   currentWeightKg?: number;
   targetWeightKg?: number;
 }
+
+export interface HourlyWeatherItem {
+  time: string;
+  temp: string;
+  chance: string;
+  iconType: 'rain' | 'sun' | 'cloud' | 'moon';
+}
+
+export interface WeatherData {
+  temperature: number;
+  high: number;
+  low: number;
+  location: string;
+  statusText: string;
+  iconType: 'rain' | 'sun' | 'cloud' | 'moon';
+  humidity: number;
+  hourly: HourlyWeatherItem[];
+  hydratingTip?: string;
+}
+

@@ -80,6 +80,25 @@ export interface DailySummaryData {
   squirrelTip: string;
 }
 
+export interface HourlyWeatherItem {
+  time: string;
+  temp: string;
+  chance: string;
+  iconType: 'rain' | 'sun' | 'cloud' | 'moon';
+}
+
+export interface WeatherData {
+  temperature: number;
+  high: number;
+  low: number;
+  location: string;
+  statusText: string;
+  iconType: 'rain' | 'sun' | 'cloud' | 'moon';
+  humidity: number;
+  hourly: HourlyWeatherItem[];
+  hydratingTip?: string;
+}
+
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -90,3 +109,4 @@ export interface ApiResponse<T = any> {
     details?: any[];
   };
 }
+

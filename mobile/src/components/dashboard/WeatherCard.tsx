@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
+import * as Location from 'expo-location';
 import Svg, {
   Path,
   Defs,
@@ -10,13 +11,8 @@ import Svg, {
   Ellipse,
 } from 'react-native-svg';
 import { styles } from './WeatherCard.styles';
-
-interface HourlyItem {
-  time: string;
-  temp: string;
-  chance?: string;
-  iconType: 'rain' | 'sun' | 'cloud' | 'moon';
-}
+import { apiClient } from '../../services/apiClient';
+import { WeatherData, HourlyWeatherItem } from '../../types';
 
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
@@ -55,15 +51,78 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
   );
 };
 
+const getMainWeatherImage = (iconType: 'rain' | 'sun' | 'cloud' | 'moon') => {
+  switch (iconType) {
+    case 'rain':
+      return require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
+    case 'sun':
+      return require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
+    case 'moon':
+      return require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
+    case 'cloud':
+    default:
+      return require('../../../assets/vecteezy_3d-icon-of-a-sun-behind-a-cloud-partly-cloudy-weather_66228107.png');
+  }
+};
+
+const defaultHourly: HourlyWeatherItem[] = [
+  { time: '3 AM', temp: '18°', chance: '40%', iconType: 'rain' },
+  { time: '6 AM', temp: '17°', chance: '30%', iconType: 'cloud' },
+  { time: '9 AM', temp: '21°', chance: '10%', iconType: 'moon' },
+  { time: '12 PM', temp: '24°', chance: '0%', iconType: 'sun' },
+  { time: '3 PM', temp: '23°', chance: '10%', iconType: 'sun' },
+  { time: '6 PM', temp: '20°', chance: '20%', iconType: 'cloud' },
+];
+
+const initialWeather: WeatherData = {
+  temperature: 20,
+  high: 24,
+  low: 18,
+  location: 'Locating...',
+  statusText: 'Mindful Weather',
+  iconType: 'cloud',
+  humidity: 50,
+  hourly: defaultHourly,
+  hydratingTip: 'Stay balanced and mindful with your hydration throughout the day.',
+};
+
 export const WeatherCard: React.FC = () => {
-  const hourlyForecast: HourlyItem[] = [
-    { time: '3 AM', temp: '18°', chance: '40%', iconType: 'rain' },
-    { time: '6 AM', temp: '17°', chance: '30%', iconType: 'cloud' },
-    { time: '9 AM', temp: '21°', chance: '10%', iconType: 'moon' },
-    { time: '12 PM', temp: '24°', chance: '0%', iconType: 'sun' },
-    { time: '3 PM', temp: '23°', chance: '10%', iconType: 'sun' },
-    { time: '6 PM', temp: '20°', chance: '20%', iconType: 'cloud' },
-  ];
+  const [weather, setWeather] = useState<WeatherData>(initialWeather);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchWeather = useCallback(async () => {
+    try {
+      let lat: number | undefined = undefined;
+      let lon: number | undefined = undefined;
+
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === 'granted') {
+          const loc = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.Balanced,
+          });
+          lat = loc.coords.latitude;
+          lon = loc.coords.longitude;
+        }
+      } catch (locErr) {
+        // Permission denied, GPS disabled, or unsupported: backend falls back to IP
+        console.log('[WeatherCard] GPS not available, using IP/backend location fallback');
+      }
+
+      const data = await apiClient.getWeather(lat, lon);
+      if (data && typeof data.temperature === 'number') {
+        setWeather(data);
+      }
+    } catch (err: any) {
+      console.warn('[WeatherCard] Live weather fetch error:', err?.message || err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchWeather();
+  }, [fetchWeather]);
 
   return (
     <View style={styles.container}>
@@ -73,7 +132,7 @@ export const WeatherCard: React.FC = () => {
         <Text style={styles.sectionSub}>Weather & Hydration Balance</Text>
       </View>
 
-      {/* 🌊 Sculpted Organic Wave Glassmorphic Card (Seamless Left Edge) */}
+      {/* 🌊 Sculpted Organic Wave Glassmorphic Card (Matching Food Gallery 24px Radius) */}
       <View style={styles.waveCardWrapper}>
         <Svg
           width="100%"
@@ -165,7 +224,7 @@ export const WeatherCard: React.FC = () => {
             fill="url(#squiGlassGlow)"
           />
 
-          {/* Frosted Wave Rim Highlight (Strokes ONLY the diagonal wave curve, completely avoiding left/bottom edges) */}
+          {/* Frosted Wave Rim Highlight */}
           <Path
             d="M 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200"
             fill="none"
@@ -201,21 +260,36 @@ export const WeatherCard: React.FC = () => {
           <View style={styles.mainRow}>
             {/* Left: Temperature & Location */}
             <View style={styles.leftCol}>
-              <Text style={styles.temperatureText}>19°</Text>
-              <Text style={styles.highLowText}>H:24°  L:18°</Text>
-              <Text style={styles.locationText}>Montreal, Canada</Text>
-              
-              {/* Creative Weather Status Badge */}
-              <View style={styles.weatherStatusBadge}>
+              <Text style={styles.temperatureText}>{weather.temperature}°</Text>
+              <Text style={styles.highLowText}>
+                H:{weather.high}°  L:{weather.low}°
+              </Text>
+              <Text style={styles.locationText} numberOfLines={1}>
+                {weather.location}
+              </Text>
+
+              {/* Creative Weather Status Badge (Tap to refresh) */}
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={fetchWeather}
+                style={styles.weatherStatusBadge}
+              >
                 <View style={styles.weatherStatusDot} />
-                <Text style={styles.weatherStatusText}>Mid Rain</Text>
-              </View>
+                <Text style={styles.weatherStatusText}>{weather.statusText}</Text>
+                {loading && (
+                  <ActivityIndicator
+                    size="small"
+                    color="#FFFFFF"
+                    style={{ marginLeft: 6, transform: [{ scale: 0.7 }] }}
+                  />
+                )}
+              </TouchableOpacity>
             </View>
 
-            {/* Right: Original 3D Weather Art from Asset */}
+            {/* Right: Dynamic 3D Weather Art based on live condition */}
             <View style={styles.rightCol}>
               <Image
-                source={require('../../../assets/vecteezy_3d-icon-of-a-sun-behind-a-cloud-partly-cloudy-weather_66228107.png')}
+                source={getMainWeatherImage(weather.iconType)}
                 style={styles.weatherImage}
               />
             </View>
@@ -223,14 +297,14 @@ export const WeatherCard: React.FC = () => {
         </View>
       </View>
 
-      {/* ↔️ Horizontal Scrollable Forecast Strip (6 Total Hourly Cards) */}
+      {/* ↔️ Horizontal Scrollable Forecast Strip (Dynamic 6-Hour Window) */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.scrollContainer}
         contentContainerStyle={styles.scrollContentContainer}
       >
-        {hourlyForecast.map((item, index) => (
+        {weather.hourly.map((item, index) => (
           <TouchableOpacity
             key={index}
             activeOpacity={0.85}
