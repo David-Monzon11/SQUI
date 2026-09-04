@@ -73,6 +73,19 @@ const getInitialDateStr = (): string => {
   return `${dayNames[now.getDay()]}, ${monthNames[now.getMonth()]} ${now.getDate()}`;
 };
 
+const getFormattedCurrentTime = (): string => {
+  const now = new Date();
+  let hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const minStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
+  const secStr = seconds < 10 ? `0${seconds}` : `${seconds}`;
+  return `${hours}:${minStr}:${secStr} ${ampm}`;
+};
+
 const getInitialDailyForecast = (): DailyForecastItem[] => {
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -109,6 +122,15 @@ const initialWeather: WeatherData = {
 export const WeatherCard: React.FC = () => {
   const [weather, setWeather] = useState<WeatherData>(initialWeather);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentTime, setCurrentTime] = useState<string>(getFormattedCurrentTime());
+
+  // Real-time ticking clock (updates every second)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(getFormattedCurrentTime());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const fetchWeather = useCallback(async () => {
     setLoading(true);
@@ -303,7 +325,7 @@ export const WeatherCard: React.FC = () => {
                 {weather.location}
               </Text>
 
-              {/* Status Badge & Prominent Date Row */}
+              {/* Status Badge & Prominent Date + Real-Time Clock Row */}
               <View style={styles.badgeDateRow}>
                 <TouchableOpacity
                   activeOpacity={0.7}
@@ -321,11 +343,12 @@ export const WeatherCard: React.FC = () => {
                   )}
                 </TouchableOpacity>
 
-                {weather.dateStr ? (
-                  <View style={styles.weatherDatePill}>
-                    <Text style={styles.weatherDateText}>{weather.dateStr}</Text>
-                  </View>
-                ) : null}
+                <View style={styles.weatherDatePill}>
+                  <View style={styles.liveClockDot} />
+                  <Text style={styles.weatherDateText}>
+                    {weather.dateStr ? `${weather.dateStr} • ` : ''}{currentTime}
+                  </Text>
+                </View>
               </View>
             </View>
 
@@ -353,16 +376,15 @@ export const WeatherCard: React.FC = () => {
             activeOpacity={0.88}
             style={styles.liquidGlassPillWrapper}
           >
-            {/* 💧 Translucent Liquid Glass Base Gradient */}
+            {/* 💧 Pure Liquid Glass Vertical Gradient (100% horizontally uniform - no center stripe/margin artifact) */}
             <LinearGradient
-              colors={['#FFFFFF', 'rgba(240, 253, 250, 0.70)', 'rgba(230, 248, 244, 0.85)', '#FFFFFF']}
-              locations={[0, 0.35, 0.75, 1]}
-              start={{ x: 0.1, y: 0 }}
-              end={{ x: 0.9, y: 1 }}
+              colors={['#FFFFFF', 'rgba(244, 253, 249, 0.94)', 'rgba(230, 248, 242, 0.90)']}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
               style={styles.liquidGradientBg}
             />
 
-            {/* 🌊 Liquid Refraction & Prismatic Caustic Highlights */}
+            {/* 🌊 Liquid Refraction & Surface Sheen (Borderless) */}
             <Svg
               width="100%"
               height="100%"
@@ -371,42 +393,27 @@ export const WeatherCard: React.FC = () => {
               style={styles.liquidSvgOverlay}
             >
               <Defs>
-                <SvgLinearGradient id={`rimGrad-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.95} />
-                  <Stop offset="30%" stopColor="#6EE7B7" stopOpacity={0.65} />
-                  <Stop offset="65%" stopColor="#FFFFFF" stopOpacity={0.4} />
-                  <Stop offset="100%" stopColor="#A7F3D0" stopOpacity={0.8} />
-                </SvgLinearGradient>
-
-                <SvgLinearGradient id={`causticGrad-${index}`} x1="0%" y1="0%" x2="100%" y2="80%">
-                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.48} />
-                  <Stop offset="50%" stopColor="#FFFFFF" stopOpacity={0.08} />
+                <SvgRadialGradient
+                  id={`domeGlow-${index}`}
+                  cx="50%"
+                  cy="15%"
+                  rx="50%"
+                  ry="25%"
+                  fx="50%"
+                  fy="10%"
+                >
+                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.7} />
                   <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
-                </SvgLinearGradient>
+                </SvgRadialGradient>
               </Defs>
 
-              {/* Liquid Caustic Reflection Arc */}
-              <Path
-                d="M 0 0 C 35 0 65 18 88 55 L 88 0 Z"
-                fill={`url(#causticGrad-${index})`}
-              />
-
-              {/* Water Droplet Glow Curve at Bottom */}
-              <Path
-                d="M 0 162 C 25 184 63 184 88 162 L 88 194 L 0 194 Z"
-                fill="rgba(16, 185, 129, 0.05)"
-              />
-
-              {/* Prismatic Liquid Glass Border */}
+              {/* Liquid Surface Tension Dome Sheen */}
               <Rect
-                x="0.75"
-                y="0.75"
-                width="86.5"
-                height="192.5"
-                rx="27.25"
-                fill="none"
-                stroke={`url(#rimGrad-${index})`}
-                strokeWidth={1.5}
+                x="0"
+                y="0"
+                width="88"
+                height="60"
+                fill={`url(#domeGlow-${index})`}
               />
             </Svg>
 

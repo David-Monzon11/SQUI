@@ -124,12 +124,21 @@ export const styles = StyleSheet.create({
     marginRight: 5,
   },
   weatherDatePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.18)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.30)',
     borderRadius: 14,
-    paddingHorizontal: 9,
+    paddingHorizontal: 10,
     paddingVertical: 4.5,
+  },
+  liveClockDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#34D399',
+    marginRight: 5,
   },
   weatherDateText: {
     fontFamily: FONTS.roundedBold,
@@ -169,21 +178,23 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
 
-  // 💧 Sculpted Liquid Glass Subcards
+  // 💧 Sculpted Borderless Liquid Glass Subcards
   liquidGlassPillWrapper: {
     width: 88,
     height: 194,
-    borderRadius: 28,
+    borderRadius: 26,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 0,
     marginRight: 2,
     position: 'relative',
     overflow: 'hidden',
 
-    // Liquid Glass Ambient Shadow
+    // Soft organic ambient shadow without harsh borders
     shadowColor: '#052E16',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.10,
-    shadowRadius: 16,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 12,
+    elevation: 3,
   },
   liquidGradientBg: {
     position: 'absolute',
@@ -191,6 +202,8 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    width: '100%',
+    height: '100%',
   },
   liquidSvgOverlay: {
     position: 'absolute',
@@ -198,15 +211,17 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    borderRadius: 28,
+    width: '100%',
+    height: '100%',
   },
   pillContentWrap: {
     flex: 1,
     paddingVertical: 14,
-    paddingHorizontal: 4,
+    paddingHorizontal: 6,
     alignItems: 'center',
     justifyContent: 'space-between',
     zIndex: 2,
+    backgroundColor: 'transparent',
   },
   pillHeader: {
     alignItems: 'center',
