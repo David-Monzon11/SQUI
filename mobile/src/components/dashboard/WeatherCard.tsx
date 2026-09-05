@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import Svg, {
@@ -87,15 +87,16 @@ const getFormattedCurrentTime = (): string => {
 };
 
 const getInitialDailyForecast = (): DailyForecastItem[] => {
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const result: DailyForecastItem[] = [];
   const now = new Date();
   for (let i = 1; i <= 6; i++) {
     const nextDate = new Date(now);
     nextDate.setDate(now.getDate() + i);
+    const dayIdx = (nextDate.getDay() + 6) % 7; // Monday = 0
     result.push({
-      day: dayNames[nextDate.getDay()],
+      day: dayNames[dayIdx],
       date: `${monthNames[nextDate.getMonth()]} ${nextDate.getDate()}`,
       temp: '28°',
       chance: '20%',
@@ -109,7 +110,7 @@ const initialWeather: WeatherData = {
   temperature: 26,
   high: 30,
   low: 23,
-  location: 'Local Climate',
+  location: 'Fetching Location...',
   dateStr: getInitialDateStr(),
   statusText: 'Mindful Climate',
   iconType: 'cloud',
@@ -124,7 +125,29 @@ export const WeatherCard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [currentTime, setCurrentTime] = useState<string>(getFormattedCurrentTime());
 
-  // Real-time ticking clock (updates every second)
+  // 3D Weather Art Bobbing Animation
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const bobbing = Animated.loop(
+      Animated.sequence([
+        Animated.timing(translateY, {
+          toValue: -7,
+          duration: 2200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateY, {
+          toValue: 0,
+          duration: 2200,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    bobbing.start();
+    return () => bobbing.stop();
+  }, [translateY]);
+
+  // Real-time ticking clock
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(getFormattedCurrentTime());
@@ -137,6 +160,7 @@ export const WeatherCard: React.FC = () => {
     try {
       let lat: number | undefined = undefined;
       let lon: number | undefined = undefined;
+      let deviceLocationName: string | undefined = undefined;
 
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -146,21 +170,41 @@ export const WeatherCard: React.FC = () => {
           });
           lat = loc.coords.latitude;
           lon = loc.coords.longitude;
+
+          // Native device reverse geocoding for exact mapped city name
+          const geocoded = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
+          if (geocoded && geocoded.length > 0) {
+            const place = geocoded[0];
+            const city = place.city || place.subregion || place.district || place.region;
+            const country = place.isoCountryCode || place.country;
+            if (city && country) {
+              deviceLocationName = `${city}, ${country}`;
+            } else if (city) {
+              deviceLocationName = city;
+            }
+          }
         }
       } catch (locErr) {
-        // Handled gracefully: backend / direct client will resolve via HTTPS IP geolocation
-        console.log('[WeatherCard] Location permission bypassed, resolving via network IP');
+        console.log('[WeatherCard] Location permission bypassed or resolving via network IP');
       }
 
       const data = await apiClient.getWeather(lat, lon);
       if (data && typeof data.temperature === 'number') {
+        const finalLocation =
+          deviceLocationName ||
+          (data.location && data.location !== 'Local Climate' ? data.location : 'Manila, PH');
+
         setWeather((prev) => ({
           ...prev,
           ...data,
+          location: finalLocation,
           dateStr: data.dateStr || prev.dateStr || getInitialDateStr(),
           dailyForecast:
             data.dailyForecast && data.dailyForecast.length > 0
-              ? data.dailyForecast
+              ? data.dailyForecast.map((item) => ({
+                  ...item,
+                  day: item.day ? item.day.toUpperCase() : 'DAY',
+                }))
               : prev.dailyForecast,
         }));
       }
@@ -175,7 +219,6 @@ export const WeatherCard: React.FC = () => {
     fetchWeather();
   }, [fetchWeather]);
 
-  // Display daily forecast cards (fallback to initial if empty)
   const displayForecast =
     weather.dailyForecast && weather.dailyForecast.length > 0
       ? weather.dailyForecast
@@ -189,7 +232,7 @@ export const WeatherCard: React.FC = () => {
         <Text style={styles.sectionSub}>Weather & Hydration Balance</Text>
       </View>
 
-      {/* 🌊 Sculpted Organic Wave Glassmorphic Card (Matching Food Gallery 24px Radius) */}
+      {/* 🌊 Sculpted Organic Wave Glassmorphic Card (No top border stroke) */}
       <View style={styles.waveCardWrapper}>
         <Svg
           width="100%"
@@ -199,7 +242,7 @@ export const WeatherCard: React.FC = () => {
           style={styles.waveSvgBg}
         >
           <Defs>
-            {/* SQUI Signature Bright Nature Emerald Gradient */}
+            {/* SQUI Signature Emerald Gradient */}
             <SvgLinearGradient id="squiWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <Stop offset="0%" stopColor="#10B981" />
               <Stop offset="50%" stopColor="#059669" />
@@ -208,15 +251,8 @@ export const WeatherCard: React.FC = () => {
 
             {/* Ambient Emerald Glass Glow */}
             <SvgLinearGradient id="squiGlassGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-              <Stop offset="0%" stopColor="#10B981" stopOpacity={0.25} />
+              <Stop offset="0%" stopColor="#10B981" stopOpacity={0.20} />
               <Stop offset="100%" stopColor="#34D399" stopOpacity={0.05} />
-            </SvgLinearGradient>
-
-            {/* Frosted Wave Rim Highlight */}
-            <SvgLinearGradient id="waveRimHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
-              <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.55} />
-              <Stop offset="60%" stopColor="#6EE7B7" stopOpacity={0.7} />
-              <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0.4} />
             </SvgLinearGradient>
 
             {/* Luminous 3D Volumetric Sky Background Radial Gradient */}
@@ -236,7 +272,7 @@ export const WeatherCard: React.FC = () => {
             </SvgRadialGradient>
           </Defs>
 
-          {/* 3D Sky Backdrop with rx="24" Corner Radius (Matches Food Gallery Card) */}
+          {/* 3D Sky Backdrop */}
           <Rect
             x="0"
             y="0"
@@ -280,40 +316,11 @@ export const WeatherCard: React.FC = () => {
             d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
             fill="url(#squiGlassGlow)"
           />
-
-          {/* Frosted Wave Rim Highlight */}
-          <Path
-            d="M 115 0 C 145 0 170 54 205 104 C 238 156 270 168 310 168 C 334 168 350 180 350 200"
-            fill="none"
-            stroke="url(#waveRimHighlight)"
-            strokeWidth={1.5}
-          />
-
-          {/* Subtle Outer Card Rim */}
-          <Rect
-            x="0"
-            y="0"
-            width="350"
-            height="235"
-            rx="24"
-            fill="none"
-            stroke="rgba(255, 255, 255, 0.20)"
-            strokeWidth={1}
-          />
-
-          {/* Subtle Monoline Ghost Leaves Watermark in Background */}
-          <Path
-            d="M 28 85 C 45 75 62 82 72 70 M 35 83 Q 50 78 68 72"
-            stroke="#FFFFFF"
-            strokeWidth={1}
-            strokeLinecap="round"
-            opacity={0.12}
-          />
         </Svg>
 
         {/* Card Content Stack */}
         <View style={styles.cardContent}>
-          {/* Top Row: Temp Info (Left) + 3D Weather Illustration (Right) */}
+          {/* Top Row: Temp Info (Left) + Animated Dynamic 3D Weather Illustration (Right) */}
           <View style={styles.mainRow}>
             {/* Left: Temperature, High/Low, Location & Prominent Date */}
             <View style={styles.leftCol}>
@@ -352,18 +359,18 @@ export const WeatherCard: React.FC = () => {
               </View>
             </View>
 
-            {/* Right: Dynamic 3D Weather Art matching real conditions */}
-            <View style={styles.rightCol}>
+            {/* Right: Dynamic Floating 3D Weather Art */}
+            <Animated.View style={[styles.rightCol, { transform: [{ translateY }] }]}>
               <Image
                 source={getMainWeatherImage(weather.iconType)}
                 style={styles.weatherImage}
               />
-            </View>
+            </Animated.View>
           </View>
         </View>
       </View>
 
-      {/* ↔️ Horizontal Scrollable Strip: 6 Upcoming Days with Liquid Glass Texture */}
+      {/* ↔️ Horizontal Scrollable Strip: 6 Upcoming Days (Clean Soft Glass Texture) */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -376,74 +383,21 @@ export const WeatherCard: React.FC = () => {
             activeOpacity={0.88}
             style={styles.liquidGlassPillWrapper}
           >
-            {/* 💧 Rich Nature Emerald Liquid Glass Gradient (Unmistakable vibrant mint/emerald depth) */}
+            {/* Soft White-Emerald Frosted Glass Gradient */}
             <LinearGradient
               colors={[
-                'rgba(255, 255, 255, 0.90)',
-                '#D1FAE5',
-                '#A7F3D0',
-                '#6EE7B7',
+                'rgba(255, 255, 255, 0.98)',
+                'rgba(240, 253, 244, 0.92)',
+                'rgba(209, 250, 229, 0.85)',
               ]}
-              locations={[0, 0.35, 0.70, 1.0]}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={styles.liquidGradientBg}
             />
 
-            {/* 🌊 Liquid Refraction & Prismatic Aquatic Glow */}
-            <Svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 88 194"
-              preserveAspectRatio="none"
-              style={styles.liquidSvgOverlay}
-            >
-              <Defs>
-                {/* Surface droplet gloss sheen */}
-                <SvgLinearGradient id={`topSheen-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                  <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.85} />
-                  <Stop offset="50%" stopColor="#FFFFFF" stopOpacity={0.20} />
-                  <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
-                </SvgLinearGradient>
-
-                {/* Deep liquid emerald pool glow */}
-                <SvgRadialGradient
-                  id={`bottomGlow-${index}`}
-                  cx="50%"
-                  cy="92%"
-                  rx="60%"
-                  ry="40%"
-                  fx="50%"
-                  fy="95%"
-                >
-                  <Stop offset="0%" stopColor="#059669" stopOpacity={0.25} />
-                  <Stop offset="60%" stopColor="#10B981" stopOpacity={0.10} />
-                  <Stop offset="100%" stopColor="#10B981" stopOpacity={0} />
-                </SvgRadialGradient>
-              </Defs>
-
-              {/* Surface Sheen */}
-              <Rect
-                x="0"
-                y="0"
-                width="88"
-                height="65"
-                fill={`url(#topSheen-${index})`}
-              />
-
-              {/* Liquid Emerald Pool Glow */}
-              <Rect
-                x="0"
-                y="110"
-                width="88"
-                height="84"
-                fill={`url(#bottomGlow-${index})`}
-              />
-            </Svg>
-
             {/* Pill Content Overlay */}
             <View style={styles.pillContentWrap}>
-              {/* Day & Date Header */}
+              {/* Day & Date Header (Mon, Tue, Wed, Thu, Fri, Sat, Sun) */}
               <View style={styles.pillHeader}>
                 <Text style={styles.forecastDayText}>
                   {item.day}

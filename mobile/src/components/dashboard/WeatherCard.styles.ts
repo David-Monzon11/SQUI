@@ -78,7 +78,7 @@ export const styles = StyleSheet.create({
   highLowText: {
     fontFamily: FONTS.roundedBold,
     fontSize: 12.5,
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: 'rgba(255, 255, 255, 0.90)',
     marginTop: 1,
     letterSpacing: 0.2,
   },
@@ -101,9 +101,9 @@ export const styles = StyleSheet.create({
   weatherStatusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.30)',
+    borderColor: 'rgba(255, 255, 255, 0.35)',
     borderRadius: 14,
     paddingHorizontal: 9,
     paddingVertical: 4.5,
@@ -126,9 +126,9 @@ export const styles = StyleSheet.create({
   weatherDatePill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.30)',
+    borderColor: 'rgba(255, 255, 255, 0.35)',
     borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 4.5,
@@ -147,14 +147,14 @@ export const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  // Right Side 3D Weather Art
+  // Right Side Dynamic 3D Weather Art Container
   rightCol: {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
     width: 132,
     height: 112,
-    marginTop: -20,
+    marginTop: -16,
     marginRight: 0,
     zIndex: 5,
   },
@@ -164,38 +164,38 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  // ↔️ Horizontal Scrollable Strip Container (Flush 100% with Top Card Left & Right Boundaries)
+  // ↔️ Horizontal Scrollable Strip Container
   scrollContainer: {
     marginTop: 14,
     width: '100%',
   },
   scrollContentContainer: {
-    paddingLeft: 0, // Leftmost card aligns flush with top card's left edge
-    paddingRight: 0, // Rightmost card aligns flush with top card's right edge (Red Line Alignment!)
+    paddingLeft: 0,
+    paddingRight: 0,
     paddingTop: 8,
-    paddingBottom: 24, // Generous bottom padding for unclipped soft shadows
+    paddingBottom: 24,
     flexDirection: 'row',
     gap: 10,
   },
 
-  // 💧 Sculpted Luminous Emerald Liquid Glass Subcards
+  // 💧 Soft Refined White-Emerald Liquid Glass Subcards (Reduced Green Intensity)
   liquidGlassPillWrapper: {
     width: 88,
     height: 194,
-    borderRadius: 26,
-    backgroundColor: '#D1FAE5',
-    borderWidth: 1.2,
-    borderColor: 'rgba(16, 185, 129, 0.35)',
+    borderRadius: 24,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.90)', // Soft clean white glass border (Upper green stroke removed!)
     marginRight: 2,
     position: 'relative',
     overflow: 'hidden',
 
-    // Deep aquatic emerald shadow
-    shadowColor: '#064E3B',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.14,
-    shadowRadius: 14,
-    elevation: 5,
+    // Soft subtle glass shadow
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.10,
+    shadowRadius: 12,
+    elevation: 4,
   },
   liquidGradientBg: {
     position: 'absolute',
@@ -229,23 +229,24 @@ export const styles = StyleSheet.create({
   },
   forecastDayText: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 14,
-    color: '#064E3B',
-    letterSpacing: 0.2,
+    fontSize: 15,
+    color: '#0F2418',
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
   },
   pillDateBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    backgroundColor: 'rgba(16, 185, 129, 0.10)',
     borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.25)',
+    borderColor: 'rgba(16, 185, 129, 0.20)',
     borderRadius: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 1.5,
-    marginTop: 2,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    marginTop: 3,
   },
   forecastDateSub: {
     fontFamily: FONTS.roundedBold,
     fontSize: 9.5,
-    color: '#065F46',
+    color: '#047857',
     letterSpacing: 0.2,
   },
   forecastIconWrap: {
@@ -269,9 +270,9 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   chancePill: {
-    backgroundColor: 'rgba(255, 255, 255, 0.70)',
+    backgroundColor: 'rgba(16, 185, 129, 0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.30)',
+    borderColor: 'rgba(16, 185, 129, 0.18)',
     borderRadius: 10,
     paddingHorizontal: 7,
     paddingVertical: 2,
@@ -279,14 +280,14 @@ export const styles = StyleSheet.create({
   },
   forecastChance: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 11,
-    color: '#065F46',
+    fontSize: 10.5,
+    color: '#047857',
     letterSpacing: 0.2,
   },
   forecastTemp: {
     fontFamily: FONTS.roundedBlack,
-    fontSize: 20,
-    color: '#064E3B',
+    fontSize: 21,
+    color: '#0F2418',
     letterSpacing: -0.5,
   },
 });
