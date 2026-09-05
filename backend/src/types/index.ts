@@ -109,6 +109,18 @@ export interface WeatherData {
   hydratingTip?: string;
 }
 
+export type WisdomCategory = 'SUGAR' | 'SODIUM' | 'HYDRATION' | 'MINDFULNESS';
+
+export interface WisdomTip {
+  id: string;
+  category: WisdomCategory;
+  title: string;
+  content: string;
+  actionItem: string;
+  xpReward: number;
+  icon: string;
+}
+
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -119,4 +131,5 @@ export interface ApiResponse<T = any> {
     details?: any[];
   };
 }
+
 

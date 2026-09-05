@@ -10,6 +10,7 @@ import { mealRouter } from "./routes/meal.route.js";
 import { summaryRouter } from "./routes/summary.route.js";
 import { knowledgeRouter } from "./routes/knowledge.route.js";
 import { weatherRouter } from "./routes/weather.route.js";
+import wisdomRouter from "./routes/wisdom.route.js";
 import { Router as healthRouter } from "./routes/health.route.js";
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/meals", mealRouter);
 app.use("/api/summary", summaryRouter);
 app.use("/api/knowledge", knowledgeRouter);
 app.use("/api/weather", weatherRouter);
+app.use("/api/wisdom", wisdomRouter);
 
 // Centralized error handler
 app.use(errorHandler);

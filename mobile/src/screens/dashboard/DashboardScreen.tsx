@@ -13,6 +13,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { MascotBanner } from '../../components/dashboard/MascotBanner';
 import { WeatherCard } from '../../components/dashboard/WeatherCard';
+import { WisdomCard } from '../../components/dashboard/WisdomCard';
 import { SquiLogo } from '../../components/common/SquiLogo';
 import { FONTS } from '../../constants/typography';
 import {
@@ -201,6 +202,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           waterMl={waterIntakeMl}
           mealCount={meals.length}
         />
+
+        {/* Interactive SQUI Daily Wisdom & Mindful Habits Card */}
+        <WisdomCard />
 
         {/* Section Label: Daily Vitals */}
         <Text style={styles.sectionLabel}>Daily Vitals</Text>
