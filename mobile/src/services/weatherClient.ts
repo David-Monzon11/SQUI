@@ -74,9 +74,7 @@ export async function fetchDirectOpenMeteo(
     isNaN(resolvedLon)
   ) {
     try {
-      const ipRes = await fetch('https://ipwho.is/', {
-        signal: AbortSignal.timeout(4000),
-      });
+      const ipRes = await fetch('https://ipwho.is/');
       if (ipRes.ok) {
         const ipData = await ipRes.json();
         if (ipData.success !== false && typeof ipData.latitude === 'number') {
@@ -99,8 +97,7 @@ export async function fetchDirectOpenMeteo(
   if (!locationName && resolvedLat && resolvedLon) {
     try {
       const geoRes = await fetch(
-        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${resolvedLat}&longitude=${resolvedLon}&localityLanguage=en`,
-        { signal: AbortSignal.timeout(3000) }
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${resolvedLat}&longitude=${resolvedLon}&localityLanguage=en`
       );
       if (geoRes.ok) {
         const geoData = await geoRes.json();
@@ -116,7 +113,7 @@ export async function fetchDirectOpenMeteo(
 
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${resolvedLat}&longitude=${resolvedLon}&current=temperature_2m,relative_humidity_2m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
 
-  const weatherRes = await fetch(url, { signal: AbortSignal.timeout(5000) });
+  const weatherRes = await fetch(url);
   if (!weatherRes.ok) {
     throw new Error(`Open-Meteo HTTP error ${weatherRes.status}`);
   }
