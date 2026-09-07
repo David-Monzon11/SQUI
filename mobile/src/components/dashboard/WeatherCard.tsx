@@ -65,7 +65,6 @@ const getMainWeatherImage = (iconType: 'rain' | 'sun' | 'cloud' | 'moon') => {
       return require('../../../assets/vecteezy_3d-icon-of-a-sun-behind-a-cloud-partly-cloudy-weather_66228107.png');
   }
 };
-
 const getInitialDateStr = (): string => {
   const now = new Date();
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -175,12 +174,16 @@ export const WeatherCard: React.FC = () => {
           const geocoded = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
           if (geocoded && geocoded.length > 0) {
             const place = geocoded[0];
-            const city = place.city || place.subregion || place.district || place.region;
-            const country = place.isoCountryCode || place.country;
-            if (city && country) {
-              deviceLocationName = `${city}, ${country}`;
-            } else if (city) {
-              deviceLocationName = city;
+            const barangay = place.district || place.street || place.name;
+            const municipality = place.city || place.subregion || place.region;
+            
+            if (barangay && municipality && barangay !== municipality) {
+              deviceLocationName = `${barangay}, ${municipality}`;
+            } else if (municipality) {
+              const country = place.isoCountryCode || place.country;
+              deviceLocationName = country ? `${municipality}, ${country}` : municipality;
+            } else if (barangay) {
+              deviceLocationName = barangay;
             }
           }
         }
