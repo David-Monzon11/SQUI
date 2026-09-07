@@ -174,16 +174,19 @@ export const WeatherCard: React.FC = () => {
           const geocoded = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
           if (geocoded && geocoded.length > 0) {
             const place = geocoded[0];
-            const barangay = place.district || place.street || place.name;
+            const district = place.district || place.street;
             const municipality = place.city || place.subregion || place.region;
             
-            if (barangay && municipality && barangay !== municipality) {
-              deviceLocationName = `${barangay}, ${municipality}`;
+            // Filter out Google Plus Codes (which often contain '+') or unnamed roads
+            const isValidDistrict = district && !district.includes('+') && !district.toLowerCase().includes('unnamed');
+
+            if (isValidDistrict && municipality && district !== municipality) {
+              deviceLocationName = `${district}, ${municipality}`;
             } else if (municipality) {
               const country = place.isoCountryCode || place.country;
               deviceLocationName = country ? `${municipality}, ${country}` : municipality;
-            } else if (barangay) {
-              deviceLocationName = barangay;
+            } else if (isValidDistrict) {
+              deviceLocationName = district;
             }
           }
         }
