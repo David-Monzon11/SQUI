@@ -174,20 +174,43 @@ export const WeatherCard: React.FC = () => {
           const geocoded = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
           if (geocoded && geocoded.length > 0) {
             const place = geocoded[0];
-            // Include `place.name` which often holds the barangay name in the Philippines
-            const localArea = place.district || place.name || place.street;
-            const municipality = place.city || place.subregion || place.region;
             
-            // Filter out Google Plus Codes (which often contain '+') or unnamed roads
-            const isValidArea = localArea && !localArea.includes('+') && !localArea.toLowerCase().includes('unnamed');
+            // Gather all possible local identifiers in order of specificity
+            const parts = [
+              place.name,
+              place.street,
+              place.district,
+              place.city,
+              place.subregion,
+              place.region,
+              place.isoCountryCode || place.country
+            ];
 
-            if (isValidArea && municipality && localArea !== municipality) {
-              deviceLocationName = `${localArea}, ${municipality}`;
-            } else if (municipality) {
-              const country = place.isoCountryCode || place.country;
-              deviceLocationName = country ? `${municipality}, ${country}` : municipality;
-            } else if (isValidArea) {
-              deviceLocationName = localArea;
+            // Filter out nulls, empty strings, unnamed roads, plus codes, and duplicates
+            const cleanParts: string[] = [];
+            for (const part of parts) {
+              if (
+                part &&
+                typeof part === 'string' &&
+                part.trim().length > 1 && // avoid 1-letter glitches
+                !part.includes('+') &&
+                !part.toLowerCase().includes('unnamed')
+              ) {
+                const trimmed = part.trim();
+                // Add if not already in the array to avoid duplicates like "Mexico, Mexico"
+                if (!cleanParts.includes(trimmed)) {
+                  cleanParts.push(trimmed);
+                }
+              }
+            }
+
+            // We want the most specific 2 or 3 parts. 
+            // e.g. ["Sabanilla", "Mexico", "Pampanga", "PH"] -> "Sabanilla, Mexico"
+            // If the first part is a number (like a raw street number), maybe skip or combine, but array filtering is usually enough.
+            if (cleanParts.length >= 2) {
+              deviceLocationName = cleanParts.slice(0, 2).join(', ');
+            } else if (cleanParts.length === 1) {
+              deviceLocationName = cleanParts[0];
             }
           }
         }
