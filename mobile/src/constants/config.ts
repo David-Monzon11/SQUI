@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 
 const DEV_API_URL = Platform.select({
   web: 'http://localhost:3000',
-  default: 'http://192.168.0.244:3000',
+  default: 'http://192.168.0.245:3000',
 });
 
 export const API_CONFIG = {

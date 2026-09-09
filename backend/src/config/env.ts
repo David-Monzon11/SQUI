@@ -8,3 +8,4 @@ export const config = {
   storageLocalPath: process.env.STORAGE_LOCAL_PATH || './uploads',
   openWeatherApiKey: process.env.OPENWEATHER_API_KEY || '7b30ccfdc7f381fe01040e37b1d90f42',
 };
+ 
