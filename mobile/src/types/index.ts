@@ -79,6 +79,7 @@ export interface WeatherData {
   hourly: HourlyWeatherItem[];
   dailyForecast?: DailyForecastItem[];
   hydratingTip?: string;
+  dailySummaryText?: string;
 }
 
 export type WisdomCategory = 'SUGAR' | 'SODIUM' | 'HYDRATION' | 'MINDFULNESS';

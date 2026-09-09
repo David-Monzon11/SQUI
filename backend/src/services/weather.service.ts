@@ -1,121 +1,55 @@
+import { config } from "../config/env.js";
 import { WeatherData, HourlyWeatherItem } from "../types/index.js";
 
 interface CacheEntry {
   timestamp: number;
-  data: WeatherData;
+  data: WeatherData & { dailySummaryText?: string };
 }
 
 const weatherCache = new Map<string, CacheEntry>();
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 const MAX_CACHE_ENTRIES = 500;
 
-export function mapWmoToSqui(
-  code: number,
-  isDay = 1
-): { statusText: string; iconType: "sun" | "cloud" | "rain" | "moon" } {
-  if (code === 0) {
-    return isDay
-      ? { statusText: "Sunny", iconType: "sun" }
-      : { statusText: "Clear Night", iconType: "moon" };
-  }
-  if (code === 1 || code === 2) {
-    return isDay
-      ? { statusText: "Partly Cloudy", iconType: "cloud" }
-      : { statusText: "Partly Cloudy", iconType: "moon" };
-  }
-  if (code === 3) {
-    return { statusText: "Overcast", iconType: "cloud" };
-  }
-  if (code >= 45 && code <= 48) {
-    return { statusText: "Misty Fog", iconType: "cloud" };
-  }
-  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-    const statusText =
-      code >= 65 || code === 82
-        ? "Heavy Rain"
-        : code >= 63 || code === 81
-        ? "Mid Rain"
-        : "Light Rain";
-    return { statusText, iconType: "rain" };
-  }
-  if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
-    return { statusText: "Snow Flurries", iconType: "cloud" };
-  }
-  if (code >= 95) {
-    return { statusText: "Thunderstorm", iconType: "rain" };
-  }
-  return { statusText: "Pleasant", iconType: isDay ? "sun" : "moon" };
+export function mapOpenWeatherIconType(id: number, iconStr: string): "sun" | "cloud" | "rain" | "moon" {
+  if (id >= 200 && id < 600) return "rain"; // Thunderstorm, Drizzle, Rain
+  if (id >= 600 && id < 800) return "cloud"; // Snow, Atmosphere
+  if (id === 800) return iconStr.includes("n") ? "moon" : "sun";
+  if (id === 801 || id === 802) return iconStr.includes("n") ? "moon" : "cloud";
+  return "cloud"; // 803, 804 Overcast
 }
 
 export function generateHydrationTip(temp: number, humidity: number, statusText: string): string {
-  if (temp >= 31) {
-    return "High warmth today! Elevate your hydration target by 400ml to stay energized.";
-  }
-  if (temp >= 26) {
-    return "Warm and active conditions today. Take regular sips of fresh water!";
-  }
-  if (statusText.toLowerCase().includes("rain")) {
-    return "A rainy, cozy day! Warm lemon water or herbal tea helps maintain mindful balance.";
-  }
-  if (humidity < 40) {
-    return "Crisp and dry air detected—keep a water bottle handy for refreshing sips.";
-  }
+  if (temp >= 31) return "High warmth today! Elevate your hydration target by 400ml to stay energized.";
+  if (temp >= 26) return "Warm and active conditions today. Take regular sips of fresh water!";
+  if (statusText.toLowerCase().includes("rain")) return "A rainy, cozy day! Warm lemon water or herbal tea helps maintain mindful balance.";
+  if (humidity < 40) return "Crisp and dry air detected—keep a water bottle handy for refreshing sips.";
   return "Pleasant mindful climate. Stay naturally hydrated at your steady pace today!";
+}
+
+function capitalizeWords(str: string) {
+  return str.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 }
 
 export class WeatherService {
   /**
-   * Resolves coordinates from client IP or network when GPS coordinates are omitted.
-   */
-  static async resolveLocationByIp(
-    clientIp?: string
-  ): Promise<{ lat: number; lon: number; locationName: string }> {
-    try {
-      const isPrivateOrLocal =
-        !clientIp ||
-        clientIp === "127.0.0.1" ||
-        clientIp === "::1" ||
-        clientIp.startsWith("192.168.") ||
-        clientIp.startsWith("10.") ||
-        clientIp.startsWith("172.");
-
-      const queryUrl = isPrivateOrLocal
-        ? "http://ip-api.com/json/?fields=status,country,countryCode,city,lat,lon"
-        : `http://ip-api.com/json/${clientIp}?fields=status,country,countryCode,city,lat,lon`;
-
-      const response = await fetch(queryUrl, { signal: AbortSignal.timeout(3500) });
-      if (response.ok) {
-        const data = await response.json();
-        if (data.status === "success" && typeof data.lat === "number" && typeof data.lon === "number") {
-          const locName = data.city
-            ? `${data.city}, ${data.countryCode || data.country}`
-            : data.country || "Local Area";
-          return { lat: data.lat, lon: data.lon, locationName: locName };
-        }
-      }
-    } catch {
-      // IP lookup timed out or failed; will fallback to default coordinates
-    }
-
-    // Default Fallback: Montreal, Canada
-    return { lat: 45.5017, lon: -73.5673, locationName: "Montreal, Canada" };
-  }
-
-  /**
-   * Reverse-geocodes coordinates to a friendly City, Country string.
+   * Reverse-geocodes coordinates to a precise location name using OpenWeather API.
    */
   static async reverseGeocode(lat: number, lon: number): Promise<string> {
     try {
-      const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
+      const url = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${config.openWeatherApiKey}`;
       const response = await fetch(url, { signal: AbortSignal.timeout(3000) });
       if (response.ok) {
         const data = await response.json();
-        const city = data.city || data.locality || data.principalSubdivision;
-        const country = data.countryCode || data.countryName;
-        if (city && country) {
-          return `${city}, ${country}`;
+        if (data && data.length > 0) {
+          const place = data[0];
+          const localName = place.name; // OpenWeather's highly granular name (e.g. Sabanilla)
+          const stateOrProvince = place.state || place.country;
+          if (localName && stateOrProvince) {
+            // Avoid "Sabanilla, Sabanilla"
+            return localName !== stateOrProvince ? `${localName}, ${stateOrProvince}` : localName;
+          }
+          return localName || "Current Location";
         }
-        if (city) return city;
       }
     } catch {
       // Ignore geocode timeout
@@ -123,138 +57,143 @@ export class WeatherService {
     return "Current Location";
   }
 
-  /**
-   * Fetches real-time weather and 6-hour forecast from Open-Meteo with 15-minute grid caching.
-   */
+  static generateSummary(todayTemp: number, tomorrowTemp: number, tomorrowPop: number): string {
+    let text = "";
+    const diff = tomorrowTemp - todayTemp;
+    
+    if (diff > 2) text = "Tomorrow will be warmer than today";
+    else if (diff < -2) text = "Tomorrow will be a little cooler than today";
+    else text = "Similar temperatures expected tomorrow";
+
+    if (tomorrowPop > 50) text += " with a high chance of rain.";
+    else if (tomorrowPop > 20) text += " with possible light rain.";
+    else text += ".";
+
+    return text;
+  }
+
   static async getWeather(
     rawLat?: number,
     rawLon?: number,
     clientIp?: string
-  ): Promise<WeatherData> {
-    let lat = rawLat;
-    let lon = rawLon;
-    let locationName = "";
+  ): Promise<WeatherData & { dailySummaryText?: string }> {
+    let lat = rawLat ?? 15.0;
+    let lon = rawLon ?? 120.0;
 
-    // If coordinates are missing or invalid, resolve automatically from IP
-    if (lat === undefined || lon === undefined || isNaN(lat) || isNaN(lon)) {
-      const resolved = await this.resolveLocationByIp(clientIp);
-      lat = resolved.lat;
-      lon = resolved.lon;
-      locationName = resolved.locationName;
-    }
-
-    // Round coordinates to ~1.1km grid for caching
     const roundedLat = Math.round(lat * 100) / 100;
     const roundedLon = Math.round(lon * 100) / 100;
     const cacheKey = `${roundedLat.toFixed(2)}_${roundedLon.toFixed(2)}`;
 
-    // Check Cache
     const cached = weatherCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
-      // If we have a cached result and resolved a location name, preserve it
-      if (locationName && cached.data.location === "Current Location") {
-        return { ...cached.data, location: locationName };
-      }
       return cached.data;
     }
 
     try {
-      // Resolve location name in parallel with weather if not already known
-      const geoPromise = locationName
-        ? Promise.resolve(locationName)
-        : this.reverseGeocode(roundedLat, roundedLon);
+      const geoPromise = this.reverseGeocode(roundedLat, roundedLon);
 
-      const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${roundedLat}&longitude=${roundedLon}&current=temperature_2m,relative_humidity_2m,weather_code,is_day&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+      const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${roundedLat}&lon=${roundedLon}&appid=${config.openWeatherApiKey}&units=metric`;
+      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${roundedLat}&lon=${roundedLon}&appid=${config.openWeatherApiKey}&units=metric`;
 
-      const weatherPromise = fetch(openMeteoUrl, {
-        signal: AbortSignal.timeout(5000),
-      }).then(async (res) => {
-        if (!res.ok) {
-          throw new Error(`Open-Meteo HTTP error ${res.status}`);
-        }
-        return res.json();
-      });
+      const currentPromise = fetch(currentUrl, { signal: AbortSignal.timeout(5000) }).then(r => r.json());
+      const forecastPromise = fetch(forecastUrl, { signal: AbortSignal.timeout(5000) }).then(r => r.json());
 
-      const [resolvedLoc, weatherJson] = await Promise.all([geoPromise, weatherPromise]);
+      const [resolvedLoc, currentJson, forecastJson] = await Promise.all([geoPromise, currentPromise, forecastPromise]);
 
-      const currentTemp = Math.round(weatherJson.current?.temperature_2m ?? 20);
-      const humidity = Math.round(weatherJson.current?.relative_humidity_2m ?? 50);
-      const currentCode = weatherJson.current?.weather_code ?? 0;
-      const isDay = weatherJson.current?.is_day ?? 1;
+      if (!currentJson.main || !forecastJson.list) {
+         throw new Error("Invalid OpenWeather response");
+      }
 
-      const { statusText, iconType } = mapWmoToSqui(currentCode, isDay);
+      const currentTemp = Math.round(currentJson.main.temp);
+      const humidity = Math.round(currentJson.main.humidity);
+      const currentId = currentJson.weather[0]?.id || 800;
+      const currentIconStr = currentJson.weather[0]?.icon || "01d";
+      const statusText = capitalizeWords(currentJson.weather[0]?.description || "Pleasant");
+      const iconType = mapOpenWeatherIconType(currentId, currentIconStr);
 
-      const high = Math.round(weatherJson.daily?.temperature_2m_max?.[0] ?? currentTemp + 4);
-      const low = Math.round(weatherJson.daily?.temperature_2m_min?.[0] ?? currentTemp - 4);
-
-      // Format Today's Date: e.g. "Fri, Sep 4"
+      // Date formatting
       const now = new Date();
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const dateStr = `${dayNames[now.getDay()]}, ${monthNames[now.getMonth()]} ${now.getDate()}`;
 
-      // Build 6 upcoming days forecast (e.g. Sat, Sun, Mon, Tue, Wed, Thu)
-      const dailyForecast = [];
-      const dailyTimes = weatherJson.daily?.time || [];
-      const dailyCodes = weatherJson.daily?.weather_code || [];
-      const dailyMaxTemps = weatherJson.daily?.temperature_2m_max || [];
-      const dailyChances = weatherJson.daily?.precipitation_probability_max || [];
+      // Forecast list processing (3-hour steps)
+      const list: any[] = forecastJson.list;
+      const hourly: HourlyWeatherItem[] = [];
+      const dailyMap = new Map<string, { max: number; min: number; pop: number; icon: string; id: number }>();
 
-      for (let i = 1; i < dailyTimes.length && dailyForecast.length < 6; i++) {
-        const parts = dailyTimes[i].split("-");
-        const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-        const dayLabel = dayNames[d.getDay()];
-        const dateSub = `${monthNames[d.getMonth()]} ${d.getDate()}`;
-        const code = dailyCodes[i] ?? 0;
-        const mapped = mapWmoToSqui(code, 1);
-        const maxT = Math.round(dailyMaxTemps[i] ?? currentTemp);
-        const chance = dailyChances[i] !== undefined ? `${Math.round(dailyChances[i])}%` : "15%";
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i];
+        const dateObj = new Date(item.dt * 1000);
+        
+        // Next 6 items for hourly (6 * 3 = 18 hours)
+        if (hourly.length < 6) {
+           let hour = dateObj.getHours();
+           const ampm = hour >= 12 ? "PM" : "AM";
+           hour = hour % 12;
+           hour = hour ? hour : 12;
+           hourly.push({
+             time: `${hour} ${ampm}`,
+             temp: `${Math.round(item.main.temp)}°`,
+             chance: `${Math.round(item.pop * 100)}%`,
+             iconType: mapOpenWeatherIconType(item.weather[0].id, item.weather[0].icon)
+           });
+        }
+
+        // Daily aggregation (using local date strings)
+        const dateKey = `${dateObj.getMonth() + 1}/${dateObj.getDate()}`;
+        if (!dailyMap.has(dateKey)) {
+          dailyMap.set(dateKey, { max: -999, min: 999, pop: 0, icon: item.weather[0].icon, id: item.weather[0].id });
+        }
+        const dayData = dailyMap.get(dateKey)!;
+        dayData.max = Math.max(dayData.max, item.main.temp);
+        dayData.min = Math.min(dayData.min, item.main.temp);
+        dayData.pop = Math.max(dayData.pop, item.pop);
+      }
+
+      // We only want the next 6 days (excluding today if possible)
+      const dailyForecast: any[] = [];
+      const dayKeys = Array.from(dailyMap.keys());
+      let tomorrowTemp = currentTemp;
+      let tomorrowPop = 0;
+
+      // Extract tomorrow for the summary text
+      if (dayKeys.length >= 2) {
+         const tmrw = dailyMap.get(dayKeys[1])!;
+         tomorrowTemp = Math.round(tmrw.max);
+         tomorrowPop = Math.round(tmrw.pop * 100);
+      }
+      
+      const summaryText = this.generateSummary(currentTemp, tomorrowTemp, tomorrowPop);
+
+      // Build 6 daily items
+      let startIdx = 1; // start from tomorrow usually
+      if (dayKeys.length < 7) startIdx = 0; // fallback if list is short
+
+      for (let i = startIdx; i < dayKeys.length && dailyForecast.length < 6; i++) {
+        const key = dayKeys[i];
+        const dData = dailyMap.get(key)!;
+        const [m, d] = key.split("/");
+        
+        // Mock a date object to get the day of the week
+        const realDate = new Date();
+        realDate.setMonth(parseInt(m) - 1);
+        realDate.setDate(parseInt(d));
 
         dailyForecast.push({
-          day: dayLabel,
-          date: dateSub,
-          temp: `${maxT}°`,
-          chance,
-          iconType: mapped.iconType,
+          day: dayNames[realDate.getDay()].toUpperCase(),
+          date: `${monthNames[realDate.getMonth()]} ${realDate.getDate()}`,
+          temp: `${Math.round(dData.max)}°`,
+          chance: `${Math.round(dData.pop * 100)}%`,
+          iconType: mapOpenWeatherIconType(dData.id, dData.icon)
         });
       }
 
-      // Build 6-hour forecast strip starting from current hour
-      const hourlyTimes: string[] = weatherJson.hourly?.time || [];
-      const hourlyTemps: number[] = weatherJson.hourly?.temperature_2m || [];
-      const hourlyChances: number[] = weatherJson.hourly?.precipitation_probability || [];
-      const hourlyCodes: number[] = weatherJson.hourly?.weather_code || [];
-      const hourlyIsDay: number[] = weatherJson.hourly?.is_day || [];
-
-      const nowIso = weatherJson.current?.time || new Date().toISOString();
-      let startIdx = hourlyTimes.findIndex((t) => t >= nowIso);
-      if (startIdx === -1) startIdx = 0;
-
-      const hourly: HourlyWeatherItem[] = [];
-      for (let i = 0; i < 6; i++) {
-        const idx = startIdx + i;
-        if (idx < hourlyTimes.length) {
-          const rawTime = hourlyTimes[idx];
-          const hour = parseInt(rawTime.split("T")[1]?.split(":")[0] || "0", 10);
-          const timeLabel = `${hour % 12 === 0 ? 12 : hour % 12} ${hour >= 12 ? "PM" : "AM"}`;
-          const code = hourlyCodes[idx] ?? 0;
-          const dayFlag = hourlyIsDay[idx] ?? 1;
-          const mapped = mapWmoToSqui(code, dayFlag);
-
-          hourly.push({
-            time: timeLabel,
-            temp: `${Math.round(hourlyTemps[idx] ?? currentTemp)}°`,
-            chance: `${Math.round(hourlyChances[idx] ?? 0)}%`,
-            iconType: mapped.iconType,
-          });
-        }
-      }
-
-      const result: WeatherData = {
+      const result: WeatherData & { dailySummaryText?: string } = {
         temperature: currentTemp,
-        high,
-        low,
-        location: resolvedLoc || "Local Area",
+        high: Math.round(dailyMap.get(dayKeys[0])?.max || currentTemp + 3),
+        low: Math.round(dailyMap.get(dayKeys[0])?.min || currentTemp - 3),
+        location: resolvedLoc && resolvedLoc !== "Current Location" ? resolvedLoc : "Local Area",
         dateStr,
         statusText,
         iconType,
@@ -262,9 +201,9 @@ export class WeatherService {
         hourly,
         dailyForecast,
         hydratingTip: generateHydrationTip(currentTemp, humidity, statusText),
+        dailySummaryText: summaryText
       };
 
-      // Store in memory cache
       if (weatherCache.size >= MAX_CACHE_ENTRIES) {
         const oldestKey = weatherCache.keys().next().value;
         if (oldestKey) weatherCache.delete(oldestKey);
@@ -272,32 +211,25 @@ export class WeatherService {
       weatherCache.set(cacheKey, { timestamp: Date.now(), data: result });
 
       return result;
+
     } catch (err: any) {
       console.warn(`[WeatherService] Fetch error: ${err.message}. Providing resilient fallback.`);
-
-      // Return stale cache if available
-      if (cached) {
-        return cached.data;
-      }
-
-      // Safe Graceful Fallback
+      
+      // Fallback
+      if (cached) return cached.data;
+      
       return {
         temperature: 21,
         high: 25,
         low: 18,
-        location: locationName || "Montreal, Canada",
+        location: "Local Area",
         statusText: "Pleasant",
         iconType: "sun",
         humidity: 55,
-        hourly: [
-          { time: "3 AM", temp: "18°", chance: "40%", iconType: "rain" },
-          { time: "6 AM", temp: "17°", chance: "30%", iconType: "cloud" },
-          { time: "9 AM", temp: "21°", chance: "10%", iconType: "moon" },
-          { time: "12 PM", temp: "24°", chance: "0%", iconType: "sun" },
-          { time: "3 PM", temp: "23°", chance: "10%", iconType: "sun" },
-          { time: "6 PM", temp: "20°", chance: "20%", iconType: "cloud" },
-        ],
+        hourly: [],
+        dailyForecast: [],
         hydratingTip: "Mindful climate active. Stay well-hydrated throughout your day!",
+        dailySummaryText: "Ready for a mindful day ahead."
       };
     }
   }

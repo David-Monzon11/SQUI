@@ -6,4 +6,5 @@ export const config = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   storageType: (process.env.STORAGE_TYPE || 'local') as 'local' | 's3' | 'r2',
   storageLocalPath: process.env.STORAGE_LOCAL_PATH || './uploads',
+  openWeatherApiKey: process.env.OPENWEATHER_API_KEY || '7b30ccfdc7f381fe01040e37b1d90f42',
 };

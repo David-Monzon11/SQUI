@@ -221,8 +221,9 @@ export const WeatherCard: React.FC = () => {
       const data = await apiClient.getWeather(lat, lon);
       if (data && typeof data.temperature === 'number') {
         const finalLocation =
-          deviceLocationName ||
-          (data.location && data.location !== 'Local Climate' ? data.location : 'Manila, PH');
+          (data.location && data.location !== 'Local Area' && data.location !== 'Current Location') 
+            ? data.location 
+            : (deviceLocationName || 'Manila, PH');
 
         setWeather((prev) => ({
           ...prev,
@@ -387,6 +388,20 @@ export const WeatherCard: React.FC = () => {
                   </Text>
                 </View>
               </View>
+
+              {/* Dynamic Daily Summary Text */}
+              {weather.dailySummaryText ? (
+                <Text style={{ 
+                  color: 'rgba(255, 255, 255, 0.9)', 
+                  fontSize: 12, 
+                  marginTop: 10, 
+                  maxWidth: '95%', 
+                  fontWeight: '500',
+                  lineHeight: 16 
+                }}>
+                  {weather.dailySummaryText}
+                </Text>
+              ) : null}
             </View>
 
             {/* Right: Dynamic Floating 3D Weather Art */}
