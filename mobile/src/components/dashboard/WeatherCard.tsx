@@ -26,7 +26,7 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
       break;
 
     case 'cloud':
-      source = require('../../../assets/vecteezy_sunny-cloudy-icon-illustration-in-3d-style-glowing-cloudy_23404599.png');
+      source = require('../../../assets/vecteezy_3d-partly-cloudy-weather-icon-sun-and-cloud_67592749.png');
       customStyle = { width: 86, height: 86 };
       break;
 
@@ -62,7 +62,7 @@ const getMainWeatherImage = (iconType: 'rain' | 'sun' | 'cloud' | 'moon') => {
       return require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
     case 'cloud':
     default:
-      return require('../../../assets/vecteezy_3d-icon-of-a-sun-behind-a-cloud-partly-cloudy-weather_66228107.png');
+      return require('../../../assets/vecteezy_3d-partly-cloudy-weather-icon-sun-and-cloud_67592749.png');
   }
 };
 const getInitialDateStr = (): string => {
@@ -220,10 +220,10 @@ export const WeatherCard: React.FC = () => {
 
       const data = await apiClient.getWeather(lat, lon);
       if (data && typeof data.temperature === 'number') {
-        const finalLocation =
-          (data.location && data.location !== 'Local Area' && data.location !== 'Current Location') 
+        const finalLocation = deviceLocationName ||
+          ((data.location && data.location !== 'Local Area' && data.location !== 'Current Location') 
             ? data.location 
-            : (deviceLocationName || 'Manila, PH');
+            : 'Manila, PH');
 
         setWeather((prev) => ({
           ...prev,

@@ -80,9 +80,9 @@ export class WeatherService {
     let lat = rawLat ?? 15.0;
     let lon = rawLon ?? 120.0;
 
-    const roundedLat = Math.round(lat * 100) / 100;
-    const roundedLon = Math.round(lon * 100) / 100;
-    const cacheKey = `${roundedLat.toFixed(2)}_${roundedLon.toFixed(2)}`;
+    const roundedLat = Math.round(lat * 10000) / 10000;
+    const roundedLon = Math.round(lon * 10000) / 10000;
+    const cacheKey = `${roundedLat.toFixed(4)}_${roundedLon.toFixed(4)}`;
 
     const cached = weatherCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
