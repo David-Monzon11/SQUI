@@ -15,6 +15,50 @@ import { styles } from './WeatherCard.styles';
 import { apiClient } from '../../services/apiClient';
 import { WeatherData, DailyForecastItem } from '../../types';
 
+const getPeriodOfDay = (): 'morning' | 'afternoon' | 'evening' | 'night' => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return 'morning';
+  if (hour >= 12 && hour < 17) return 'afternoon';
+  if (hour >= 17 && hour < 19) return 'evening';
+  return 'night';
+};
+
+const getSkyGradient = (iconType: string, period: string) => {
+  if (period === 'night' || period === 'evening') {
+    return ['#1E293B', '#0F172A', '#020617', '#000000'];
+  }
+  if (period === 'afternoon') {
+    if (iconType === 'rain') return ['#E2E8F0', '#94A3B8', '#475569', '#1E293B'];
+    if (iconType === 'cloud') return ['#F1F5F9', '#CBD5E1', '#94A3B8', '#475569'];
+    return ['#FEF3C7', '#7DD3FC', '#0EA5E9', '#0284C7']; // sun
+  }
+  // morning
+  if (iconType === 'rain') return ['#F1F5F9', '#CBD5E1', '#64748B', '#334155'];
+  if (iconType === 'cloud') return ['#F8FAFC', '#E2E8F0', '#94A3B8', '#475569'];
+  return ['#FFFBEB', '#BAE6FD', '#38BDF8', '#0369A1']; // sun
+};
+
+const getWaveGradient = (period: string) => {
+  if (period === 'night' || period === 'evening') {
+    return ['#047857', '#065F46', '#064E3B'];
+  }
+  return ['#10B981', '#059669', '#047857'];
+};
+
+const getSubcardGradient = (iconType: string) => {
+  switch (iconType) {
+    case 'sun':
+      return ['rgba(255, 251, 235, 0.98)', 'rgba(254, 243, 199, 0.92)', 'rgba(253, 230, 138, 0.85)'];
+    case 'rain':
+      return ['rgba(241, 245, 249, 0.98)', 'rgba(203, 213, 225, 0.92)', 'rgba(148, 163, 184, 0.85)'];
+    case 'moon':
+      return ['rgba(248, 250, 252, 0.98)', 'rgba(226, 232, 240, 0.92)', 'rgba(203, 213, 225, 0.85)'];
+    case 'cloud':
+    default:
+      return ['rgba(255, 255, 255, 0.98)', 'rgba(240, 253, 244, 0.92)', 'rgba(209, 250, 229, 0.85)'];
+  }
+};
+
 const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ type }) => {
   let source;
   let customStyle = { width: 64, height: 64 };
@@ -123,6 +167,7 @@ export const WeatherCard: React.FC = () => {
   const [weather, setWeather] = useState<WeatherData>(initialWeather);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentTime, setCurrentTime] = useState<string>(getFormattedCurrentTime());
+  const [periodOfDay, setPeriodOfDay] = useState(getPeriodOfDay());
 
   // 3D Weather Art Bobbing Animation
   const translateY = useRef(new Animated.Value(0)).current;
@@ -146,10 +191,11 @@ export const WeatherCard: React.FC = () => {
     return () => bobbing.stop();
   }, [translateY]);
 
-  // Real-time ticking clock
+  // Real-time ticking clock & period updater
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(getFormattedCurrentTime());
+      setPeriodOfDay(getPeriodOfDay());
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -273,11 +319,11 @@ export const WeatherCard: React.FC = () => {
           style={styles.waveSvgBg}
         >
           <Defs>
-            {/* SQUI Signature Emerald Gradient */}
+            {/* Dynamic Wave Gradient */}
             <SvgLinearGradient id="squiWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <Stop offset="0%" stopColor="#10B981" />
-              <Stop offset="50%" stopColor="#059669" />
-              <Stop offset="100%" stopColor="#047857" />
+              {getWaveGradient(periodOfDay).map((color, index) => (
+                <Stop key={index} offset={`${(index / 2) * 100}%`} stopColor={color} />
+              ))}
             </SvgLinearGradient>
 
             {/* Ambient Emerald Glass Glow */}
@@ -286,7 +332,7 @@ export const WeatherCard: React.FC = () => {
               <Stop offset="100%" stopColor="#34D399" stopOpacity={0.05} />
             </SvgLinearGradient>
 
-            {/* Luminous 3D Volumetric Sky Background Radial Gradient */}
+            {/* Dynamic 3D Volumetric Sky Background Radial Gradient */}
             <SvgRadialGradient
               id="skyBgGrad"
               cx="80%"
@@ -296,10 +342,10 @@ export const WeatherCard: React.FC = () => {
               fx="80%"
               fy="25%"
             >
-              <Stop offset="0%" stopColor="#FFFBEB" stopOpacity={0.9} />
-              <Stop offset="15%" stopColor="#BAE6FD" stopOpacity={1} />
-              <Stop offset="55%" stopColor="#38BDF8" />
-              <Stop offset="100%" stopColor="#0369A1" />
+              {getSkyGradient(weather.iconType, periodOfDay).map((color, index) => {
+                const offsets = ['0%', '15%', '55%', '100%'];
+                return <Stop key={index} offset={offsets[index]} stopColor={color} stopOpacity={index === 0 ? 0.9 : 1} />;
+              })}
             </SvgRadialGradient>
           </Defs>
 
@@ -428,13 +474,9 @@ export const WeatherCard: React.FC = () => {
             activeOpacity={0.88}
             style={styles.liquidGlassPillWrapper}
           >
-            {/* Soft White-Emerald Frosted Glass Gradient */}
+            {/* Dynamic Glass Gradient based on Weather Type */}
             <LinearGradient
-              colors={[
-                'rgba(255, 255, 255, 0.98)',
-                'rgba(240, 253, 244, 0.92)',
-                'rgba(209, 250, 229, 0.85)',
-              ]}
+              colors={getSubcardGradient(item.iconType)}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={styles.liquidGradientBg}
