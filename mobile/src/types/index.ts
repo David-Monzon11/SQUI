@@ -75,6 +75,10 @@ export interface WeatherData {
   dateStr?: string;
   statusText: string;
   iconType: 'rain' | 'sun' | 'cloud' | 'moon';
+  condition?: 'clear' | 'clouds' | 'rain' | 'heavyRain' | 'thunderstorm' | 'drizzle' | 'fog';
+  sunrise?: number;
+  sunset?: number;
+  timezone?: number;
   humidity: number;
   hourly: HourlyWeatherItem[];
   dailyForecast?: DailyForecastItem[];

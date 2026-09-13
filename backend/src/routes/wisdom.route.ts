@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { WisdomController } from '../controllers/wisdom.controller';
+import { WisdomController } from '../controllers/wisdom.controller.js';
 
 const router = Router();
 

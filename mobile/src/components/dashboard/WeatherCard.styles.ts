@@ -88,6 +88,19 @@ export const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginTop: 4,
     letterSpacing: -0.2,
+    lineHeight: 18,
+  },
+
+  // Dynamic Animated Cloud Layers
+  cloudsContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1, // Behind the wave overlay and text, but in front of Sky SVG
+    overflow: 'hidden',
+    borderRadius: 24,
+  },
+  cloudImage: {
+    position: 'absolute',
+    resizeMode: 'contain',
   },
 
   // Creative Weather Status badge & Date Row

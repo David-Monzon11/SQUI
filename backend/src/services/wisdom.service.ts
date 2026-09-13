@@ -1,4 +1,4 @@
-import { WisdomTip, WisdomCategory } from '../types';
+import { WisdomTip, WisdomCategory } from '../types/index.js';
 
 export class WisdomService {
   private static tips: WisdomTip[] = [

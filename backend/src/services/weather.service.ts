@@ -18,6 +18,16 @@ export function mapOpenWeatherIconType(id: number, iconStr: string): "sun" | "cl
   return "cloud"; // 803, 804 Overcast
 }
 
+export function getConditionType(id: number): "clear" | "clouds" | "rain" | "heavyRain" | "thunderstorm" | "drizzle" | "fog" {
+  if (id >= 200 && id < 300) return "thunderstorm";
+  if (id >= 300 && id < 400) return "drizzle";
+  if (id >= 500 && id < 505) return "rain";
+  if (id >= 505 && id < 600) return "heavyRain";
+  if (id >= 700 && id < 800) return "fog";
+  if (id === 800) return "clear";
+  return "clouds";
+}
+
 export function generateHydrationTip(temp: number, humidity: number, statusText: string): string {
   if (temp >= 31) return "High warmth today! Elevate your hydration target by 400ml to stay energized.";
   if (temp >= 26) return "Warm and active conditions today. Take regular sips of fresh water!";
@@ -110,6 +120,10 @@ export class WeatherService {
       const currentIconStr = currentJson.weather[0]?.icon || "01d";
       const statusText = capitalizeWords(currentJson.weather[0]?.description || "Pleasant");
       const iconType = mapOpenWeatherIconType(currentId, currentIconStr);
+      const condition = getConditionType(currentId);
+      const timezone = currentJson.timezone || forecastJson.city?.timezone || 28800; // Default PH +08:00
+      const sunrise = currentJson.sys?.sunrise;
+      const sunset = currentJson.sys?.sunset;
 
       // Date formatting
       const now = new Date();
@@ -124,11 +138,11 @@ export class WeatherService {
 
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
-        const dateObj = new Date(item.dt * 1000);
+        const dateObj = new Date((item.dt + timezone) * 1000);
         
         // Next 6 items for hourly (6 * 3 = 18 hours)
         if (hourly.length < 6) {
-           let hour = dateObj.getHours();
+           let hour = dateObj.getUTCHours();
            const ampm = hour >= 12 ? "PM" : "AM";
            hour = hour % 12;
            hour = hour ? hour : 12;
@@ -141,7 +155,7 @@ export class WeatherService {
         }
 
         // Daily aggregation (using local date strings)
-        const dateKey = `${dateObj.getMonth() + 1}/${dateObj.getDate()}`;
+        const dateKey = `${dateObj.getUTCMonth() + 1}/${dateObj.getUTCDate()}`;
         if (!dailyMap.has(dateKey)) {
           dailyMap.set(dateKey, { max: -999, min: 999, pop: 0, icon: item.weather[0].icon, id: item.weather[0].id });
         }
@@ -175,14 +189,12 @@ export class WeatherService {
         const dData = dailyMap.get(key)!;
         const [m, d] = key.split("/");
         
-        // Mock a date object to get the day of the week
-        const realDate = new Date();
-        realDate.setMonth(parseInt(m) - 1);
-        realDate.setDate(parseInt(d));
+        // Mock a date object to get the day of the week using UTC to match our adjusted dates
+        const realDate = new Date(Date.UTC(now.getUTCFullYear(), parseInt(m) - 1, parseInt(d)));
 
         dailyForecast.push({
-          day: dayNames[realDate.getDay()].toUpperCase(),
-          date: `${monthNames[realDate.getMonth()]} ${realDate.getDate()}`,
+          day: dayNames[realDate.getUTCDay()].toUpperCase(),
+          date: `${monthNames[realDate.getUTCMonth()]} ${realDate.getUTCDate()}`,
           temp: `${Math.round(dData.max)}°`,
           chance: `${Math.round(dData.pop * 100)}%`,
           iconType: mapOpenWeatherIconType(dData.id, dData.icon)
@@ -197,6 +209,10 @@ export class WeatherService {
         dateStr,
         statusText,
         iconType,
+        condition,
+        timezone,
+        sunrise,
+        sunset,
         humidity,
         hourly,
         dailyForecast,

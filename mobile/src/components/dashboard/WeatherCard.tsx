@@ -15,32 +15,63 @@ import { styles } from './WeatherCard.styles';
 import { apiClient } from '../../services/apiClient';
 import { WeatherData, DailyForecastItem } from '../../types';
 
-const getPeriodOfDay = (): 'morning' | 'afternoon' | 'evening' | 'night' => {
-  const hour = new Date().getHours();
-  if (hour >= 5 && hour < 12) return 'morning';
+const getPeriodOfDay = (sunrise?: number, sunset?: number, timezone?: number): 'dawn' | 'morning' | 'afternoon' | 'evening' | 'night' => {
+  const now = new Date();
+  
+  if (sunrise && sunset && timezone !== undefined) {
+    const nowSecs = Math.floor(now.getTime() / 1000);
+    
+    // Dawn: 1 hour before sunrise to sunrise
+    if (nowSecs >= sunrise - 3600 && nowSecs < sunrise) return 'dawn';
+    
+    // To find local noon
+    const localHour = new Date((nowSecs + timezone) * 1000).getUTCHours();
+    
+    if (nowSecs >= sunrise && localHour < 12) return 'morning';
+    if (localHour >= 12 && nowSecs < sunset - 3600) return 'afternoon';
+    if (nowSecs >= sunset - 3600 && nowSecs < sunset + 3600) return 'evening';
+    return 'night';
+  }
+
+  const hour = now.getHours();
+  if (hour >= 5 && hour < 6) return 'dawn';
+  if (hour >= 6 && hour < 12) return 'morning';
   if (hour >= 12 && hour < 17) return 'afternoon';
   if (hour >= 17 && hour < 19) return 'evening';
   return 'night';
 };
 
-const getSkyGradient = (iconType: string, period: string) => {
-  if (period === 'night' || period === 'evening') {
+const getSkyGradient = (condition: string, period: string) => {
+  if (period === 'night') {
+    if (condition.includes('rain') || condition === 'thunderstorm') return ['#0F172A', '#020617', '#000000', '#000000'];
     return ['#1E293B', '#0F172A', '#020617', '#000000'];
   }
+  if (period === 'evening') {
+    if (condition.includes('rain') || condition === 'thunderstorm') return ['#334155', '#1E293B', '#0F172A', '#020617'];
+    return ['#F59E0B', '#EA580C', '#9A3412', '#431407'];
+  }
+  if (period === 'dawn') {
+    return ['#FBCFE8', '#F472B6', '#8B5CF6', '#312E81'];
+  }
   if (period === 'afternoon') {
-    if (iconType === 'rain') return ['#E2E8F0', '#94A3B8', '#475569', '#1E293B'];
-    if (iconType === 'cloud') return ['#F1F5F9', '#CBD5E1', '#94A3B8', '#475569'];
-    return ['#FEF3C7', '#7DD3FC', '#0EA5E9', '#0284C7']; // sun
+    if (condition === 'thunderstorm' || condition === 'heavyRain') return ['#475569', '#334155', '#1E293B', '#0F172A'];
+    if (condition === 'rain' || condition === 'drizzle') return ['#E2E8F0', '#94A3B8', '#475569', '#1E293B'];
+    if (condition === 'clouds' || condition === 'fog') return ['#F1F5F9', '#CBD5E1', '#94A3B8', '#475569'];
+    return ['#FEF3C7', '#7DD3FC', '#0EA5E9', '#0284C7']; // clear
   }
   // morning
-  if (iconType === 'rain') return ['#F1F5F9', '#CBD5E1', '#64748B', '#334155'];
-  if (iconType === 'cloud') return ['#F8FAFC', '#E2E8F0', '#94A3B8', '#475569'];
-  return ['#FFFBEB', '#BAE6FD', '#38BDF8', '#0369A1']; // sun
+  if (condition === 'thunderstorm' || condition === 'heavyRain') return ['#64748B', '#475569', '#334155', '#1E293B'];
+  if (condition === 'rain' || condition === 'drizzle') return ['#F1F5F9', '#CBD5E1', '#64748B', '#334155'];
+  if (condition === 'clouds' || condition === 'fog') return ['#F8FAFC', '#E2E8F0', '#94A3B8', '#475569'];
+  return ['#FFFBEB', '#BAE6FD', '#38BDF8', '#0369A1']; // clear
 };
 
 const getWaveGradient = (period: string) => {
   if (period === 'night' || period === 'evening') {
     return ['#047857', '#065F46', '#064E3B'];
+  }
+  if (period === 'dawn') {
+    return ['#059669', '#047857', '#064E3B'];
   }
   return ['#10B981', '#059669', '#047857'];
 };
@@ -157,10 +188,74 @@ const initialWeather: WeatherData = {
   dateStr: getInitialDateStr(),
   statusText: 'Mindful Climate',
   iconType: 'cloud',
+  condition: 'clouds',
   humidity: 65,
   hourly: [],
   dailyForecast: getInitialDailyForecast(),
   hydratingTip: 'Mindful climate active. Stay naturally hydrated at your steady pace today!',
+};
+
+const DynamicClouds: React.FC<{ condition: string, period: string }> = ({ condition, period }) => {
+  const cloudSources = {
+    normal: require('../../../assets/vecteezy_cloud-png-with-ai-generated_26772076.png'),
+    dark: require('../../../assets/vecteezy_cloudy-rain-on-transparent-background_19781539.png'),
+    fog: require('../../../assets/vecteezy_fog-3d-icon-illustration_28209813.png'),
+  };
+
+  const panX1 = useRef(new Animated.Value(0)).current;
+  const panX2 = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(panX1, { toValue: -50, duration: 25000, useNativeDriver: true }),
+        Animated.timing(panX1, { toValue: 50, duration: 25000, useNativeDriver: true })
+      ])
+    ).start();
+
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(panX2, { toValue: 60, duration: 18000, useNativeDriver: true }),
+        Animated.timing(panX2, { toValue: -60, duration: 18000, useNativeDriver: true })
+      ])
+    ).start();
+  }, [panX1, panX2]);
+
+  if (condition === 'clear') return null;
+
+  let opacity = 0.5;
+  let source = cloudSources.normal;
+  
+  if (condition === 'clouds') opacity = 0.8;
+  if (condition.includes('rain') || condition === 'drizzle') {
+    opacity = 0.9;
+    source = cloudSources.dark;
+  }
+  if (condition === 'thunderstorm' || condition === 'heavyRain') {
+    opacity = 1.0;
+    source = cloudSources.dark;
+  }
+  if (condition === 'fog') {
+    opacity = 0.7;
+    source = cloudSources.fog;
+  }
+
+  if (period === 'night' || period === 'evening') {
+    opacity *= 0.6;
+  }
+
+  return (
+    <View style={styles.cloudsContainer}>
+      <Animated.Image 
+        source={source} 
+        style={[styles.cloudImage, { top: -20, left: -40, width: 250, height: 150, opacity, transform: [{ translateX: panX1 }] }]} 
+      />
+      <Animated.Image 
+        source={source} 
+        style={[styles.cloudImage, { top: 20, right: -50, width: 200, height: 120, opacity: opacity * 0.8, transform: [{ translateX: panX2 }] }]} 
+      />
+    </View>
+  );
 };
 
 export const WeatherCard: React.FC = () => {
@@ -195,10 +290,14 @@ export const WeatherCard: React.FC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(getFormattedCurrentTime());
-      setPeriodOfDay(getPeriodOfDay());
+      setPeriodOfDay(getPeriodOfDay(weather.sunrise, weather.sunset, weather.timezone));
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [weather.sunrise, weather.sunset, weather.timezone]);
+
+  useEffect(() => {
+    setPeriodOfDay(getPeriodOfDay(weather.sunrise, weather.sunset, weather.timezone));
+  }, [weather.sunrise, weather.sunset, weather.timezone]);
 
   const fetchWeather = useCallback(async () => {
     setLoading(true);
@@ -221,42 +320,27 @@ export const WeatherCard: React.FC = () => {
           if (geocoded && geocoded.length > 0) {
             const place = geocoded[0];
             
-            // Gather all possible local identifiers in order of specificity
-            const parts = [
-              place.name,
-              place.street,
-              place.district,
-              place.city,
-              place.subregion,
-              place.region,
-              place.isoCountryCode || place.country
-            ];
-
-            // Filter out nulls, empty strings, unnamed roads, plus codes, and duplicates
-            const cleanParts: string[] = [];
-            for (const part of parts) {
-              if (
-                part &&
-                typeof part === 'string' &&
-                part.trim().length > 1 && // avoid 1-letter glitches
-                !part.includes('+') &&
-                !part.toLowerCase().includes('unnamed')
-              ) {
-                const trimmed = part.trim();
-                // Add if not already in the array to avoid duplicates like "Mexico, Mexico"
-                if (!cleanParts.includes(trimmed)) {
-                  cleanParts.push(trimmed);
-                }
-              }
+            const district = place.district || place.street;
+            const city = place.city || place.subregion || place.region;
+            const country = place.isoCountryCode || place.country;
+            
+            let lines = [];
+            if (district && district.toLowerCase() !== 'unnamed') {
+              lines.push(district);
+            } else if (place.name && place.name !== city) {
+              lines.push(place.name);
             }
 
-            // We want the most specific 2 or 3 parts. 
-            // e.g. ["Sabanilla", "Mexico", "Pampanga", "PH"] -> "Sabanilla, Mexico"
-            // If the first part is a number (like a raw street number), maybe skip or combine, but array filtering is usually enough.
-            if (cleanParts.length >= 2) {
-              deviceLocationName = cleanParts.slice(0, 2).join(', ');
-            } else if (cleanParts.length === 1) {
-              deviceLocationName = cleanParts[0];
+            if (city && country) {
+              lines.push(`${city}, ${country}`);
+            } else if (city) {
+              lines.push(city);
+            } else if (country) {
+              lines.push(country);
+            }
+
+            if (lines.length > 0) {
+              deviceLocationName = lines.join('\n');
             }
           }
         }
@@ -311,88 +395,41 @@ export const WeatherCard: React.FC = () => {
 
       {/* 🌊 Sculpted Organic Wave Glassmorphic Card (No top border stroke) */}
       <View style={styles.waveCardWrapper}>
-        <Svg
-          width="100%"
-          height="100%"
-          viewBox="0 0 350 235"
-          preserveAspectRatio="none"
-          style={styles.waveSvgBg}
-        >
+        {/* 1. Sky Backdrop SVG */}
+        <Svg width="100%" height="100%" viewBox="0 0 350 235" preserveAspectRatio="none" style={styles.waveSvgBg}>
           <Defs>
-            {/* Dynamic Wave Gradient */}
-            <SvgLinearGradient id="squiWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              {getWaveGradient(periodOfDay).map((color, index) => (
-                <Stop key={index} offset={`${(index / 2) * 100}%`} stopColor={color} />
-              ))}
-            </SvgLinearGradient>
-
-            {/* Ambient Emerald Glass Glow */}
-            <SvgLinearGradient id="squiGlassGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-              <Stop offset="0%" stopColor="#10B981" stopOpacity={0.20} />
-              <Stop offset="100%" stopColor="#34D399" stopOpacity={0.05} />
-            </SvgLinearGradient>
-
-            {/* Dynamic 3D Volumetric Sky Background Radial Gradient */}
-            <SvgRadialGradient
-              id="skyBgGrad"
-              cx="80%"
-              cy="25%"
-              rx="75%"
-              ry="75%"
-              fx="80%"
-              fy="25%"
-            >
-              {getSkyGradient(weather.iconType, periodOfDay).map((color, index) => {
+            <SvgRadialGradient id="skyBgGrad" cx="80%" cy="25%" rx="75%" ry="75%" fx="80%" fy="25%">
+              {getSkyGradient(weather.condition || 'clouds', periodOfDay).map((color, index) => {
                 const offsets = ['0%', '15%', '55%', '100%'];
                 return <Stop key={index} offset={offsets[index]} stopColor={color} stopOpacity={index === 0 ? 0.9 : 1} />;
               })}
             </SvgRadialGradient>
           </Defs>
+          <Rect x="0" y="0" width="350" height="235" rx="24" fill="url(#skyBgGrad)" />
+          
+          <Ellipse cx="284" cy="138" rx="64" ry="18" fill="rgba(3, 37, 56, 0.07)" />
+          <Ellipse cx="284" cy="138" rx="48" ry="14" fill="rgba(3, 37, 56, 0.14)" />
+          <Ellipse cx="284" cy="138" rx="34" ry="10" fill="rgba(3, 37, 56, 0.22)" />
+        </Svg>
 
-          {/* 3D Sky Backdrop */}
-          <Rect
-            x="0"
-            y="0"
-            width="350"
-            height="235"
-            rx="24"
-            fill="url(#skyBgGrad)"
-          />
+        {/* 2. Dynamic Clouds Layer */}
+        <DynamicClouds condition={weather.condition || 'clouds'} period={periodOfDay} />
 
-          {/* Volumetric Cloud Shadow */}
-          <Ellipse
-            cx="284"
-            cy="138"
-            rx="64"
-            ry="18"
-            fill="rgba(3, 37, 56, 0.07)"
-          />
-          <Ellipse
-            cx="284"
-            cy="138"
-            rx="48"
-            ry="14"
-            fill="rgba(3, 37, 56, 0.14)"
-          />
-          <Ellipse
-            cx="284"
-            cy="138"
-            rx="34"
-            ry="10"
-            fill="rgba(3, 37, 56, 0.22)"
-          />
-
-          {/* 🌊 Sculpted Wave Card Body */}
-          <Path
-            d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
-            fill="url(#squiWaveGrad)"
-          />
-
-          {/* Glassmorphic Ambient Luminous Overlay */}
-          <Path
-            d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z"
-            fill="url(#squiGlassGlow)"
-          />
+        {/* 3. Foreground Wave SVG */}
+        <Svg width="100%" height="100%" viewBox="0 0 350 235" preserveAspectRatio="none" style={styles.waveSvgBg}>
+          <Defs>
+            <SvgLinearGradient id="squiWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              {getWaveGradient(periodOfDay).map((color, index) => (
+                <Stop key={index} offset={`${(index / 2) * 100}%`} stopColor={color} />
+              ))}
+            </SvgLinearGradient>
+            <SvgLinearGradient id="squiGlassGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+              <Stop offset="0%" stopColor="#10B981" stopOpacity={0.20} />
+              <Stop offset="100%" stopColor="#34D399" stopOpacity={0.05} />
+            </SvgLinearGradient>
+          </Defs>
+          <Path d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z" fill="url(#squiWaveGrad)" />
+          <Path d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z" fill="url(#squiGlassGlow)" />
         </Svg>
 
         {/* Card Content Stack */}
@@ -405,7 +442,7 @@ export const WeatherCard: React.FC = () => {
               <Text style={styles.highLowText}>
                 H:{weather.high}°  L:{weather.low}°
               </Text>
-              <Text style={styles.locationText} numberOfLines={1}>
+              <Text style={styles.locationText} numberOfLines={2}>
                 {weather.location}
               </Text>
 

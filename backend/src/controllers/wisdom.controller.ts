@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { WisdomService } from '../services/wisdom.service';
-import { ApiResponse, WisdomCategory } from '../types';
+import { WisdomService } from '../services/wisdom.service.js';
+import { ApiResponse, WisdomCategory } from '../types/index.js';
 
 export class WisdomController {
   public static getDailyWisdom = async (req: Request, res: Response): Promise<void> => {
