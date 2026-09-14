@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Animated, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import Svg, {
@@ -195,6 +195,9 @@ const initialWeather: WeatherData = {
   hydratingTip: 'Mindful climate active. Stay naturally hydrated at your steady pace today!',
 };
 
+// Cloud layer width — wider than card so the seam is never visible
+const CLOUD_STRIP_W = 500;
+
 const DynamicClouds: React.FC<{ condition: string, period: string }> = ({ condition, period }) => {
   const cloudSources = {
     normal: require('../../../assets/vecteezy_cloud-png-with-ai-generated_26772076.png'),
@@ -202,30 +205,49 @@ const DynamicClouds: React.FC<{ condition: string, period: string }> = ({ condit
     fog: require('../../../assets/vecteezy_fog-3d-icon-illustration_28209813.png'),
   };
 
-  const panX1 = useRef(new Animated.Value(0)).current;
-  const panX2 = useRef(new Animated.Value(0)).current;
+  // Layer A: slow drift, starts at 0, moves left by CLOUD_STRIP_W then instantly resets
+  // Layer B: faster drift, starts offset by CLOUD_STRIP_W/2 so it fills while A resets
+  // Each layer has a twin copy so the strip tiles seamlessly (conveyor belt)
+  const scrollA = useRef(new Animated.Value(0)).current;
+  const scrollB = useRef(new Animated.Value(0)).current;
+  const scrollC = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(panX1, { toValue: -50, duration: 25000, useNativeDriver: true }),
-        Animated.timing(panX1, { toValue: 50, duration: 25000, useNativeDriver: true })
-      ])
-    ).start();
-
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(panX2, { toValue: 60, duration: 18000, useNativeDriver: true }),
-        Animated.timing(panX2, { toValue: -60, duration: 18000, useNativeDriver: true })
-      ])
-    ).start();
-  }, [panX1, panX2]);
+    // Layer A — slow (28s per full width)
+    const loopA = Animated.loop(
+      Animated.timing(scrollA, {
+        toValue: -CLOUD_STRIP_W,
+        duration: 28000,
+        useNativeDriver: true,
+      })
+    );
+    // Layer B — medium (20s per full width)
+    const loopB = Animated.loop(
+      Animated.timing(scrollB, {
+        toValue: -CLOUD_STRIP_W,
+        duration: 20000,
+        useNativeDriver: true,
+      })
+    );
+    // Layer C — slightly faster (35s, drifting opposite side)
+    const loopC = Animated.loop(
+      Animated.timing(scrollC, {
+        toValue: -CLOUD_STRIP_W,
+        duration: 35000,
+        useNativeDriver: true,
+      })
+    );
+    loopA.start();
+    loopB.start();
+    loopC.start();
+    return () => { loopA.stop(); loopB.stop(); loopC.stop(); };
+  }, [scrollA, scrollB, scrollC]);
 
   if (condition === 'clear') return null;
 
   let opacity = 0.5;
   let source = cloudSources.normal;
-  
+
   if (condition === 'clouds') opacity = 0.8;
   if (condition.includes('rain') || condition === 'drizzle') {
     opacity = 0.9;
@@ -239,21 +261,38 @@ const DynamicClouds: React.FC<{ condition: string, period: string }> = ({ condit
     opacity = 0.7;
     source = cloudSources.fog;
   }
-
   if (period === 'night' || period === 'evening') {
     opacity *= 0.6;
   }
 
   return (
     <View style={styles.cloudsContainer}>
-      <Animated.Image 
-        source={source} 
-        style={[styles.cloudImage, { top: -20, left: -40, width: 250, height: 150, opacity, transform: [{ translateX: panX1 }] }]} 
-      />
-      <Animated.Image 
-        source={source} 
-        style={[styles.cloudImage, { top: 20, right: -50, width: 200, height: 120, opacity: opacity * 0.8, transform: [{ translateX: panX2 }] }]} 
-      />
+      {/* Layer A — two tiles side-by-side so reset is invisible */}
+      <Animated.View style={[
+        styles.cloudLayer,
+        { top: -18, transform: [{ translateX: scrollA }] }
+      ]}>
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity, resizeMode: 'cover' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity, resizeMode: 'cover' }} />
+      </Animated.View>
+
+      {/* Layer B — offset start by half strip width for seamless fill */}
+      <Animated.View style={[
+        styles.cloudLayer,
+        { top: 22, transform: [{ translateX: Animated.add(scrollB, new Animated.Value(-(CLOUD_STRIP_W / 2))) }] }
+      ]}>
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 110, opacity: opacity * 0.65, resizeMode: 'cover' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 110, opacity: opacity * 0.65, resizeMode: 'cover' }} />
+      </Animated.View>
+
+      {/* Layer C — upper-right accent, slightly different size */}
+      <Animated.View style={[
+        styles.cloudLayer,
+        { top: -8, transform: [{ translateX: Animated.add(scrollC, new Animated.Value(-(CLOUD_STRIP_W * 0.75))) }] }
+      ]}>
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 90, opacity: opacity * 0.45, resizeMode: 'cover' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 90, opacity: opacity * 0.45, resizeMode: 'cover' }} />
+      </Animated.View>
     </View>
   );
 };
@@ -299,6 +338,65 @@ export const WeatherCard: React.FC = () => {
     setPeriodOfDay(getPeriodOfDay(weather.sunrise, weather.sunset, weather.timezone));
   }, [weather.sunrise, weather.sunset, weather.timezone]);
 
+  /**
+   * Reverse-geocode via Nominatim (OpenStreetMap) to get proper
+   * Philippine barangay → municipality hierarchy.
+   * Returns lines: [barangay?, "Municipality/City, PH"]
+   */
+  const nominatimReverseGeocode = useCallback(async (lat: number, lon: number): Promise<string> => {
+    try {
+      const url =
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1&accept-language=en`;
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'SQUI-App/1.0' },
+        signal: AbortSignal.timeout(5000),
+      });
+      if (!res.ok) throw new Error(`Nominatim ${res.status}`);
+      const json = await res.json();
+      const addr = json.address || {};
+
+      // Philippine address hierarchy:
+      // neighbourhood / suburb / village / hamlet → barangay level
+      // city / town / municipality → municipal level
+      const barangay =
+        addr.neighbourhood ||
+        addr.suburb ||
+        addr.village ||
+        addr.hamlet ||
+        addr.quarter ||
+        null;
+
+      const municipality =
+        addr.city ||
+        addr.town ||
+        addr.municipality ||
+        addr.county ||
+        null;
+
+      const countryCode = addr.country_code?.toUpperCase() || 'PH';
+
+      const lines: string[] = [];
+
+      // Only use barangay if it's a real name (not a Plus Code pattern)
+      const PLUS_CODE_RE = /^[23456789CFGHJMPQRVWX]{4}\+/i;
+      if (barangay && !PLUS_CODE_RE.test(barangay)) {
+        lines.push(barangay);
+      }
+
+      if (municipality) {
+        lines.push(`${municipality}, ${countryCode}`);
+      } else if (lines.length === 0) {
+        // Nothing useful — fall through to undefined so backend name is used
+        return '';
+      }
+
+      return lines.join('\n');
+    } catch (e) {
+      console.log('[WeatherCard] Nominatim geocode failed:', e);
+      return '';
+    }
+  }, []);
+
   const fetchWeather = useCallback(async () => {
     setLoading(true);
     try {
@@ -315,33 +413,10 @@ export const WeatherCard: React.FC = () => {
           lat = loc.coords.latitude;
           lon = loc.coords.longitude;
 
-          // Native device reverse geocoding for exact mapped city name
-          const geocoded = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
-          if (geocoded && geocoded.length > 0) {
-            const place = geocoded[0];
-            
-            const district = place.district || place.street;
-            const city = place.city || place.subregion || place.region;
-            const country = place.isoCountryCode || place.country;
-            
-            let lines = [];
-            if (district && district.toLowerCase() !== 'unnamed') {
-              lines.push(district);
-            } else if (place.name && place.name !== city) {
-              lines.push(place.name);
-            }
-
-            if (city && country) {
-              lines.push(`${city}, ${country}`);
-            } else if (city) {
-              lines.push(city);
-            } else if (country) {
-              lines.push(country);
-            }
-
-            if (lines.length > 0) {
-              deviceLocationName = lines.join('\n');
-            }
+          // Use Nominatim for barangay-level Philippine geocoding
+          const nominatimResult = await nominatimReverseGeocode(lat, lon);
+          if (nominatimResult) {
+            deviceLocationName = nominatimResult;
           }
         }
       } catch (locErr) {
@@ -350,9 +425,17 @@ export const WeatherCard: React.FC = () => {
 
       const data = await apiClient.getWeather(lat, lon);
       if (data && typeof data.temperature === 'number') {
-        const finalLocation = deviceLocationName ||
-          ((data.location && data.location !== 'Local Area' && data.location !== 'Current Location') 
-            ? data.location 
+        // Strip Plus Codes from any fallback location string from the backend
+        const PLUS_CODE_RE = /^[23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,}$/i;
+        let backendLoc = data.location || '';
+        if (PLUS_CODE_RE.test(backendLoc.split('\n')[0]?.trim() || '')) {
+          backendLoc = '';
+        }
+
+        const finalLocation =
+          deviceLocationName ||
+          (backendLoc && backendLoc !== 'Local Area' && backendLoc !== 'Current Location'
+            ? backendLoc
             : 'Manila, PH');
 
         setWeather((prev) => ({
@@ -374,7 +457,7 @@ export const WeatherCard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [nominatimReverseGeocode]);
 
   useEffect(() => {
     fetchWeather();
@@ -394,9 +477,14 @@ export const WeatherCard: React.FC = () => {
       </View>
 
       {/* 🌊 Sculpted Organic Wave Glassmorphic Card (No top border stroke) */}
-      <View style={styles.waveCardWrapper}>
-        {/* 1. Sky Backdrop SVG */}
-        <Svg width="100%" height="100%" viewBox="0 0 350 235" preserveAspectRatio="none" style={styles.waveSvgBg}>
+      <View
+        style={styles.waveCardWrapper}
+        onLayout={(e) => {
+          // layout is handled by fixed 350×235 viewBox with xMidYMid meet
+        }}
+      >
+        {/* 1. Sky Backdrop SVG — uses xMidYMid meet so the viewBox proportions are preserved */}
+        <Svg width="100%" height="100%" viewBox="0 0 350 235" preserveAspectRatio="xMidYMid slice" style={styles.waveSvgBg}>
           <Defs>
             <SvgRadialGradient id="skyBgGrad" cx="80%" cy="25%" rx="75%" ry="75%" fx="80%" fy="25%">
               {getSkyGradient(weather.condition || 'clouds', periodOfDay).map((color, index) => {
@@ -406,7 +494,7 @@ export const WeatherCard: React.FC = () => {
             </SvgRadialGradient>
           </Defs>
           <Rect x="0" y="0" width="350" height="235" rx="24" fill="url(#skyBgGrad)" />
-          
+
           <Ellipse cx="284" cy="138" rx="64" ry="18" fill="rgba(3, 37, 56, 0.07)" />
           <Ellipse cx="284" cy="138" rx="48" ry="14" fill="rgba(3, 37, 56, 0.14)" />
           <Ellipse cx="284" cy="138" rx="34" ry="10" fill="rgba(3, 37, 56, 0.22)" />
@@ -415,21 +503,45 @@ export const WeatherCard: React.FC = () => {
         {/* 2. Dynamic Clouds Layer */}
         <DynamicClouds condition={weather.condition || 'clouds'} period={periodOfDay} />
 
-        {/* 3. Foreground Wave SVG */}
-        <Svg width="100%" height="100%" viewBox="0 0 350 235" preserveAspectRatio="none" style={styles.waveSvgBg}>
+        {/* 3. Foreground Wave SVG — same viewBox, preserveAspectRatio="none" ONLY for this wave
+            because we want the wave to fill the full card width regardless of aspect ratio.
+            The wave path is designed so the curved edge always stays within the bottom-left
+            portion — it fills left→bottom and exposes top-right for the sky/clouds. */}
+        <Svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 350 235"
+          preserveAspectRatio="none"
+          style={styles.waveSvgBg}
+        >
           <Defs>
-            <SvgLinearGradient id="squiWaveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <SvgLinearGradient id="squiWaveGrad" x1="0%" y1="0%" x2="60%" y2="100%">
               {getWaveGradient(periodOfDay).map((color, index) => (
                 <Stop key={index} offset={`${(index / 2) * 100}%`} stopColor={color} />
               ))}
             </SvgLinearGradient>
             <SvgLinearGradient id="squiGlassGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-              <Stop offset="0%" stopColor="#10B981" stopOpacity={0.20} />
-              <Stop offset="100%" stopColor="#34D399" stopOpacity={0.05} />
+              <Stop offset="0%" stopColor="#10B981" stopOpacity={0.22} />
+              <Stop offset="100%" stopColor="#34D399" stopOpacity={0.04} />
             </SvgLinearGradient>
           </Defs>
-          <Path d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z" fill="url(#squiWaveGrad)" />
-          <Path d="M 24 -2 L 115 -2 C 145 -2 170 54 205 104 C 238 156 270 168 310 168 C 334 168 352 180 352 200 L 352 237 L -2 237 L -2 -2 Z" fill="url(#squiGlassGlow)" />
+          {/*
+            Wave path explanation:
+            - Starts top-left corner
+            - Flat along the top edge to about 1/3 width (115px)
+            - Smooth cubic bezier curves down-right toward center of card
+            - Settles into bottom portion covering left side and bottom
+            - Closes at bottom-right and back to top-left
+            This creates the classic organic wave occupying the bottom-left quadrant.
+          */}
+          <Path
+            d="M -2 -2 L 130 -2 C 160 -2 182 40 200 80 C 220 122 248 148 292 158 C 320 164 350 172 352 196 L 352 237 L -2 237 Z"
+            fill="url(#squiWaveGrad)"
+          />
+          <Path
+            d="M -2 -2 L 130 -2 C 160 -2 182 40 200 80 C 220 122 248 148 292 158 C 320 164 350 172 352 196 L 352 237 L -2 237 Z"
+            fill="url(#squiGlassGlow)"
+          />
         </Svg>
 
         {/* Card Content Stack */}

@@ -102,6 +102,12 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
   },
+  // Horizontal row of two tiled cloud images for seamless conveyor-belt scroll
+  cloudLayer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    left: 0,
+  },
 
   // Creative Weather Status badge & Date Row
   badgeDateRow: {
