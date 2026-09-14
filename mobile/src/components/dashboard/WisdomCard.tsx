@@ -17,7 +17,7 @@ const DEFAULT_TIPS: WisdomTip[] = [
   {
     id: 'tip-sodium-1',
     category: 'SODIUM',
-    title: 'Sodium & Potassium Balance',
+    title: 'Sodium and Potassium Balance',
     content: 'Potassium-rich foods like leafy greens and bananas help your body process excess sodium smoothly.',
     actionItem: 'Pair savory meals with a side of spinach or fresh avocado.',
     xpReward: 5,
