@@ -106,8 +106,8 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
       break;
 
     case 'moon':
-      source = require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
-      customStyle = { width: 84, height: 84 };
+      source = require('../../../assets/moon_3d.png');
+      customStyle = { width: 72, height: 72 };
       break;
 
     case 'sun':
@@ -134,7 +134,7 @@ const getMainWeatherImage = (iconType: 'rain' | 'sun' | 'cloud' | 'moon') => {
     case 'sun':
       return require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
     case 'moon':
-      return require('../../../assets/vecteezy_bright-3d-sun-and-cloud-icon-perfect-for-weather-summer_68542856.png');
+      return require('../../../assets/moon_3d.png');
     case 'cloud':
     default:
       return require('../../../assets/vecteezy_3d-partly-cloudy-weather-icon-sun-and-cloud_67592749.png');
@@ -254,44 +254,35 @@ const DynamicClouds: React.FC<{ condition: string, period: string }> = ({ condit
     source = cloudSources.dark;
   }
   if (condition === 'thunderstorm' || condition === 'heavyRain') {
-    opacity = 1.0;
+    opacity = 0.8;
     source = cloudSources.dark;
   }
   if (condition === 'fog') {
-    opacity = 0.7;
+    opacity = 0.5;
     source = cloudSources.fog;
   }
   if (period === 'night' || period === 'evening') {
-    opacity *= 0.6;
+    opacity *= 0.5;
   }
 
   return (
-    <View style={styles.cloudsContainer}>
+    <View style={[styles.cloudsContainer, { zIndex: 1 }]}>
       {/* Layer A — two tiles side-by-side so reset is invisible */}
       <Animated.View style={[
         styles.cloudLayer,
-        { top: -18, transform: [{ translateX: scrollA }] }
+        { top: -20, transform: [{ translateX: scrollA }] }
       ]}>
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity, resizeMode: 'cover' }} />
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity, resizeMode: 'cover' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 90, opacity: opacity * 0.7, resizeMode: 'cover' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 90, opacity: opacity * 0.7, resizeMode: 'cover' }} />
       </Animated.View>
 
       {/* Layer B — offset start by half strip width for seamless fill */}
       <Animated.View style={[
         styles.cloudLayer,
-        { top: 22, transform: [{ translateX: Animated.add(scrollB, new Animated.Value(-(CLOUD_STRIP_W / 2))) }] }
+        { top: 5, transform: [{ translateX: Animated.add(scrollB, new Animated.Value(-(CLOUD_STRIP_W / 2))) }] }
       ]}>
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 110, opacity: opacity * 0.65, resizeMode: 'cover' }} />
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 110, opacity: opacity * 0.65, resizeMode: 'cover' }} />
-      </Animated.View>
-
-      {/* Layer C — upper-right accent, slightly different size */}
-      <Animated.View style={[
-        styles.cloudLayer,
-        { top: -8, transform: [{ translateX: Animated.add(scrollC, new Animated.Value(-(CLOUD_STRIP_W * 0.75))) }] }
-      ]}>
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 90, opacity: opacity * 0.45, resizeMode: 'cover' }} />
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 90, opacity: opacity * 0.45, resizeMode: 'cover' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 60, opacity: opacity * 0.5, resizeMode: 'cover' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 60, opacity: opacity * 0.5, resizeMode: 'cover' }} />
       </Animated.View>
     </View>
   );
@@ -426,8 +417,9 @@ export const WeatherCard: React.FC = () => {
       const data = await apiClient.getWeather(lat, lon);
       if (data && typeof data.temperature === 'number') {
         // Strip Plus Codes from any fallback location string from the backend
-        const PLUS_CODE_RE = /^[23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,}$/i;
         let backendLoc = data.location || '';
+        // Fix plus code regex to also match short Plus Codes like 3P72+VVW6
+        const PLUS_CODE_RE = /^([23456789CFGHJMPQRVWX]{4,8}\+.*)$/i;
         if (PLUS_CODE_RE.test(backendLoc.split('\n')[0]?.trim() || '')) {
           backendLoc = '';
         }
@@ -468,6 +460,14 @@ export const WeatherCard: React.FC = () => {
       ? weather.dailyForecast
       : getInitialDailyForecast();
 
+  // Make sure we show moon if it's night and clear
+  let resolvedIconType = weather.iconType;
+  if ((periodOfDay === 'night' || periodOfDay === 'evening') && (weather.condition === 'clear' || weather.condition === 'clouds')) {
+    resolvedIconType = 'moon';
+  } else if ((periodOfDay === 'morning' || periodOfDay === 'afternoon' || periodOfDay === 'dawn') && resolvedIconType === 'moon') {
+    resolvedIconType = 'sun'; // fallback in case backend gave moon during the day
+  }
+
   return (
     <View style={styles.container}>
       {/* Section Header */}
@@ -484,7 +484,7 @@ export const WeatherCard: React.FC = () => {
         }}
       >
         {/* 1. Sky Backdrop SVG — uses xMidYMid meet so the viewBox proportions are preserved */}
-        <Svg width="100%" height="100%" viewBox="0 0 350 235" preserveAspectRatio="xMidYMid slice" style={styles.waveSvgBg}>
+        <Svg width="100%" height="100%" viewBox="0 0 350 235" preserveAspectRatio="xMidYMid slice" style={[styles.waveSvgBg, { zIndex: 0 }]}>
           <Defs>
             <SvgRadialGradient id="skyBgGrad" cx="80%" cy="25%" rx="75%" ry="75%" fx="80%" fy="25%">
               {getSkyGradient(weather.condition || 'clouds', periodOfDay).map((color, index) => {
@@ -512,7 +512,7 @@ export const WeatherCard: React.FC = () => {
           height="100%"
           viewBox="0 0 350 235"
           preserveAspectRatio="none"
-          style={styles.waveSvgBg}
+          style={[styles.waveSvgBg, { zIndex: 2 }]}
         >
           <Defs>
             <SvgLinearGradient id="squiWaveGrad" x1="0%" y1="0%" x2="60%" y2="100%">
@@ -602,7 +602,7 @@ export const WeatherCard: React.FC = () => {
             {/* Right: Dynamic Floating 3D Weather Art */}
             <Animated.View style={[styles.rightCol, { transform: [{ translateY }] }]}>
               <Image
-                source={getMainWeatherImage(weather.iconType)}
+                source={getMainWeatherImage(resolvedIconType)}
                 style={styles.weatherImage}
               />
             </Animated.View>
