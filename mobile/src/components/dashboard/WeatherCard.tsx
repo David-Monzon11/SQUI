@@ -267,22 +267,13 @@ const DynamicClouds: React.FC<{ condition: string, period: string }> = ({ condit
 
   return (
     <View style={[styles.cloudsContainer, { zIndex: 1 }]}>
-      {/* Layer A — two tiles side-by-side so reset is invisible */}
+      {/* Layer A — Single subtle drifting cloud layer */}
       <Animated.View style={[
         styles.cloudLayer,
-        { top: -20, transform: [{ translateX: scrollA }] }
+        { top: -5, transform: [{ translateX: scrollA }] }
       ]}>
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 90, opacity: opacity * 0.7, resizeMode: 'cover' }} />
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 90, opacity: opacity * 0.7, resizeMode: 'cover' }} />
-      </Animated.View>
-
-      {/* Layer B — offset start by half strip width for seamless fill */}
-      <Animated.View style={[
-        styles.cloudLayer,
-        { top: 5, transform: [{ translateX: Animated.add(scrollB, new Animated.Value(-(CLOUD_STRIP_W / 2))) }] }
-      ]}>
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 60, opacity: opacity * 0.5, resizeMode: 'cover' }} />
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 60, opacity: opacity * 0.5, resizeMode: 'cover' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity: opacity * 0.4, resizeMode: 'contain' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity: opacity * 0.4, resizeMode: 'contain' }} />
       </Animated.View>
     </View>
   );
