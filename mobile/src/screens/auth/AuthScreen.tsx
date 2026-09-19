@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
-import { IconSquiAcornBackground } from '../../components/common/Icons';
+import { IconSquiMascot } from '../../components/common/Icons';
 import { authStyles as styles } from './AuthScreen.styles';
 import { COLORS } from '../../constants/colors';
 
@@ -204,7 +204,7 @@ export const AuthScreen: React.FC = () => {
             ]}
           >
             <View style={styles.mascotBadge}>
-              <IconSquiAcornBackground size={52} color={COLORS.primary} />
+              <IconSquiMascot size={56} color={COLORS.primary} />
             </View>
             <Text style={styles.brandTitle}>SQUI</Text>
             <Text style={styles.brandTagline}>Mindful Dietary Journaling & Health</Text>

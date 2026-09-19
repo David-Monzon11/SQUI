@@ -445,6 +445,35 @@ export const IconFlame: React.FC<IconProps> = ({ size = 22, color = '#EA580C', s
   </View>
 );
 
-
-
-
+/**
+ * SQUI Mascot: Beautiful Modern Squirrel Logo
+ */
+export const IconSquiMascot: React.FC<IconProps> = ({ size = 64, color = '#10B981' }) => (
+  <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      {/* Background Soft Bubble */}
+      <Circle cx="12" cy="12" r="11" fill={color} fillOpacity="0.1" />
+      {/* Fluffy Tail */}
+      <Path
+        d="M 16 5 C 20 6 22 11 20 15 C 19 17 16 19 13 19"
+        stroke={color}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      {/* Body */}
+      <Path
+        d="M 7 19 C 5 19 4 16 5 13 C 5 11 6 9 8 8 C 9 7.5 11 7 12 9 C 13 11 12 14 11 16 C 10 18 9 19 7 19 Z"
+        fill={color}
+      />
+      {/* Ear */}
+      <Path d="M 7 8 L 6 4 L 9 6" fill={color} />
+      {/* Snout */}
+      <Path d="M 10 9 C 12 9 13 10 13 11 C 13 12 12 13 10 13" fill={color} />
+      {/* Eye */}
+      <Circle cx="8" cy="9.5" r="1.2" fill="#FFFFFF" />
+      {/* Little Acorn (Warm Amber) */}
+      <Circle cx="12" cy="14" r="1.5" fill="#F59E0B" />
+      <Path d="M 11 13 L 13 13" stroke="#D97706" strokeWidth="1" strokeLinecap="round" />
+    </Svg>
+  </View>
+);

@@ -272,8 +272,8 @@ const DynamicClouds: React.FC<{ condition: string, period: string }> = ({ condit
         styles.cloudLayer,
         { top: -5, transform: [{ translateX: scrollA }] }
       ]}>
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity: opacity * 0.4, resizeMode: 'contain' }} />
-        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity: opacity * 0.4, resizeMode: 'contain' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity: opacity * 0.4, resizeMode: 'stretch' }} />
+        <Image source={source} style={{ width: CLOUD_STRIP_W, height: 140, opacity: opacity * 0.4, resizeMode: 'stretch' }} />
       </Animated.View>
     </View>
   );
