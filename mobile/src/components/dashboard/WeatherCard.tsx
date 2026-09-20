@@ -355,7 +355,17 @@ export const WeatherCard: React.FC = () => {
         addr.county ||
         null;
 
-      const countryCode = addr.country_code?.toUpperCase() || 'PH';
+      // Expand ISO country code to full name
+      const COUNTRY_NAMES: Record<string, string> = {
+        PH: 'Philippines', US: 'United States', GB: 'United Kingdom',
+        AU: 'Australia', CA: 'Canada', JP: 'Japan', SG: 'Singapore',
+        MY: 'Malaysia', ID: 'Indonesia', TH: 'Thailand', KR: 'South Korea',
+        CN: 'China', IN: 'India', DE: 'Germany', FR: 'France',
+        IT: 'Italy', ES: 'Spain', BR: 'Brazil', MX: 'Mexico',
+        AE: 'United Arab Emirates', SA: 'Saudi Arabia', NZ: 'New Zealand',
+      };
+      const rawCode = addr.country_code?.toUpperCase() || 'PH';
+      const countryName = COUNTRY_NAMES[rawCode] || addr.country || rawCode;
 
       const lines: string[] = [];
 
@@ -366,7 +376,7 @@ export const WeatherCard: React.FC = () => {
       }
 
       if (municipality) {
-        lines.push(`${municipality}, ${countryCode}`);
+        lines.push(`${municipality}, ${countryName}`);
       } else if (lines.length === 0) {
         // Nothing useful — fall through to undefined so backend name is used
         return '';
@@ -419,7 +429,7 @@ export const WeatherCard: React.FC = () => {
           deviceLocationName ||
           (backendLoc && backendLoc !== 'Local Area' && backendLoc !== 'Current Location'
             ? backendLoc
-            : 'Manila, PH');
+            : 'Manila, Philippines');
 
         setWeather((prev) => ({
           ...prev,

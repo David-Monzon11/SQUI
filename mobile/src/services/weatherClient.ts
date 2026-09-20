@@ -81,7 +81,7 @@ export async function fetchDirectOpenMeteo(
           resolvedLat = ipData.latitude;
           resolvedLon = ipData.longitude;
           locationName = ipData.city
-            ? `${ipData.city}, ${ipData.country_code || ipData.country}`
+            ? `${ipData.city}, ${ipData.country || ipData.country_code || 'Philippines'}`
             : ipData.country || 'Local Area';
         }
       }
@@ -102,7 +102,7 @@ export async function fetchDirectOpenMeteo(
       if (geoRes.ok) {
         const geoData = await geoRes.json();
         const city = geoData.city || geoData.locality || geoData.principalSubdivision;
-        const country = geoData.countryCode || geoData.countryName;
+        const country = geoData.countryName || geoData.countryCode;
         if (city && country) locationName = `${city}, ${country}`;
         else if (city) locationName = city;
       }
