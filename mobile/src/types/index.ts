@@ -98,5 +98,44 @@ export interface WisdomTip {
   icon: string;
 }
 
+export interface WisdomStreak {
+  streakDays: number;
+  todayXpEarned: number;
+  totalXp: number;
+  lastCompletedDate?: string;
+}
 
+// ─── Trend & Analytics ────────────────────────────────────────────────────────
 
+export interface WeeklyTrend {
+  /** ISO date string for the week starting day (Monday) */
+  weekStartDate: string;
+  avgSugarG: number;
+  avgSodiumMg: number;
+  avgCaloriesKcal: number;
+  avgWaterMl: number;
+  avgHealthScore: number;
+  totalMealsLogged: number;
+}
+
+// ─── Notifications ────────────────────────────────────────────────────────────
+
+export type NotificationType =
+  | 'MEAL_REMINDER'
+  | 'WEIGHT_REMINDER'
+  | 'DAILY_SUMMARY'
+  | 'SUGAR_ALERT'
+  | 'SODIUM_ALERT'
+  | 'HYDRATION_ALERT'
+  | 'WISDOM_TIP';
+
+export interface NotificationItem {
+  id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  isRead: boolean;
+  createdAt: string;
+  /** Deep-link route to navigate to when tapped */
+  deepLink?: string;
+}

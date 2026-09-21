@@ -136,4 +136,33 @@ export const wisdomCardStyles = StyleSheet.create({
     fontSize: 11,
     color: '#FFFFFF',
   },
+
+  // ─── Tip carousel pagination dots ─────────────────────────────────────────
+  dotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 12,
+    gap: 6,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(16, 185, 129, 0.25)',
+  },
+  activeDot: {
+    width: 18,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#10B981',
+  },
+
+  // ─── Loading shimmer placeholder ──────────────────────────────────────────
+  shimmerBox: {
+    height: 80,
+    borderRadius: 12,
+    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+    marginTop: 8,
+  },
 });
