@@ -18,6 +18,75 @@ import { IconSquiMascot } from '../../components/common/Icons';
 import { authStyles as styles } from './AuthScreen.styles';
 import { COLORS } from '../../constants/colors';
 
+// ─── Password Strength Helper ───────────────────────────────────────────────
+function getPasswordStrength(password: string): { level: number; label: string; color: string } {
+  if (!password) return { level: 0, label: '', color: 'transparent' };
+  let score = 0;
+  if (password.length >= 6) score++;
+  if (password.length >= 10) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 1) return { level: 1, label: 'Weak', color: '#C53030' };
+  if (score === 2) return { level: 2, label: 'Fair', color: '#D97706' };
+  if (score === 3) return { level: 3, label: 'Good', color: '#2D6A4F' };
+  return { level: 4, label: 'Strong', color: '#1B432C' };
+}
+
+// ─── Animated Focus Input Wrapper ────────────────────────────────────────────
+interface FocusInputWrapperProps {
+  children: React.ReactNode;
+}
+const FocusInputWrapper: React.FC<FocusInputWrapperProps> = ({ children }) => {
+  const borderAnim = useRef(new Animated.Value(0)).current;
+
+  const handleFocus = () => {
+    Animated.timing(borderAnim, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const handleBlur = () => {
+    Animated.timing(borderAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const borderColor = borderAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['rgba(16, 185, 129, 0.15)', 'rgba(27, 67, 44, 0.7)'],
+  });
+  const shadowOpacity = borderAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.04, 0.18],
+  });
+
+  return (
+    <Animated.View style={[styles.inputWrapper, { borderColor, shadowOpacity }]}>
+      {React.Children.map(children, (child) => {
+        if (React.isValidElement(child) && child.type === TextInput) {
+          return React.cloneElement(child as React.ReactElement<any>, {
+            onFocus: (e: any) => {
+              handleFocus();
+              if ((child.props as any).onFocus) (child.props as any).onFocus(e);
+            },
+            onBlur: (e: any) => {
+              handleBlur();
+              if ((child.props as any).onBlur) (child.props as any).onBlur(e);
+            },
+          });
+        }
+        return child;
+      })}
+    </Animated.View>
+  );
+};
+
 type AuthMode = 'login' | 'register';
 
 export const AuthScreen: React.FC = () => {
@@ -29,6 +98,9 @@ export const AuthScreen: React.FC = () => {
   const logoY = useRef(new Animated.Value(40)).current;
   const logoOpacity = useRef(new Animated.Value(0.2)).current;
   const formOpacity = useRef(new Animated.Value(0)).current;
+
+  // Sliding pill animation for tab switcher
+  const tabSlide = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.sequence([
@@ -72,8 +144,26 @@ export const AuthScreen: React.FC = () => {
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Error feedback
+  // Error feedback + shake animation
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const shakeAnim = useRef(new Animated.Value(0)).current;
+
+  const triggerShake = () => {
+    shakeAnim.setValue(0);
+    Animated.sequence([
+      Animated.timing(shakeAnim, { toValue: 8, duration: 60, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: -8, duration: 60, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 6, duration: 50, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: -6, duration: 50, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 3, duration: 40, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 0, duration: 40, useNativeDriver: true }),
+    ]).start();
+  };
+
+  const showError = (msg: string) => {
+    setErrorMessage(msg);
+    triggerShake();
+  };
 
   // Recovery Modals state
   const [forgotPasswordVisible, setForgotPasswordVisible] = useState(false);
@@ -83,6 +173,12 @@ export const AuthScreen: React.FC = () => {
   const [recoveryLoading, setRecoveryLoading] = useState(false);
 
   const handleToggleMode = (newMode: AuthMode) => {
+    Animated.spring(tabSlide, {
+      toValue: newMode === 'login' ? 0 : 1,
+      tension: 28,
+      friction: 8,
+      useNativeDriver: false,
+    }).start();
     setMode(newMode);
     setErrorMessage(null);
   };
@@ -90,44 +186,44 @@ export const AuthScreen: React.FC = () => {
   const handleLoginSubmit = async () => {
     setErrorMessage(null);
     if (!loginIdentifier.trim()) {
-      setErrorMessage('Please enter your username or email address.');
+      showError('Please enter your username or email address.');
       return;
     }
     if (!loginPassword) {
-      setErrorMessage('Please enter your password.');
+      showError('Please enter your password.');
       return;
     }
 
     const result = await login(loginIdentifier, loginPassword);
     if (!result.success && result.error) {
-      setErrorMessage(result.error);
+      showError(result.error);
     }
   };
 
   const handleRegisterSubmit = async () => {
     setErrorMessage(null);
     if (!firstName.trim()) {
-      setErrorMessage('First name is required.');
+      showError('First name is required.');
       return;
     }
     if (!lastName.trim()) {
-      setErrorMessage('Last name is required.');
+      showError('Last name is required.');
       return;
     }
     if (!registerEmail.trim() || !registerEmail.includes('@')) {
-      setErrorMessage('Please enter a valid email address.');
+      showError('Please enter a valid email address.');
       return;
     }
     if (!registerPassword) {
-      setErrorMessage('Password is required.');
+      showError('Password is required.');
       return;
     }
     if (registerPassword.length < 6) {
-      setErrorMessage('Password must be at least 6 characters long.');
+      showError('Password must be at least 6 characters long.');
       return;
     }
     if (registerPassword !== confirmPassword) {
-      setErrorMessage('Passwords do not match. Please check your confirm password.');
+      showError('Passwords do not match. Please check your confirm password.');
       return;
     }
 
@@ -139,15 +235,18 @@ export const AuthScreen: React.FC = () => {
     });
 
     if (!result.success && result.error) {
-      setErrorMessage(result.error);
+      showError(result.error);
     }
   };
+
+  // Password strength for register
+  const passwordStrength = getPasswordStrength(registerPassword);
 
   const handleGoogleSubmit = async () => {
     setErrorMessage(null);
     const result = await loginWithGoogle();
     if (!result.success && result.error) {
-      setErrorMessage(result.error);
+      showError(result.error);
     }
   };
 
@@ -212,10 +311,23 @@ export const AuthScreen: React.FC = () => {
 
           {/* Form Content - Directly using Phone Frame Canvas (No Inner Card Box) */}
           <Animated.View style={[styles.formContainer, { opacity: formOpacity }]}>
-            {/* Segmented Mode Switcher (Log In vs Register) */}
+            {/* ─── Segmented Mode Switcher with Sliding Pill ─── */}
             <View style={styles.tabContainer}>
+              {/* Animated sliding pill behind active tab */}
+              <Animated.View
+                style={[
+                  styles.tabSlidingPill,
+                  {
+                    left: tabSlide.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['2.5%', '50%'],
+                    }),
+                    width: '48%',
+                  },
+                ]}
+              />
               <TouchableOpacity
-                style={[styles.tabButton, mode === 'login' && styles.tabButtonActive]}
+                style={styles.tabButton}
                 activeOpacity={0.85}
                 onPress={() => handleToggleMode('login')}
               >
@@ -225,29 +337,33 @@ export const AuthScreen: React.FC = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.tabButton, mode === 'register' && styles.tabButtonActive]}
+                style={styles.tabButton}
                 activeOpacity={0.85}
                 onPress={() => handleToggleMode('register')}
               >
                 <Text style={[styles.tabText, mode === 'register' && styles.tabTextActive]}>
-                  Register in SQUI
+                  Register
                 </Text>
               </TouchableOpacity>
             </View>
 
-            {/* Error Message Box */}
+            {/* Error Message Box with Shake Animation */}
             {errorMessage ? (
-              <View style={styles.errorContainer}>
+              <Animated.View
+                style={[styles.errorContainer, { transform: [{ translateX: shakeAnim }] }]}
+              >
+                <Text style={styles.errorIcon}>⚠️</Text>
                 <Text style={styles.errorText}>{errorMessage}</Text>
-              </View>
+              </Animated.View>
             ) : null}
 
-            {/* LOG IN FORM */}
+            {/* ─── LOG IN FORM ─── */}
             {mode === 'login' ? (
               <View>
                 <View style={styles.fieldGroup}>
                   <Text style={styles.label}>Username or Email</Text>
-                  <View style={styles.inputWrapper}>
+                  <FocusInputWrapper>
+                    <Text style={styles.inputIcon}>✉️</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="Enter your username or email"
@@ -257,12 +373,13 @@ export const AuthScreen: React.FC = () => {
                       value={loginIdentifier}
                       onChangeText={setLoginIdentifier}
                     />
-                  </View>
+                  </FocusInputWrapper>
                 </View>
 
                 <View style={styles.fieldGroup}>
                   <Text style={styles.label}>Password</Text>
-                  <View style={styles.inputWrapper}>
+                  <FocusInputWrapper>
+                    <Text style={styles.inputIcon}>🔒</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="Enter your password"
@@ -274,10 +391,11 @@ export const AuthScreen: React.FC = () => {
                     <TouchableOpacity
                       style={styles.eyeButton}
                       onPress={() => setShowLoginPassword(!showLoginPassword)}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     >
-                      <Text style={styles.eyeText}>{showLoginPassword ? 'Hide' : 'Show'}</Text>
+                      <Text style={styles.eyeIcon}>{showLoginPassword ? '🙈' : '👁️'}</Text>
                     </TouchableOpacity>
-                  </View>
+                  </FocusInputWrapper>
                 </View>
 
                 {/* Recovery Action Links */}
@@ -313,7 +431,7 @@ export const AuthScreen: React.FC = () => {
                   {isLoading ? (
                     <ActivityIndicator color="#FFFFFF" />
                   ) : (
-                    <Text style={styles.submitButtonText}>Log In</Text>
+                    <Text style={styles.submitButtonText}>Log In to SQUI</Text>
                   )}
                 </TouchableOpacity>
 
@@ -332,19 +450,20 @@ export const AuthScreen: React.FC = () => {
                   disabled={isLoading}
                 >
                   <View style={styles.googleIconWrapper}>
-                    <Text style={styles.googleIconText}>G</Text>
+                    <Text style={styles.googleIconG}>G</Text>
                   </View>
                   <Text style={styles.googleButtonText}>Sign in with Google</Text>
                 </TouchableOpacity>
               </View>
             ) : (
-              /* REGISTER FORM */
+              /* ─── REGISTER FORM ─── */
               <View>
                 {/* First Name & Last Name */}
                 <View style={styles.formRow}>
                   <View style={[styles.fieldGroup, styles.halfField]}>
                     <Text style={styles.label}>First Name</Text>
-                    <View style={styles.inputWrapper}>
+                    <FocusInputWrapper>
+                      <Text style={styles.inputIcon}>👤</Text>
                       <TextInput
                         style={styles.input}
                         placeholder="John"
@@ -352,12 +471,12 @@ export const AuthScreen: React.FC = () => {
                         value={firstName}
                         onChangeText={setFirstName}
                       />
-                    </View>
+                    </FocusInputWrapper>
                   </View>
 
                   <View style={[styles.fieldGroup, styles.halfField]}>
                     <Text style={styles.label}>Last Name</Text>
-                    <View style={styles.inputWrapper}>
+                    <FocusInputWrapper>
                       <TextInput
                         style={styles.input}
                         placeholder="Doe"
@@ -365,14 +484,15 @@ export const AuthScreen: React.FC = () => {
                         value={lastName}
                         onChangeText={setLastName}
                       />
-                    </View>
+                    </FocusInputWrapper>
                   </View>
                 </View>
 
-                {/* Email / Username */}
+                {/* Email */}
                 <View style={styles.fieldGroup}>
                   <Text style={styles.label}>Email Address</Text>
-                  <View style={styles.inputWrapper}>
+                  <FocusInputWrapper>
+                    <Text style={styles.inputIcon}>✉️</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="you@example.com"
@@ -383,13 +503,14 @@ export const AuthScreen: React.FC = () => {
                       value={registerEmail}
                       onChangeText={setRegisterEmail}
                     />
-                  </View>
+                  </FocusInputWrapper>
                 </View>
 
                 {/* Password */}
                 <View style={styles.fieldGroup}>
                   <Text style={styles.label}>Password</Text>
-                  <View style={styles.inputWrapper}>
+                  <FocusInputWrapper>
+                    <Text style={styles.inputIcon}>🔒</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="At least 6 characters"
@@ -401,16 +522,43 @@ export const AuthScreen: React.FC = () => {
                     <TouchableOpacity
                       style={styles.eyeButton}
                       onPress={() => setShowRegisterPassword(!showRegisterPassword)}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     >
-                      <Text style={styles.eyeText}>{showRegisterPassword ? 'Hide' : 'Show'}</Text>
+                      <Text style={styles.eyeIcon}>{showRegisterPassword ? '🙈' : '👁️'}</Text>
                     </TouchableOpacity>
-                  </View>
+                  </FocusInputWrapper>
+
+                  {/* Password Strength Indicator */}
+                  {registerPassword.length > 0 && (
+                    <View style={styles.strengthContainer}>
+                      <View style={styles.strengthBars}>
+                        {[1, 2, 3, 4].map((bar) => (
+                          <View
+                            key={bar}
+                            style={[
+                              styles.strengthBar,
+                              {
+                                backgroundColor:
+                                  bar <= passwordStrength.level
+                                    ? passwordStrength.color
+                                    : 'rgba(27, 67, 44, 0.1)',
+                              },
+                            ]}
+                          />
+                        ))}
+                      </View>
+                      <Text style={[styles.strengthLabel, { color: passwordStrength.color }]}>
+                        {passwordStrength.label}
+                      </Text>
+                    </View>
+                  )}
                 </View>
 
                 {/* Confirm Password */}
                 <View style={styles.fieldGroup}>
                   <Text style={styles.label}>Confirm Password</Text>
-                  <View style={styles.inputWrapper}>
+                  <FocusInputWrapper>
+                    <Text style={styles.inputIcon}>🔒</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="Re-enter password"
@@ -422,10 +570,23 @@ export const AuthScreen: React.FC = () => {
                     <TouchableOpacity
                       style={styles.eyeButton}
                       onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     >
-                      <Text style={styles.eyeText}>{showConfirmPassword ? 'Hide' : 'Show'}</Text>
+                      <Text style={styles.eyeIcon}>{showConfirmPassword ? '🙈' : '👁️'}</Text>
                     </TouchableOpacity>
-                  </View>
+                  </FocusInputWrapper>
+
+                  {/* Match indicator */}
+                  {confirmPassword.length > 0 && (
+                    <Text
+                      style={[
+                        styles.matchLabel,
+                        { color: confirmPassword === registerPassword ? '#2D6A4F' : '#C53030' },
+                      ]}
+                    >
+                      {confirmPassword === registerPassword ? '✓ Passwords match' : '✗ Passwords do not match'}
+                    </Text>
+                  )}
                 </View>
 
                 {/* Submit Register Button */}
@@ -457,7 +618,7 @@ export const AuthScreen: React.FC = () => {
                   disabled={isLoading}
                 >
                   <View style={styles.googleIconWrapper}>
-                    <Text style={styles.googleIconText}>G</Text>
+                    <Text style={styles.googleIconG}>G</Text>
                   </View>
                   <Text style={styles.googleButtonText}>Connect with Google</Text>
                 </TouchableOpacity>
@@ -511,7 +672,8 @@ export const AuthScreen: React.FC = () => {
 
                 <View style={styles.fieldGroup}>
                   <Text style={styles.label}>Email Address</Text>
-                  <View style={styles.inputWrapper}>
+                  <FocusInputWrapper>
+                    <Text style={styles.inputIcon}>✉️</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="your.email@example.com"
@@ -521,7 +683,7 @@ export const AuthScreen: React.FC = () => {
                       value={recoveryEmail}
                       onChangeText={setRecoveryEmail}
                     />
-                  </View>
+                  </FocusInputWrapper>
                 </View>
 
                 <TouchableOpacity

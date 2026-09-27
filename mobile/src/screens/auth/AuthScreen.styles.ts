@@ -70,6 +70,18 @@ export const authStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  tabSlidingPill: {
+    position: 'absolute',
+    top: 5,
+    bottom: 5,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#1B432C',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
   tabButtonActive: {
     backgroundColor: '#FFFFFF',
     shadowColor: '#1B432C',
@@ -124,6 +136,10 @@ export const authStyles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 1,
   },
+  inputIcon: {
+    fontSize: 16,
+    marginRight: 8,
+  },
   input: {
     flex: 1,
     fontFamily: 'PlusJakartaSans_500Medium',
@@ -135,10 +151,46 @@ export const authStyles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
+  eyeIcon: {
+    fontSize: 18,
+  },
+  // Keep old eyeText alias for safety
   eyeText: {
     fontFamily: 'PlusJakartaSans_600SemiBold',
     fontSize: 13,
     color: COLORS.primaryMedium,
+  },
+
+  // Password Strength Indicator
+  strengthContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 8,
+  },
+  strengthBars: {
+    flexDirection: 'row',
+    gap: 4,
+    flex: 1,
+  },
+  strengthBar: {
+    flex: 1,
+    height: 4,
+    borderRadius: 4,
+  },
+  strengthLabel: {
+    fontFamily: 'PlusJakartaSans_600SemiBold',
+    fontSize: 12,
+    minWidth: 44,
+    textAlign: 'right',
+  },
+
+  // Confirm Password Match Label
+  matchLabel: {
+    fontFamily: 'PlusJakartaSans_600SemiBold',
+    fontSize: 12,
+    marginTop: 6,
+    marginLeft: 2,
   },
 
   // Recovery Links Row (Forgot Username & Forgot Password)
@@ -218,14 +270,20 @@ export const authStyles = StyleSheet.create({
     marginBottom: 20,
   },
   googleIconWrapper: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     backgroundColor: '#4285F4',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
+  googleIconG: {
+    color: '#FFFFFF',
+    fontFamily: 'PlusJakartaSans_800ExtraBold',
+    fontSize: 14,
+  },
+  // alias kept for safety
   googleIconText: {
     color: '#FFFFFF',
     fontFamily: 'PlusJakartaSans_800ExtraBold',
@@ -237,8 +295,10 @@ export const authStyles = StyleSheet.create({
     color: '#202124',
   },
 
-  // Error Message Display
   errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     backgroundColor: COLORS.exceededLight,
     borderRadius: 12,
     padding: 12,
@@ -246,11 +306,14 @@ export const authStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(197, 48, 48, 0.25)',
   },
+  errorIcon: {
+    fontSize: 16,
+  },
   errorText: {
+    flex: 1,
     fontFamily: 'PlusJakartaSans_500Medium',
     fontSize: 13.5,
     color: COLORS.exceeded,
-    textAlign: 'center',
   },
 
   // SQUI Mascot Mindful Banner
