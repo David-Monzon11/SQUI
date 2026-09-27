@@ -93,18 +93,54 @@ export async function fetchDirectOpenMeteo(
     }
   }
 
-  // Reverse geocode coordinates to City, Country via HTTPS
+  // Reverse geocode coordinates to Barangay, Municipality, Country via BigDataCloud
   if (!locationName && resolvedLat && resolvedLon) {
     try {
+      // localityLanguage=en + localityInfo=true → returns full admin hierarchy
       const geoRes = await fetch(
-        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${resolvedLat}&longitude=${resolvedLon}&localityLanguage=en`
+        `https://api.bigdatacloud.net/data/reverse-geocode-client` +
+        `?latitude=${resolvedLat}&longitude=${resolvedLon}` +
+        `&localityLanguage=en`
       );
       if (geoRes.ok) {
         const geoData = await geoRes.json();
-        const city = geoData.city || geoData.locality || geoData.principalSubdivision;
-        const country = geoData.countryName || geoData.countryCode;
-        if (city && country) locationName = `${city}, ${country}`;
-        else if (city) locationName = city;
+
+        // BigDataCloud returns a localityInfo.administrative array
+        // ordered from broad (country) to fine (barangay)
+        // adminLevel: 1=country, 2=region, 3=province, 4=city/municipality, 5=barangay
+        const adminLevels: Array<{ adminLevel: number; name: string }> =
+          geoData.localityInfo?.administrative || [];
+
+        let barangay = '';
+        let municipality = '';
+
+        for (const level of adminLevels) {
+          // adminLevel 5 → barangay in the Philippines
+          if (level.adminLevel >= 5 && level.name) {
+            barangay = level.name;
+          }
+          // adminLevel 4 → city / municipality
+          if (level.adminLevel === 4 && level.name) {
+            municipality = level.name;
+          }
+        }
+
+        const countryCode = geoData.countryCode?.toUpperCase() || '';
+        const countryName = geoData.countryName || countryCode || 'Philippines';
+        const PLUS_CODE_RE = /^[23456789CFGHJMPQRVWX]{4}\+/i;
+
+        if (barangay && !PLUS_CODE_RE.test(barangay) && barangay.toLowerCase() !== municipality.toLowerCase()) {
+          const prefix = countryCode === 'PH' && !barangay.toLowerCase().startsWith('brgy') ? 'Brgy. ' : '';
+          locationName = municipality
+            ? `${prefix}${barangay}\n${municipality}, ${countryName}`
+            : `${prefix}${barangay}, ${countryName}`;
+        } else if (municipality) {
+          locationName = `${municipality}, ${countryName}`;
+        } else {
+          // Fallback to legacy flat fields
+          const city = geoData.city || geoData.locality || geoData.principalSubdivision;
+          if (city) locationName = `${city}, ${countryName}`;
+        }
       }
     } catch {
       locationName = 'Current Location';

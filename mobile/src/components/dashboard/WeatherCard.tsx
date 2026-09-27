@@ -323,31 +323,50 @@ export const WeatherCard: React.FC = () => {
   /**
    * Reverse-geocode via Nominatim (OpenStreetMap) to get proper
    * Philippine barangay → municipality hierarchy.
-   * Returns lines: [barangay?, "Municipality/City, PH"]
+   *
+   * zoom=18  → street/neighbourhood (barangay) level detail
+   * namedetails=1 → returns official name of the feature
+   * addressdetails=1 → full address object
    */
   const nominatimReverseGeocode = useCallback(async (lat: number, lon: number): Promise<string> => {
     try {
       const url =
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1&accept-language=en`;
-      const res = await fetch(url, {
-        headers: { 'User-Agent': 'SQUI-App/1.0' },
-        signal: AbortSignal.timeout(5000),
-      });
+        `https://nominatim.openstreetmap.org/reverse` +
+        `?lat=${lat}&lon=${lon}` +
+        `&format=json&addressdetails=1&namedetails=1&zoom=18&accept-language=en`;
+
+      // Manual timeout (Promise.race) — AbortSignal.timeout not in all RN versions
+      const fetchPromise = fetch(url, { headers: { 'User-Agent': 'SQUI-App/1.0' } });
+      const timeoutPromise = new Promise<Response>((_, reject) =>
+        setTimeout(() => reject(new Error('Nominatim timeout')), 7000)
+      );
+      const res = await Promise.race([fetchPromise, timeoutPromise]) as Response;
+
       if (!res.ok) throw new Error(`Nominatim ${res.status}`);
       const json = await res.json();
       const addr = json.address || {};
 
-      // Philippine address hierarchy:
-      // neighbourhood / suburb / village / hamlet → barangay level
-      // city / town / municipality → municipal level
+      // ── Philippine Barangay Detection (widest possible field list) ────────
+      // Nominatim maps barangays to different keys depending on OSM tagging:
+      // suburb / neighbourhood / village / hamlet / quarter / city_district /
+      // residential / allotments / isolated_dwelling
+      const PLUS_CODE_RE = /^[23456789CFGHJMPQRVWX]{4}\+/i;
+
       const barangay =
-        addr.neighbourhood ||
         addr.suburb ||
+        addr.neighbourhood ||
         addr.village ||
         addr.hamlet ||
         addr.quarter ||
+        addr.city_district ||
+        addr.residential ||
+        addr.allotments ||
+        addr.isolated_dwelling ||
         null;
 
+      // ── Municipality / City Detection ────────────────────────────────────
+      // In the PH: addr.city → chartered city, addr.town / addr.municipality → LGU
+      // addr.county → sometimes used for municipality in older OSM data
       const municipality =
         addr.city ||
         addr.town ||
@@ -355,7 +374,13 @@ export const WeatherCard: React.FC = () => {
         addr.county ||
         null;
 
-      // Expand ISO country code to full name
+      // Province is useful context when municipality isn't enough
+      const province =
+        addr.state_district ||
+        addr.state ||
+        null;
+
+      // Country name lookup
       const COUNTRY_NAMES: Record<string, string> = {
         PH: 'Philippines', US: 'United States', GB: 'United Kingdom',
         AU: 'Australia', CA: 'Canada', JP: 'Japan', SG: 'Singapore',
@@ -367,18 +392,31 @@ export const WeatherCard: React.FC = () => {
       const rawCode = addr.country_code?.toUpperCase() || 'PH';
       const countryName = COUNTRY_NAMES[rawCode] || addr.country || rawCode;
 
+      // ── Build display string ─────────────────────────────────────────────
+      // Target format:
+      //   Line 1: "Brgy. Poblacion"      (if barangay is found)
+      //   Line 2: "Malolos, Philippines"  (municipality + country)
+      // Fallback (no barangay): "Malolos, Philippines"
       const lines: string[] = [];
 
-      // Only use barangay if it's a real name (not a Plus Code pattern)
-      const PLUS_CODE_RE = /^[23456789CFGHJMPQRVWX]{4}\+/i;
-      if (barangay && !PLUS_CODE_RE.test(barangay)) {
-        lines.push(barangay);
+      // Validate barangay: not a Plus Code and not the same as municipality
+      if (
+        barangay &&
+        !PLUS_CODE_RE.test(barangay) &&
+        barangay.toLowerCase() !== municipality?.toLowerCase()
+      ) {
+        // Prefix with "Brgy." if it looks like a Philippine barangay name
+        const isPhilippines = rawCode === 'PH';
+        const prefix = isPhilippines && !barangay.toLowerCase().startsWith('brgy') ? 'Brgy. ' : '';
+        lines.push(`${prefix}${barangay}`);
       }
 
       if (municipality) {
         lines.push(`${municipality}, ${countryName}`);
+      } else if (province) {
+        // No city/municipality — use province as location context
+        lines.push(`${province}, ${countryName}`);
       } else if (lines.length === 0) {
-        // Nothing useful — fall through to undefined so backend name is used
         return '';
       }
 
@@ -400,7 +438,11 @@ export const WeatherCard: React.FC = () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status === 'granted') {
           const loc = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Balanced,
+            // High = GPS chipset (~5 m accuracy) → needed for barangay-level targeting
+            accuracy: Location.Accuracy.High,
+            // Allow up to 8 s for a fresh GPS fix before timing out
+            timeInterval: 0,
+            distanceInterval: 0,
           });
           lat = loc.coords.latitude;
           lon = loc.coords.longitude;
