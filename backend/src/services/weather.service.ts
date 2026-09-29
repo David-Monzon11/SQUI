@@ -1,3 +1,20 @@
+/**
+ * @module weather.service
+ * @description
+ * WeatherService — fetches, caches, and transforms real-time weather data
+ * from the OpenWeatherMap API for the SQUI nutrition companion app.
+ *
+ * Responsibilities:
+ *  - Reverse-geocode coordinates to a human-readable location name.
+ *  - Retrieve current conditions and a 5-day / 3-hour forecast.
+ *  - Derive hourly and daily forecast arrays for the mobile UI.
+ *  - Generate contextual hydration tips based on temperature and humidity.
+ *  - Cache results in-memory (TTL: 15 min, max 500 entries) to reduce API calls.
+ *  - Provide a resilient offline fallback when the upstream API is unreachable.
+ *
+ * External dependency: OpenWeatherMap (api.openweathermap.org)
+ * Auth: `OPENWEATHER_API_KEY` env variable via `config.openWeatherApiKey`
+ */
 import { config } from "../config/env.js";
 import { WeatherData, HourlyWeatherItem } from "../types/index.js";
 
