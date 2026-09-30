@@ -477,3 +477,58 @@ export const IconSquiMascot: React.FC<IconProps> = ({ size = 64, color = '#10B98
     </Svg>
   </View>
 );
+
+export const IconMail: React.FC<IconProps> = ({ size = 20, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <Path d="M22 6l-10 7L2 6" />
+    </Svg>
+  </View>
+);
+
+export const IconLock: React.FC<IconProps> = ({ size = 20, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2z" />
+      <Path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </Svg>
+  </View>
+);
+
+export const IconEye: React.FC<IconProps> = ({ size = 20, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <Circle cx="12" cy="12" r="3" />
+    </Svg>
+  </View>
+);
+
+export const IconEyeOff: React.FC<IconProps> = ({ size = 20, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+      <Line x1="1" y1="1" x2="23" y2="23" />
+    </Svg>
+  </View>
+);
+
+export const IconCheckCircle: React.FC<IconProps> = ({ size = 18, color = '#10B981', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <Path d="M22 4L12 14.01l-3-3" />
+    </Svg>
+  </View>
+);
+
+export const IconAlertCircle: React.FC<IconProps> = ({ size = 18, color = '#EF4444', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Circle cx="12" cy="12" r="10" />
+      <Line x1="12" y1="8" x2="12" y2="12" />
+      <Line x1="12" y1="16" x2="12.01" y2="16" />
+    </Svg>
+  </View>
+);

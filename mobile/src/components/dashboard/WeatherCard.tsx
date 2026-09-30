@@ -76,7 +76,7 @@ const getWaveGradient = (period: string) => {
   return ['#10B981', '#059669', '#047857'];
 };
 
-const getSubcardGradient = (iconType: string) => {
+const getSubcardGradient = (iconType: string): [string, string, ...string[]] => {
   switch (iconType) {
     case 'sun':
       return ['rgba(255, 251, 235, 0.98)', 'rgba(254, 243, 199, 0.92)', 'rgba(253, 230, 138, 0.85)'];

@@ -98,7 +98,7 @@ export const wisdomCardStyles = StyleSheet.create({
     flex: 1,
   },
   tipBody: {
-    fontFamily: FONTS.sansRegular,
+    fontFamily: FONTS.regular,
     fontSize: 12.5,
     color: '#334E3E',
     lineHeight: 18,
@@ -114,7 +114,7 @@ export const wisdomCardStyles = StyleSheet.create({
     paddingVertical: 10,
   },
   actionText: {
-    fontFamily: FONTS.roundedMedium,
+    fontFamily: FONTS.roundedSemiBold,
     fontSize: 11.5,
     color: '#059669',
     flex: 1,

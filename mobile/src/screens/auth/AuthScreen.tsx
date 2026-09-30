@@ -11,10 +11,22 @@ import {
   Modal,
   Animated,
   Easing,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../contexts/AuthContext';
-import { IconSquiMascot } from '../../components/common/Icons';
+import {
+  IconMail,
+  IconLock,
+  IconUser,
+  IconEye,
+  IconEyeOff,
+  IconCheckCircle,
+  IconAlertCircle,
+  IconGoogle,
+  IconHomeLeaf,
+} from '../../components/common/Icons';
 import { authStyles as styles } from './AuthScreen.styles';
 import { COLORS } from '../../constants/colors';
 
@@ -28,9 +40,9 @@ function getPasswordStrength(password: string): { level: number; label: string; 
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
 
-  if (score <= 1) return { level: 1, label: 'Weak', color: '#C53030' };
-  if (score === 2) return { level: 2, label: 'Fair', color: '#D97706' };
-  if (score === 3) return { level: 3, label: 'Good', color: '#2D6A4F' };
+  if (score <= 1) return { level: 1, label: 'Weak', color: '#EF4444' };
+  if (score === 2) return { level: 2, label: 'Fair', color: '#F59E0B' };
+  if (score === 3) return { level: 3, label: 'Good', color: '#10B981' };
   return { level: 4, label: 'Strong', color: '#1B432C' };
 }
 
@@ -59,11 +71,11 @@ const FocusInputWrapper: React.FC<FocusInputWrapperProps> = ({ children }) => {
 
   const borderColor = borderAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['rgba(16, 185, 129, 0.15)', 'rgba(27, 67, 44, 0.7)'],
+    outputRange: ['rgba(27, 67, 44, 0.10)', '#10B981'],
   });
   const shadowOpacity = borderAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0.04, 0.18],
+    outputRange: [0.03, 0.16],
   });
 
   return (
@@ -93,11 +105,15 @@ export const AuthScreen: React.FC = () => {
   const { login, register, loginWithGoogle, isLoading } = useAuth();
   const [mode, setMode] = useState<AuthMode>('login');
 
-  // Entrance Animation for Header Logo (Animates from Splash Position to Header)
-  const logoScale = useRef(new Animated.Value(1.3)).current;
-  const logoY = useRef(new Animated.Value(40)).current;
-  const logoOpacity = useRef(new Animated.Value(0.2)).current;
+  // Entrance & Floating Animations
+  const logoScale = useRef(new Animated.Value(0.85)).current;
+  const logoY = useRef(new Animated.Value(24)).current;
+  const logoOpacity = useRef(new Animated.Value(0)).current;
   const formOpacity = useRef(new Animated.Value(0)).current;
+  const formY = useRef(new Animated.Value(20)).current;
+
+  // Subtle breathing float for the logo
+  const floatAnim = useRef(new Animated.Value(0)).current;
 
   // Sliding pill animation for tab switcher
   const tabSlide = useRef(new Animated.Value(0)).current;
@@ -107,31 +123,57 @@ export const AuthScreen: React.FC = () => {
       Animated.parallel([
         Animated.timing(logoOpacity, {
           toValue: 1,
-          duration: 600,
+          duration: 500,
           useNativeDriver: true,
         }),
         Animated.spring(logoScale, {
           toValue: 1,
-          tension: 16,
+          tension: 20,
           friction: 6,
           useNativeDriver: true,
         }),
         Animated.timing(logoY, {
           toValue: 0,
-          duration: 600,
-          easing: Easing.out(Easing.back(1.2)),
+          duration: 500,
+          easing: Easing.out(Easing.back(1.4)),
           useNativeDriver: true,
         }),
       ]),
-      Animated.timing(formOpacity, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-    ]).start();
+      Animated.parallel([
+        Animated.timing(formOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(formY, {
+          toValue: 0,
+          duration: 400,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start(() => {
+      // Continuous gentle hover animation
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(floatAnim, {
+            toValue: -5,
+            duration: 2200,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(floatAnim, {
+            toValue: 0,
+            duration: 2200,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    });
   }, []);
 
-  // Form inputs state (Pre-filled for instant static testing)
+  // Form inputs state
   const [loginIdentifier, setLoginIdentifier] = useState('mindful.squirrel@squi.health');
   const [loginPassword, setLoginPassword] = useState('password123');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -175,7 +217,7 @@ export const AuthScreen: React.FC = () => {
   const handleToggleMode = (newMode: AuthMode) => {
     Animated.spring(tabSlide, {
       toValue: newMode === 'login' ? 0 : 1,
-      tension: 28,
+      tension: 30,
       friction: 8,
       useNativeDriver: false,
     }).start();
@@ -283,489 +325,615 @@ export const AuthScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <LinearGradient
+        colors={['#E8F5EC', '#F4F9F5', '#FAF8F5', '#FDFBF7']}
+        locations={[0, 0.25, 0.65, 1]}
+        style={styles.gradientBackground}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+        {/* Soft Ambient Glow Elements */}
+        <View pointerEvents="none" style={[styles.ambientBlob, styles.ambientBlobTopRight]} />
+        <View pointerEvents="none" style={[styles.ambientBlob, styles.ambientBlobMidLeft]} />
+        <View pointerEvents="none" style={[styles.ambientBlob, styles.ambientBlobBottomRight]} />
+
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          {/* Animated SQUI Top Header (Logo animates into top header position) */}
-          <Animated.View
-            style={[
-              styles.headerContainer,
-              {
-                opacity: logoOpacity,
-                transform: [{ translateY: logoY }, { scale: logoScale }],
-              },
-            ]}
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
           >
-            <View style={styles.mascotBadge}>
-              <IconSquiMascot size={56} color={COLORS.primary} />
-            </View>
-            <Text style={styles.brandTitle}>SQUI</Text>
-            <Text style={styles.brandTagline}>Mindful Dietary Journaling & Health</Text>
-          </Animated.View>
-
-          {/* Form Content - Directly using Phone Frame Canvas (No Inner Card Box) */}
-          <Animated.View style={[styles.formContainer, { opacity: formOpacity }]}>
-            {/* ─── Segmented Mode Switcher with Sliding Pill ─── */}
-            <View style={styles.tabContainer}>
-              {/* Animated sliding pill behind active tab */}
-              <Animated.View
-                style={[
-                  styles.tabSlidingPill,
-                  {
-                    left: tabSlide.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ['2.5%', '50%'],
-                    }),
-                    width: '48%',
-                  },
-                ]}
-              />
-              <TouchableOpacity
-                style={styles.tabButton}
-                activeOpacity={0.85}
-                onPress={() => handleToggleMode('login')}
-              >
-                <Text style={[styles.tabText, mode === 'login' && styles.tabTextActive]}>
-                  Log In
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.tabButton}
-                activeOpacity={0.85}
-                onPress={() => handleToggleMode('register')}
-              >
-                <Text style={[styles.tabText, mode === 'register' && styles.tabTextActive]}>
-                  Register
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Error Message Box with Shake Animation */}
-            {errorMessage ? (
-              <Animated.View
-                style={[styles.errorContainer, { transform: [{ translateX: shakeAnim }] }]}
-              >
-                <Text style={styles.errorIcon}>⚠️</Text>
-                <Text style={styles.errorText}>{errorMessage}</Text>
-              </Animated.View>
-            ) : null}
-
-            {/* ─── LOG IN FORM ─── */}
-            {mode === 'login' ? (
-              <View>
-                <View style={styles.fieldGroup}>
-                  <Text style={styles.label}>Username or Email</Text>
-                  <FocusInputWrapper>
-                    <Text style={styles.inputIcon}>✉️</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your username or email"
-                      placeholderTextColor={COLORS.textMuted}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      value={loginIdentifier}
-                      onChangeText={setLoginIdentifier}
-                    />
-                  </FocusInputWrapper>
+            {/* ─── Animated SQUI Brand Header with Official Logo ─── */}
+            <Animated.View
+              style={[
+                styles.headerContainer,
+                {
+                  opacity: logoOpacity,
+                  transform: [
+                    { translateY: Animated.add(logoY, floatAnim) },
+                    { scale: logoScale },
+                  ],
+                },
+              ]}
+            >
+              {/* Outer Glowing Ring */}
+              <View style={styles.logoAuraRing}>
+                {/* Elevated Inner Card Pedestal */}
+                <View style={styles.logoInnerBadge}>
+                  <Image
+                    source={require('../../../assets/splash_logo.png')}
+                    style={styles.logoImage}
+                    resizeMode="cover"
+                  />
                 </View>
+              </View>
 
-                <View style={styles.fieldGroup}>
-                  <Text style={styles.label}>Password</Text>
-                  <FocusInputWrapper>
-                    <Text style={styles.inputIcon}>🔒</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your password"
-                      placeholderTextColor={COLORS.textMuted}
-                      secureTextEntry={!showLoginPassword}
-                      value={loginPassword}
-                      onChangeText={setLoginPassword}
-                    />
-                    <TouchableOpacity
-                      style={styles.eyeButton}
-                      onPress={() => setShowLoginPassword(!showLoginPassword)}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <Text style={styles.eyeIcon}>{showLoginPassword ? '🙈' : '👁️'}</Text>
-                    </TouchableOpacity>
-                  </FocusInputWrapper>
+              {/* Brand Typography */}
+              <Text style={styles.brandTitle}>SQUI</Text>
+
+              {/* Brand Mission Tagline Pill */}
+              <View style={styles.brandTaglineBadge}>
+                <View style={styles.brandTaglineIcon}>
+                  <IconHomeLeaf size={14} color="#2D6A4F" strokeWidth={2.5} />
                 </View>
+                <Text style={styles.brandTagline}>Mindful Dietary Journaling</Text>
+              </View>
+            </Animated.View>
 
-                {/* Recovery Action Links */}
-                <View style={styles.linksRow}>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => {
-                      setErrorMessage(null);
-                      setForgotUsernameVisible(true);
-                    }}
-                  >
-                    <Text style={styles.linkText}>Forgot Username?</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => {
-                      setErrorMessage(null);
-                      setForgotPasswordVisible(true);
-                    }}
-                  >
-                    <Text style={styles.linkText}>Forgot Password?</Text>
-                  </TouchableOpacity>
-                </View>
-
-                {/* Primary Log In Button */}
+            {/* ─── Elevated Card Container ─── */}
+            <Animated.View
+              style={[
+                styles.cardContainer,
+                {
+                  opacity: formOpacity,
+                  transform: [{ translateY: formY }],
+                },
+              ]}
+            >
+              {/* Segmented Mode Switcher (Log In vs Register) */}
+              <View style={styles.tabContainer}>
+                <Animated.View
+                  style={[
+                    styles.tabSlidingPill,
+                    {
+                      left: tabSlide.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['2%', '50%'],
+                      }),
+                      width: '48%',
+                    },
+                  ]}
+                />
                 <TouchableOpacity
-                  style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
-                  activeOpacity={0.88}
-                  onPress={handleLoginSubmit}
-                  disabled={isLoading}
+                  style={styles.tabButton}
+                  activeOpacity={0.85}
+                  onPress={() => handleToggleMode('login')}
                 >
-                  {isLoading ? (
-                    <ActivityIndicator color="#FFFFFF" />
-                  ) : (
-                    <Text style={styles.submitButtonText}>Log In to SQUI</Text>
-                  )}
+                  <Text style={[styles.tabText, mode === 'login' && styles.tabTextActive]}>
+                    Log In
+                  </Text>
                 </TouchableOpacity>
 
-                {/* OR Divider Line */}
-                <View style={styles.dividerContainer}>
-                  <View style={styles.dividerLine} />
-                  <Text style={styles.dividerText}>or continue with</Text>
-                  <View style={styles.dividerLine} />
-                </View>
-
-                {/* Google Sign In Button */}
                 <TouchableOpacity
-                  style={styles.googleButton}
+                  style={styles.tabButton}
                   activeOpacity={0.85}
-                  onPress={handleGoogleSubmit}
-                  disabled={isLoading}
+                  onPress={() => handleToggleMode('register')}
                 >
-                  <View style={styles.googleIconWrapper}>
-                    <Text style={styles.googleIconG}>G</Text>
-                  </View>
-                  <Text style={styles.googleButtonText}>Sign in with Google</Text>
+                  <Text style={[styles.tabText, mode === 'register' && styles.tabTextActive]}>
+                    Register
+                  </Text>
                 </TouchableOpacity>
               </View>
-            ) : (
-              /* ─── REGISTER FORM ─── */
-              <View>
-                {/* First Name & Last Name */}
-                <View style={styles.formRow}>
-                  <View style={[styles.fieldGroup, styles.halfField]}>
-                    <Text style={styles.label}>First Name</Text>
+
+              {/* Error Message Alert */}
+              {errorMessage ? (
+                <Animated.View
+                  style={[styles.errorContainer, { transform: [{ translateX: shakeAnim }] }]}
+                >
+                  <IconAlertCircle size={18} color="#EF4444" strokeWidth={2.2} />
+                  <Text style={styles.errorText}>{errorMessage}</Text>
+                </Animated.View>
+              ) : null}
+
+              {/* ─── LOG IN FORM ─── */}
+              {mode === 'login' ? (
+                <View style={styles.formContainer}>
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Username or Email</Text>
                     <FocusInputWrapper>
-                      <Text style={styles.inputIcon}>👤</Text>
-                      <TextInput
-                        style={styles.input}
-                        placeholder="John"
-                        placeholderTextColor={COLORS.textMuted}
-                        value={firstName}
-                        onChangeText={setFirstName}
-                      />
-                    </FocusInputWrapper>
-                  </View>
-
-                  <View style={[styles.fieldGroup, styles.halfField]}>
-                    <Text style={styles.label}>Last Name</Text>
-                    <FocusInputWrapper>
-                      <TextInput
-                        style={styles.input}
-                        placeholder="Doe"
-                        placeholderTextColor={COLORS.textMuted}
-                        value={lastName}
-                        onChangeText={setLastName}
-                      />
-                    </FocusInputWrapper>
-                  </View>
-                </View>
-
-                {/* Email */}
-                <View style={styles.fieldGroup}>
-                  <Text style={styles.label}>Email Address</Text>
-                  <FocusInputWrapper>
-                    <Text style={styles.inputIcon}>✉️</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="you@example.com"
-                      placeholderTextColor={COLORS.textMuted}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      value={registerEmail}
-                      onChangeText={setRegisterEmail}
-                    />
-                  </FocusInputWrapper>
-                </View>
-
-                {/* Password */}
-                <View style={styles.fieldGroup}>
-                  <Text style={styles.label}>Password</Text>
-                  <FocusInputWrapper>
-                    <Text style={styles.inputIcon}>🔒</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="At least 6 characters"
-                      placeholderTextColor={COLORS.textMuted}
-                      secureTextEntry={!showRegisterPassword}
-                      value={registerPassword}
-                      onChangeText={setRegisterPassword}
-                    />
-                    <TouchableOpacity
-                      style={styles.eyeButton}
-                      onPress={() => setShowRegisterPassword(!showRegisterPassword)}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <Text style={styles.eyeIcon}>{showRegisterPassword ? '🙈' : '👁️'}</Text>
-                    </TouchableOpacity>
-                  </FocusInputWrapper>
-
-                  {/* Password Strength Indicator */}
-                  {registerPassword.length > 0 && (
-                    <View style={styles.strengthContainer}>
-                      <View style={styles.strengthBars}>
-                        {[1, 2, 3, 4].map((bar) => (
-                          <View
-                            key={bar}
-                            style={[
-                              styles.strengthBar,
-                              {
-                                backgroundColor:
-                                  bar <= passwordStrength.level
-                                    ? passwordStrength.color
-                                    : 'rgba(27, 67, 44, 0.1)',
-                              },
-                            ]}
-                          />
-                        ))}
+                      <View style={styles.inputIconWrapper}>
+                        <IconMail size={18} color="#4A6B56" strokeWidth={2} />
                       </View>
-                      <Text style={[styles.strengthLabel, { color: passwordStrength.color }]}>
-                        {passwordStrength.label}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                {/* Confirm Password */}
-                <View style={styles.fieldGroup}>
-                  <Text style={styles.label}>Confirm Password</Text>
-                  <FocusInputWrapper>
-                    <Text style={styles.inputIcon}>🔒</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Re-enter password"
-                      placeholderTextColor={COLORS.textMuted}
-                      secureTextEntry={!showConfirmPassword}
-                      value={confirmPassword}
-                      onChangeText={setConfirmPassword}
-                    />
-                    <TouchableOpacity
-                      style={styles.eyeButton}
-                      onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <Text style={styles.eyeIcon}>{showConfirmPassword ? '🙈' : '👁️'}</Text>
-                    </TouchableOpacity>
-                  </FocusInputWrapper>
-
-                  {/* Match indicator */}
-                  {confirmPassword.length > 0 && (
-                    <Text
-                      style={[
-                        styles.matchLabel,
-                        { color: confirmPassword === registerPassword ? '#2D6A4F' : '#C53030' },
-                      ]}
-                    >
-                      {confirmPassword === registerPassword ? '✓ Passwords match' : '✗ Passwords do not match'}
-                    </Text>
-                  )}
-                </View>
-
-                {/* Submit Register Button */}
-                <TouchableOpacity
-                  style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
-                  activeOpacity={0.88}
-                  onPress={handleRegisterSubmit}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <ActivityIndicator color="#FFFFFF" />
-                  ) : (
-                    <Text style={styles.submitButtonText}>Create SQUI Account</Text>
-                  )}
-                </TouchableOpacity>
-
-                {/* OR Divider Line */}
-                <View style={styles.dividerContainer}>
-                  <View style={styles.dividerLine} />
-                  <Text style={styles.dividerText}>or connect with</Text>
-                  <View style={styles.dividerLine} />
-                </View>
-
-                {/* Google Connect Button */}
-                <TouchableOpacity
-                  style={styles.googleButton}
-                  activeOpacity={0.85}
-                  onPress={handleGoogleSubmit}
-                  disabled={isLoading}
-                >
-                  <View style={styles.googleIconWrapper}>
-                    <Text style={styles.googleIconG}>G</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your username or email"
+                        placeholderTextColor={COLORS.textMuted}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        value={loginIdentifier}
+                        onChangeText={setLoginIdentifier}
+                      />
+                    </FocusInputWrapper>
                   </View>
-                  <Text style={styles.googleButtonText}>Connect with Google</Text>
-                </TouchableOpacity>
-              </View>
-            )}
 
-            {/* SQUI Mindful Mascot Encouragement Banner */}
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Password</Text>
+                    <FocusInputWrapper>
+                      <View style={styles.inputIconWrapper}>
+                        <IconLock size={18} color="#4A6B56" strokeWidth={2} />
+                      </View>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your password"
+                        placeholderTextColor={COLORS.textMuted}
+                        secureTextEntry={!showLoginPassword}
+                        value={loginPassword}
+                        onChangeText={setLoginPassword}
+                      />
+                      <TouchableOpacity
+                        style={styles.eyeButton}
+                        onPress={() => setShowLoginPassword(!showLoginPassword)}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        {showLoginPassword ? (
+                          <IconEyeOff size={19} color="#4A6B56" strokeWidth={2} />
+                        ) : (
+                          <IconEye size={19} color="#4A6B56" strokeWidth={2} />
+                        )}
+                      </TouchableOpacity>
+                    </FocusInputWrapper>
+                  </View>
+
+                  {/* Recovery Action Links */}
+                  <View style={styles.linksRow}>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
+                      onPress={() => {
+                        setErrorMessage(null);
+                        setForgotUsernameVisible(true);
+                      }}
+                    >
+                      <Text style={styles.linkText}>Forgot Username?</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
+                      onPress={() => {
+                        setErrorMessage(null);
+                        setForgotPasswordVisible(true);
+                      }}
+                    >
+                      <Text style={styles.linkText}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Primary Log In Button with Botanical Gradient */}
+                  <TouchableOpacity
+                    style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
+                    activeOpacity={0.88}
+                    onPress={handleLoginSubmit}
+                    disabled={isLoading}
+                  >
+                    <LinearGradient
+                      colors={['#1B432C', '#2D6A4F']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.submitButtonGradient}
+                    >
+                      {isLoading ? (
+                        <ActivityIndicator color="#FFFFFF" />
+                      ) : (
+                        <Text style={styles.submitButtonText}>Log In to SQUI</Text>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* OR Divider Line */}
+                  <View style={styles.dividerContainer}>
+                    <View style={styles.dividerLine} />
+                    <Text style={styles.dividerText}>or continue with</Text>
+                    <View style={styles.dividerLine} />
+                  </View>
+
+                  {/* Google Sign In Button */}
+                  <TouchableOpacity
+                    style={styles.googleButton}
+                    activeOpacity={0.85}
+                    onPress={handleGoogleSubmit}
+                    disabled={isLoading}
+                  >
+                    <View style={styles.googleIconWrapper}>
+                      <IconGoogle size={18} />
+                    </View>
+                    <Text style={styles.googleButtonText}>Continue with Google</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                /* ─── REGISTER FORM ─── */
+                <View style={styles.formContainer}>
+                  {/* First Name & Last Name */}
+                  <View style={styles.formRow}>
+                    <View style={[styles.fieldGroup, styles.halfField]}>
+                      <Text style={styles.label}>First Name</Text>
+                      <FocusInputWrapper>
+                        <View style={styles.inputIconWrapper}>
+                          <IconUser size={18} color="#4A6B56" strokeWidth={2} />
+                        </View>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Sam"
+                          placeholderTextColor={COLORS.textMuted}
+                          value={firstName}
+                          onChangeText={setFirstName}
+                        />
+                      </FocusInputWrapper>
+                    </View>
+
+                    <View style={[styles.fieldGroup, styles.halfField]}>
+                      <Text style={styles.label}>Last Name</Text>
+                      <FocusInputWrapper>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Squirrel"
+                          placeholderTextColor={COLORS.textMuted}
+                          value={lastName}
+                          onChangeText={setLastName}
+                        />
+                      </FocusInputWrapper>
+                    </View>
+                  </View>
+
+                  {/* Email */}
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Email Address</Text>
+                    <FocusInputWrapper>
+                      <View style={styles.inputIconWrapper}>
+                        <IconMail size={18} color="#4A6B56" strokeWidth={2} />
+                      </View>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="mindful@squi.health"
+                        placeholderTextColor={COLORS.textMuted}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        value={registerEmail}
+                        onChangeText={setRegisterEmail}
+                      />
+                    </FocusInputWrapper>
+                  </View>
+
+                  {/* Password */}
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Password</Text>
+                    <FocusInputWrapper>
+                      <View style={styles.inputIconWrapper}>
+                        <IconLock size={18} color="#4A6B56" strokeWidth={2} />
+                      </View>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="At least 6 characters"
+                        placeholderTextColor={COLORS.textMuted}
+                        secureTextEntry={!showRegisterPassword}
+                        value={registerPassword}
+                        onChangeText={setRegisterPassword}
+                      />
+                      <TouchableOpacity
+                        style={styles.eyeButton}
+                        onPress={() => setShowRegisterPassword(!showRegisterPassword)}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        {showRegisterPassword ? (
+                          <IconEyeOff size={19} color="#4A6B56" strokeWidth={2} />
+                        ) : (
+                          <IconEye size={19} color="#4A6B56" strokeWidth={2} />
+                        )}
+                      </TouchableOpacity>
+                    </FocusInputWrapper>
+
+                    {/* Password Strength Indicator */}
+                    {registerPassword.length > 0 && (
+                      <View style={styles.strengthContainer}>
+                        <View style={styles.strengthBars}>
+                          {[1, 2, 3, 4].map((bar) => (
+                            <View
+                              key={bar}
+                              style={[
+                                styles.strengthBar,
+                                {
+                                  backgroundColor:
+                                    bar <= passwordStrength.level
+                                      ? passwordStrength.color
+                                      : 'rgba(27, 67, 44, 0.1)',
+                                },
+                              ]}
+                            />
+                          ))}
+                        </View>
+                        <Text style={[styles.strengthLabel, { color: passwordStrength.color }]}>
+                          {passwordStrength.label}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  {/* Confirm Password */}
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Confirm Password</Text>
+                    <FocusInputWrapper>
+                      <View style={styles.inputIconWrapper}>
+                        <IconLock size={18} color="#4A6B56" strokeWidth={2} />
+                      </View>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Re-enter password"
+                        placeholderTextColor={COLORS.textMuted}
+                        secureTextEntry={!showConfirmPassword}
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                      />
+                      <TouchableOpacity
+                        style={styles.eyeButton}
+                        onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        {showConfirmPassword ? (
+                          <IconEyeOff size={19} color="#4A6B56" strokeWidth={2} />
+                        ) : (
+                          <IconEye size={19} color="#4A6B56" strokeWidth={2} />
+                        )}
+                      </TouchableOpacity>
+                    </FocusInputWrapper>
+
+                    {/* Match indicator */}
+                    {confirmPassword.length > 0 && (
+                      <View style={styles.matchRow}>
+                        {confirmPassword === registerPassword ? (
+                          <>
+                            <IconCheckCircle size={15} color="#10B981" strokeWidth={2.4} />
+                            <Text style={[styles.matchLabel, { color: '#10B981' }]}>
+                              Passwords match
+                            </Text>
+                          </>
+                        ) : (
+                          <>
+                            <IconAlertCircle size={15} color="#EF4444" strokeWidth={2.4} />
+                            <Text style={[styles.matchLabel, { color: '#EF4444' }]}>
+                              Passwords do not match
+                            </Text>
+                          </>
+                        )}
+                      </View>
+                    )}
+                  </View>
+
+                  {/* Submit Register Button with Botanical Gradient */}
+                  <TouchableOpacity
+                    style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
+                    activeOpacity={0.88}
+                    onPress={handleRegisterSubmit}
+                    disabled={isLoading}
+                  >
+                    <LinearGradient
+                      colors={['#1B432C', '#2D6A4F']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.submitButtonGradient}
+                    >
+                      {isLoading ? (
+                        <ActivityIndicator color="#FFFFFF" />
+                      ) : (
+                        <Text style={styles.submitButtonText}>Create SQUI Account</Text>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* OR Divider Line */}
+                  <View style={styles.dividerContainer}>
+                    <View style={styles.dividerLine} />
+                    <Text style={styles.dividerText}>or connect with</Text>
+                    <View style={styles.dividerLine} />
+                  </View>
+
+                  {/* Google Connect Button */}
+                  <TouchableOpacity
+                    style={styles.googleButton}
+                    activeOpacity={0.85}
+                    onPress={handleGoogleSubmit}
+                    disabled={isLoading}
+                  >
+                    <View style={styles.googleIconWrapper}>
+                      <IconGoogle size={18} />
+                    </View>
+                    <Text style={styles.googleButtonText}>Connect with Google</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </Animated.View>
+
+            {/* ─── SQUI Mindful Mascot Encouragement Banner ─── */}
             <View style={styles.mascotNote}>
-              <View style={styles.mascotIconWrapper}>
-                <Text style={{ fontSize: 19 }}>🐿️</Text>
+              <View style={styles.mascotAvatarCircle}>
+                <Image
+                  source={require('../../../assets/splash_logo.png')}
+                  style={styles.mascotAvatarImage}
+                  resizeMode="cover"
+                />
               </View>
               <Text style={styles.mascotNoteText}>
-                "Awareness over restriction. Progress over perfection. SQUI is ready to guide your wellness!"
+                "Awareness over restriction. Progress over perfection. SQUI is ready to guide your wellness journey!"
               </Text>
             </View>
-          </Animated.View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </ScrollView>
+        </KeyboardAvoidingView>
 
-      {/* FORGOT PASSWORD MODAL */}
-      <Modal
-        visible={forgotPasswordVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={closeRecoveryModal}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Reset Password</Text>
-              <TouchableOpacity onPress={closeRecoveryModal}>
-                <Text style={styles.modalCloseText}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.modalDescription}>
-              Enter your registered SQUI email address and we will send you password reset instructions.
-            </Text>
-
-            {recoverySuccessMessage ? (
-              <View style={styles.modalSuccessBox}>
-                <Text style={styles.modalSuccessText}>{recoverySuccessMessage}</Text>
-              </View>
-            ) : (
-              <>
-                {errorMessage ? (
-                  <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>{errorMessage}</Text>
-                  </View>
-                ) : null}
-
-                <View style={styles.fieldGroup}>
-                  <Text style={styles.label}>Email Address</Text>
-                  <FocusInputWrapper>
-                    <Text style={styles.inputIcon}>✉️</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="your.email@example.com"
-                      placeholderTextColor={COLORS.textMuted}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      value={recoveryEmail}
-                      onChangeText={setRecoveryEmail}
-                    />
-                  </FocusInputWrapper>
-                </View>
-
+        {/* ─── FORGOT PASSWORD MODAL ─── */}
+        <Modal
+          visible={forgotPasswordVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={closeRecoveryModal}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalCard}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Reset Password</Text>
                 <TouchableOpacity
-                  style={[styles.submitButton, recoveryLoading && styles.submitButtonDisabled, { marginBottom: 0 }]}
-                  onPress={handleForgotPassSubmit}
-                  disabled={recoveryLoading}
+                  style={styles.modalCloseButton}
+                  onPress={closeRecoveryModal}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
-                  {recoveryLoading ? (
-                    <ActivityIndicator color="#FFFFFF" />
-                  ) : (
-                    <Text style={styles.submitButtonText}>Send Reset Link</Text>
-                  )}
+                  <Text style={styles.modalCloseText}>✕</Text>
                 </TouchableOpacity>
-              </>
-            )}
-          </View>
-        </View>
-      </Modal>
-
-      {/* FORGOT USERNAME MODAL */}
-      <Modal
-        visible={forgotUsernameVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={closeRecoveryModal}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Recover Username</Text>
-              <TouchableOpacity onPress={closeRecoveryModal}>
-                <Text style={styles.modalCloseText}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.modalDescription}>
-              Enter your registered email address to find and receive your SQUI username.
-            </Text>
-
-            {recoverySuccessMessage ? (
-              <View style={styles.modalSuccessBox}>
-                <Text style={styles.modalSuccessText}>{recoverySuccessMessage}</Text>
               </View>
-            ) : (
-              <>
-                {errorMessage ? (
-                  <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>{errorMessage}</Text>
-                  </View>
-                ) : null}
 
-                <View style={styles.fieldGroup}>
-                  <Text style={styles.label}>Email Address</Text>
-                  <View style={styles.inputWrapper}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="your.email@example.com"
-                      placeholderTextColor={COLORS.textMuted}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      value={recoveryEmail}
-                      onChangeText={setRecoveryEmail}
-                    />
-                  </View>
+              <Text style={styles.modalDescription}>
+                Enter your registered email address and we will send you password reset instructions.
+              </Text>
+
+              {recoverySuccessMessage ? (
+                <View style={styles.modalSuccessBox}>
+                  <Text style={styles.modalSuccessText}>{recoverySuccessMessage}</Text>
                 </View>
+              ) : (
+                <>
+                  {errorMessage ? (
+                    <View style={styles.errorContainer}>
+                      <Text style={styles.errorText}>{errorMessage}</Text>
+                    </View>
+                  ) : null}
 
-                <TouchableOpacity
-                  style={[styles.submitButton, recoveryLoading && styles.submitButtonDisabled, { marginBottom: 0 }]}
-                  onPress={handleForgotUserSubmit}
-                  disabled={recoveryLoading}
-                >
-                  {recoveryLoading ? (
-                    <ActivityIndicator color="#FFFFFF" />
-                  ) : (
-                    <Text style={styles.submitButtonText}>Find My Username</Text>
-                  )}
-                </TouchableOpacity>
-              </>
-            )}
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Email Address</Text>
+                    <FocusInputWrapper>
+                      <View style={styles.inputIconWrapper}>
+                        <IconMail size={18} color="#4A6B56" strokeWidth={2} />
+                      </View>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="your.email@example.com"
+                        placeholderTextColor={COLORS.textMuted}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        value={recoveryEmail}
+                        onChangeText={setRecoveryEmail}
+                      />
+                    </FocusInputWrapper>
+                  </View>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.submitButton,
+                      recoveryLoading && styles.submitButtonDisabled,
+                      { marginBottom: 0 },
+                    ]}
+                    onPress={handleForgotPassSubmit}
+                    disabled={recoveryLoading}
+                  >
+                    <LinearGradient
+                      colors={['#1B432C', '#2D6A4F']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.submitButtonGradient}
+                    >
+                      {recoveryLoading ? (
+                        <ActivityIndicator color="#FFFFFF" />
+                      ) : (
+                        <Text style={styles.submitButtonText}>Send Reset Link</Text>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+
+        {/* ─── FORGOT USERNAME MODAL ─── */}
+        <Modal
+          visible={forgotUsernameVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={closeRecoveryModal}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalCard}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Recover Username</Text>
+                <TouchableOpacity
+                  style={styles.modalCloseButton}
+                  onPress={closeRecoveryModal}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Text style={styles.modalCloseText}>✕</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.modalDescription}>
+                Enter your registered email address to find and receive your SQUI username.
+              </Text>
+
+              {recoverySuccessMessage ? (
+                <View style={styles.modalSuccessBox}>
+                  <Text style={styles.modalSuccessText}>{recoverySuccessMessage}</Text>
+                </View>
+              ) : (
+                <>
+                  {errorMessage ? (
+                    <View style={styles.errorContainer}>
+                      <Text style={styles.errorText}>{errorMessage}</Text>
+                    </View>
+                  ) : null}
+
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.label}>Email Address</Text>
+                    <FocusInputWrapper>
+                      <View style={styles.inputIconWrapper}>
+                        <IconMail size={18} color="#4A6B56" strokeWidth={2} />
+                      </View>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="your.email@example.com"
+                        placeholderTextColor={COLORS.textMuted}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        value={recoveryEmail}
+                        onChangeText={setRecoveryEmail}
+                      />
+                    </FocusInputWrapper>
+                  </View>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.submitButton,
+                      recoveryLoading && styles.submitButtonDisabled,
+                      { marginBottom: 0 },
+                    ]}
+                    onPress={handleForgotUserSubmit}
+                    disabled={recoveryLoading}
+                  >
+                    <LinearGradient
+                      colors={['#1B432C', '#2D6A4F']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.submitButtonGradient}
+                    >
+                      {recoveryLoading ? (
+                        <ActivityIndicator color="#FFFFFF" />
+                      ) : (
+                        <Text style={styles.submitButtonText}>Find My Username</Text>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </View>
+        </Modal>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
