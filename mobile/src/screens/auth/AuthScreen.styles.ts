@@ -132,73 +132,32 @@ export const authStyles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  // ─── Elevated Glassmorphic Card Container ──────────────────────────────────
+  // ─── Container ────────────────────────────────────────────────────────────
   cardContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.94)',
-    borderRadius: 26,
     paddingHorizontal: 20,
     paddingTop: 18,
     paddingBottom: 22,
-    borderWidth: 1,
-    borderColor: 'rgba(27, 67, 44, 0.07)',
-    shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.07,
-    shadowRadius: 22,
-    elevation: 5,
   },
   formContainer: {
     width: '100%',
   },
 
-  // ─── Floating Segmented Tab Switcher (Log In vs Register) ───────────────────
-  tabContainer: {
+  // ─── Toggle Mode Links ────────────────────────────────────────────────────
+  toggleModeContainer: {
     flexDirection: 'row',
-    backgroundColor: '#EEF6F1',
-    borderRadius: 15,
-    padding: 4,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(27, 67, 44, 0.06)',
-    position: 'relative',
-  },
-  tabButton: {
-    flex: 1,
-    paddingVertical: 11,
-    borderRadius: 12,
-    alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 2,
+    alignItems: 'center',
+    marginTop: 20,
   },
-  tabSlidingPill: {
-    position: 'absolute',
-    top: 4,
-    bottom: 4,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-    zIndex: 1,
-  },
-  tabButtonActive: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#1B432C',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  tabText: {
-    fontFamily: 'PlusJakartaSans_600SemiBold',
+  toggleModeText: {
+    fontFamily: 'PlusJakartaSans_500Medium',
     fontSize: 14,
-    color: '#658071',
+    color: '#4A6354',
   },
-  tabTextActive: {
+  toggleModeLink: {
     fontFamily: 'PlusJakartaSans_700Bold',
-    color: '#1B432C',
+    fontSize: 14,
+    color: '#2D6A4F',
   },
 
   // ─── Input Fields System ───────────────────────────────────────────────────

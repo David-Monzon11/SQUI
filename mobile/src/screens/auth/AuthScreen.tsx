@@ -115,8 +115,7 @@ export const AuthScreen: React.FC = () => {
   // Subtle breathing float for the logo
   const floatAnim = useRef(new Animated.Value(0)).current;
 
-  // Sliding pill animation for tab switcher
-  const tabSlide = useRef(new Animated.Value(0)).current;
+
 
   useEffect(() => {
     Animated.sequence([
@@ -215,12 +214,6 @@ export const AuthScreen: React.FC = () => {
   const [recoveryLoading, setRecoveryLoading] = useState(false);
 
   const handleToggleMode = (newMode: AuthMode) => {
-    Animated.spring(tabSlide, {
-      toValue: newMode === 'login' ? 0 : 1,
-      tension: 30,
-      friction: 8,
-      useNativeDriver: false,
-    }).start();
     setMode(newMode);
     setErrorMessage(null);
   };
@@ -343,6 +336,7 @@ export const AuthScreen: React.FC = () => {
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
+            scrollEnabled={mode === 'register'}
           >
             {/* ─── Animated SQUI Brand Header with Official Logo ─── */}
             <Animated.View
@@ -391,40 +385,7 @@ export const AuthScreen: React.FC = () => {
                 },
               ]}
             >
-              {/* Segmented Mode Switcher (Log In vs Register) */}
-              <View style={styles.tabContainer}>
-                <Animated.View
-                  style={[
-                    styles.tabSlidingPill,
-                    {
-                      left: tabSlide.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ['2%', '50%'],
-                      }),
-                      width: '48%',
-                    },
-                  ]}
-                />
-                <TouchableOpacity
-                  style={styles.tabButton}
-                  activeOpacity={0.85}
-                  onPress={() => handleToggleMode('login')}
-                >
-                  <Text style={[styles.tabText, mode === 'login' && styles.tabTextActive]}>
-                    Log In
-                  </Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.tabButton}
-                  activeOpacity={0.85}
-                  onPress={() => handleToggleMode('register')}
-                >
-                  <Text style={[styles.tabText, mode === 'register' && styles.tabTextActive]}>
-                    Register
-                  </Text>
-                </TouchableOpacity>
-              </View>
 
               {/* Error Message Alert */}
               {errorMessage ? (
@@ -550,6 +511,14 @@ export const AuthScreen: React.FC = () => {
                     </View>
                     <Text style={styles.googleButtonText}>Continue with Google</Text>
                   </TouchableOpacity>
+
+                  {/* Toggle to Register */}
+                  <View style={styles.toggleModeContainer}>
+                    <Text style={styles.toggleModeText}>Don't have an account? </Text>
+                    <TouchableOpacity onPress={() => handleToggleMode('register')}>
+                      <Text style={styles.toggleModeLink}>Register here</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               ) : (
                 /* ─── REGISTER FORM ─── */
@@ -750,6 +719,14 @@ export const AuthScreen: React.FC = () => {
                     </View>
                     <Text style={styles.googleButtonText}>Connect with Google</Text>
                   </TouchableOpacity>
+
+                  {/* Toggle to Log In */}
+                  <View style={styles.toggleModeContainer}>
+                    <Text style={styles.toggleModeText}>Already have an account? </Text>
+                    <TouchableOpacity onPress={() => handleToggleMode('login')}>
+                      <Text style={styles.toggleModeLink}>Log in here</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )}
             </Animated.View>
