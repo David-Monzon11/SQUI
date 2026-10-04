@@ -187,12 +187,16 @@ export async function fetchDirectOpenMeteo(
     const maxT = Math.round(dailyMaxTemps[i] ?? currentTemp);
     const chance = dailyChances[i] !== undefined ? `${Math.round(dailyChances[i])}%` : '20%';
 
+    const chanceNum = Math.round(dailyChances[i] ?? 0);
+    const isDry = !(code >= 51 && code <= 99 && !(code >= 71 && code <= 77));
+    const iconType = chanceNum >= 40 && isDry && code < 51 ? 'rain' : mapped.iconType;
+
     dailyForecast.push({
       day: dayLabel,
       date: dateSub,
       temp: `${maxT}°`,
       chance,
-      iconType: mapped.iconType,
+      iconType,
     });
   }
 

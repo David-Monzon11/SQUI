@@ -57,6 +57,44 @@ function capitalizeWords(str: string) {
   return str.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 }
 
+interface DaySlot {
+  id: number;
+  pop: number;
+  hour: number; // local hour 0-23
+}
+
+/**
+ * Picks the weather id that best represents a whole day's prediction:
+ *  1. Thunderstorm / rain / drizzle wins when the slot's chance of precipitation >= 40%
+ *     (most severe id among those slots).
+ *  2. Otherwise the most frequent condition among daytime slots (06:00-18:00),
+ *     falling back to all slots.
+ */
+export function pickRepresentativeWeatherId(slots: DaySlot[]): number {
+  if (slots.length === 0) return 800;
+
+  const wet = slots.filter(s => s.id >= 200 && s.id < 600 && s.pop >= 0.4);
+  if (wet.length > 0) {
+    return wet.reduce((a, b) => {
+      const rank = (id: number) => (id >= 200 && id < 300 ? 1000 + id : id);
+      return rank(b.id) > rank(a.id) ? b : a;
+    }).id;
+  }
+
+  const day = slots.filter(s => s.hour >= 6 && s.hour <= 18);
+  const pool = day.length > 0 ? day : slots;
+  // Ignore dry-slot rain codes with low chance by treating them as clouds
+  const normalized = pool.map(s => (s.id >= 200 && s.id < 600 ? 803 : s.id));
+  const counts = new Map<number, number>();
+  for (const id of normalized) counts.set(id, (counts.get(id) || 0) + 1);
+  let best = normalized[0];
+  let bestCount = 0;
+  for (const [id, c] of counts) {
+    if (c > bestCount) { best = id; bestCount = c; }
+  }
+  return best;
+}
+
 export class WeatherService {
   /**
    * Reverse-geocodes coordinates to a precise location name using OpenWeather API.
@@ -151,7 +189,7 @@ export class WeatherService {
       // Forecast list processing (3-hour steps)
       const list: any[] = forecastJson.list;
       const hourly: HourlyWeatherItem[] = [];
-      const dailyMap = new Map<string, { max: number; min: number; pop: number; icon: string; id: number }>();
+      const dailyMap = new Map<string, { max: number; min: number; pop: number; icon: string; id: number; slots: DaySlot[] }>();
 
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
@@ -174,12 +212,13 @@ export class WeatherService {
         // Daily aggregation (using local date strings)
         const dateKey = `${dateObj.getUTCMonth() + 1}/${dateObj.getUTCDate()}`;
         if (!dailyMap.has(dateKey)) {
-          dailyMap.set(dateKey, { max: -999, min: 999, pop: 0, icon: item.weather[0].icon, id: item.weather[0].id });
+          dailyMap.set(dateKey, { max: -999, min: 999, pop: 0, icon: item.weather[0].icon, id: item.weather[0].id, slots: [] });
         }
         const dayData = dailyMap.get(dateKey)!;
         dayData.max = Math.max(dayData.max, item.main.temp);
         dayData.min = Math.min(dayData.min, item.main.temp);
-        dayData.pop = Math.max(dayData.pop, item.pop);
+        dayData.pop = Math.max(dayData.pop, item.pop || 0);
+        dayData.slots.push({ id: item.weather[0].id, pop: item.pop || 0, hour: dateObj.getUTCHours() });
       }
 
       // We only want the next 6 days (excluding today if possible)
@@ -214,7 +253,7 @@ export class WeatherService {
           date: `${monthNames[realDate.getUTCMonth()]} ${realDate.getUTCDate()}`,
           temp: `${Math.round(dData.max)}°`,
           chance: `${Math.round(dData.pop * 100)}%`,
-          iconType: mapOpenWeatherIconType(dData.id, dData.icon)
+          iconType: mapOpenWeatherIconType(pickRepresentativeWeatherId(dData.slots), "01d")
         });
       }
 
