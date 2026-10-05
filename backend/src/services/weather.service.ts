@@ -253,14 +253,17 @@ export class WeatherService {
           date: `${monthNames[realDate.getUTCMonth()]} ${realDate.getUTCDate()}`,
           temp: `${Math.round(dData.max)}°`,
           chance: `${Math.round(dData.pop * 100)}%`,
-          iconType: mapOpenWeatherIconType(pickRepresentativeWeatherId(dData.slots), "01d")
+          // A high chance of precipitation always shows rain so the icon matches the % badge
+          iconType: dData.pop >= 0.5
+            ? "rain"
+            : mapOpenWeatherIconType(pickRepresentativeWeatherId(dData.slots), "01d")
         });
       }
 
       const result: WeatherData & { dailySummaryText?: string } = {
         temperature: currentTemp,
-        high: Math.round(dailyMap.get(dayKeys[0])?.max || currentTemp + 3),
-        low: Math.round(dailyMap.get(dayKeys[0])?.min || currentTemp - 3),
+        high: Math.max(currentTemp, Math.round(dailyMap.get(dayKeys[0])?.max ?? currentTemp + 3)),
+        low: Math.min(currentTemp, Math.round(dailyMap.get(dayKeys[0])?.min ?? currentTemp - 3)),
         location: resolvedLoc && resolvedLoc !== "Current Location" ? resolvedLoc : "Local Area",
         dateStr,
         statusText,

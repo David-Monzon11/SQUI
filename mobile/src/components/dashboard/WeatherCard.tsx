@@ -96,8 +96,8 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
 
   switch (type) {
     case 'rain':
-      source = require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
-      customStyle = { width: 64, height: 64 };
+      source = require('../../../assets/vecteezy_clouds-with-rain-drop-3d-render_46498525.png');
+      customStyle = { width: 78, height: 78 };
       break;
 
     case 'cloud':
@@ -130,7 +130,7 @@ const WeatherIcon: React.FC<{ type: 'rain' | 'sun' | 'cloud' | 'moon' }> = ({ ty
 const getMainWeatherImage = (iconType: 'rain' | 'sun' | 'cloud' | 'moon') => {
   switch (iconType) {
     case 'rain':
-      return require('../../../assets/vecteezy_3d-icon-cloudy-day-weather-forecast-illustration-concept_24683592.png');
+      return require('../../../assets/vecteezy_clouds-with-rain-drop-3d-render_46498525.png');
     case 'sun':
       return require('../../../assets/vecteezy_3d-sun-icon_10175838.png');
     case 'moon':
