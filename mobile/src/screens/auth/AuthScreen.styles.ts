@@ -16,9 +16,10 @@ export const authStyles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    justifyContent: 'center',
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 36,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
 
   // ─── Ambient Organic Blurred Blobs ──────────────────────────────────────────

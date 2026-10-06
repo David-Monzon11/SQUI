@@ -528,9 +528,6 @@ export const AuthScreen: React.FC = () => {
                     <View style={[styles.fieldGroup, styles.halfField]}>
                       <Text style={styles.label}>First Name</Text>
                       <FocusInputWrapper>
-                        <View style={styles.inputIconWrapper}>
-                          <IconUser size={18} color="#4A6B56" strokeWidth={2} />
-                        </View>
                         <TextInput
                           style={styles.input}
                           placeholder="Sam"
@@ -731,19 +728,6 @@ export const AuthScreen: React.FC = () => {
               )}
             </Animated.View>
 
-            {/* ─── SQUI Mindful Mascot Encouragement Banner ─── */}
-            <View style={styles.mascotNote}>
-              <View style={styles.mascotAvatarCircle}>
-                <Image
-                  source={require('../../../assets/splash_logo.png')}
-                  style={styles.mascotAvatarImage}
-                  resizeMode="cover"
-                />
-              </View>
-              <Text style={styles.mascotNoteText}>
-                "Awareness over restriction. Progress over perfection. SQUI is ready to guide your wellness journey!"
-              </Text>
-            </View>
           </ScrollView>
         </KeyboardAvoidingView>
 
