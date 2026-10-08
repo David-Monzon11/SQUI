@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { IconSquiSugar, IconSquiSodium, IconCameraPlus } from '../../components/common/Icons';
+import * as ImagePicker from 'expo-image-picker';
 import { MealCategory, MealItem } from '../../types';
 import { mealLogStyles as styles } from './MealLog.styles';
 
@@ -185,6 +186,65 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
     }, 1800);
   };
 
+  // Real device capture: opens the phone camera or photo library
+  const startScanWithPhoto = (uri: string) => {
+    setAttachedPhotoUrl(uri);
+    setCategory('BREAKFAST');
+    setPortionSize('1 serving');
+    setCaloriesKcal('');
+    setSugarG('');
+    setSodiumMg('');
+    setProteinG('');
+    setCarbsG('');
+    setFatG('');
+    setDetectedIngredients([]);
+    setFoodName('');
+    setActiveStep('SCANNING');
+    setScanStatus('Preparing your food photo...');
+    setTimeout(() => setScanStatus('Photo saved. Add the details of your meal next.'), 700);
+    setTimeout(() => setActiveStep('FORM'), 1400);
+  };
+
+  const handleTakePhoto = async () => {
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert('Camera Access Needed', 'Please allow camera access in Settings to snap your meal.');
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      quality: 0.7,
+      allowsEditing: true,
+    });
+    if (!result.canceled && result.assets.length > 0) {
+      startScanWithPhoto(result.assets[0].uri);
+    }
+  };
+
+  const handlePickFromLibrary = async () => {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert('Photos Access Needed', 'Please allow photo access in Settings to choose a meal photo.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.7,
+      allowsEditing: true,
+    });
+    if (!result.canceled && result.assets.length > 0) {
+      startScanWithPhoto(result.assets[0].uri);
+    }
+  };
+
+  const handleAddMeal = () => {
+    Alert.alert('Add a Meal', 'How would you like to add your food photo?', [
+      { text: 'Take Photo', onPress: handleTakePhoto },
+      { text: 'Choose from Gallery', onPress: handlePickFromLibrary },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
+  };
+
   const handleSaveMeal = () => {
     if (!foodName.trim()) {
       Alert.alert('Name Required', 'Please enter a name for the captured food!');
@@ -297,7 +357,7 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
             <TouchableOpacity
               style={styles.plusCard}
               activeOpacity={0.8}
-              onPress={() => setActiveStep('CAMERA')}
+              onPress={handleAddMeal}
             >
               <Text style={styles.plusIcon}>+</Text>
               <Text style={styles.plusText}>Add Meal</Text>

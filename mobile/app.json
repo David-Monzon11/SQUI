@@ -30,7 +30,14 @@
     },
     "plugins": [
       "expo-asset",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SQUI needs access to your photos so you can log meals from your gallery.",
+          "cameraPermission": "SQUI needs your camera so you can snap photos of your meals."
+        }
+      ]
     ],
     "extra": {
       "eas": {
