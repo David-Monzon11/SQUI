@@ -12,8 +12,10 @@ import {
   Modal,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { IconSquiSugar, IconSquiSodium, IconCameraPlus } from '../../components/common/Icons';
+import { IconSquiSugar, IconSquiSodium, IconCameraPlus, IconBell, IconRefresh, IconImage, IconFlash, IconSquiMascot } from '../../components/common/Icons';
 import * as ImagePicker from 'expo-image-picker';
+import { CameraView, CameraType, FlashMode, useCameraPermissions } from 'expo-camera';
+import { FONTS } from '../../constants/typography';
 import { MealCategory, MealItem } from '../../types';
 import { mealLogStyles as styles } from './MealLog.styles';
 
@@ -113,6 +115,12 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
   const [selectedPresetIndex, setSelectedPresetIndex] = useState<number>(0);
   const [selectedDetailMeal, setSelectedDetailMeal] = useState<MealItem | null>(null);
 
+  // Camera Settings
+  const [permission, requestPermission] = useCameraPermissions();
+  const [facing, setFacing] = useState<CameraType>('back');
+  const [flash, setFlash] = useState<FlashMode>('off');
+  const cameraRef = useRef<CameraView>(null);
+
   // Form Fields
   const [category, setCategory] = useState<MealCategory>('BREAKFAST');
   const [foodName, setFoodName] = useState('');
@@ -205,22 +213,6 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
     setTimeout(() => setActiveStep('FORM'), 1400);
   };
 
-  const handleTakePhoto = async () => {
-    const perm = await ImagePicker.requestCameraPermissionsAsync();
-    if (!perm.granted) {
-      Alert.alert('Camera Access Needed', 'Please allow camera access in Settings to snap your meal.');
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ['images'],
-      quality: 0.7,
-      allowsEditing: true,
-    });
-    if (!result.canceled && result.assets.length > 0) {
-      startScanWithPhoto(result.assets[0].uri);
-    }
-  };
-
   const handlePickFromLibrary = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) {
@@ -237,12 +229,11 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
     }
   };
 
-  const handleAddMeal = () => {
-    Alert.alert('Add a Meal', 'How would you like to add your food photo?', [
-      { text: 'Take Photo', onPress: handleTakePhoto },
-      { text: 'Choose from Gallery', onPress: handlePickFromLibrary },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+  const handleAddMeal = async () => {
+    if (!permission?.granted) {
+      await requestPermission();
+    }
+    setActiveStep('CAMERA');
   };
 
   const handleSaveMeal = () => {
@@ -455,69 +446,94 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
 
   // CAMERA STEP
   if (activeStep === 'CAMERA') {
-    return (
-      <View style={styles.cameraScreenBg}>
-        {/* Top bar controls */}
-        <View style={styles.cameraHeader}>
-          <TouchableOpacity style={styles.cameraCancelBtn} onPress={resetFlow}>
-            <Text style={styles.cameraCancelBtnText}>Cancel</Text>
+    if (!permission) {
+      return <View style={styles.cameraScreenBg} />;
+    }
+    if (!permission.granted) {
+      return (
+        <View style={styles.cameraScreenBg}>
+          <Text style={{color: 'white', textAlign: 'center', marginTop: 100, fontFamily: FONTS.roundedSemiBold}}>We need your permission to show the camera</Text>
+          <TouchableOpacity onPress={requestPermission} style={{marginTop: 20, padding: 10, backgroundColor: '#10B981', alignSelf: 'center', borderRadius: 8}}>
+            <Text style={{color: 'white', fontFamily: FONTS.roundedBold}}>Grant Permission</Text>
           </TouchableOpacity>
-          <Text style={styles.cameraTitle}>Camera Viewfinder</Text>
-          <View style={{ width: 50 }} />
+        </View>
+      );
+    }
+
+    const toggleCameraFacing = () => setFacing(current => (current === 'back' ? 'front' : 'back'));
+    const toggleFlash = () => setFlash(current => (current === 'off' ? 'on' : 'off'));
+
+    const takeCustomPhoto = async () => {
+      if (cameraRef.current) {
+        setScanStatus('Preparing your food photo...');
+        const photo = await cameraRef.current.takePictureAsync({ quality: 0.7 });
+        if (photo) {
+           startScanWithPhoto(photo.uri);
+        }
+      }
+    };
+
+    return (
+      <View style={{ flex: 1, backgroundColor: '#121212' }}>
+        {/* Top Header */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 60, paddingBottom: 20, zIndex: 10 }}>
+          <Text style={{ color: '#FFFFFF', fontSize: 18, fontFamily: FONTS.roundedBlack, letterSpacing: 0.5 }}>Food Nutrition Scan</Text>
+          <TouchableOpacity style={{ backgroundColor: 'rgba(255,255,255,0.08)', padding: 10, borderRadius: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' }}>
+            <IconBell size={18} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
 
-        {/* Immersive Viewport */}
-        <View style={styles.cameraViewport}>
-          <Image source={{ uri: currentCameraSubject.imageUrl }} style={styles.viewportImage} />
-          
-          <View style={styles.viewportOverlay}>
-            <Text style={styles.viewportOverlayTitle}>MOCK VIEWFINDER</Text>
-            <Text style={styles.viewportOverlaySub}>Focusing on: {currentCameraSubject.name}</Text>
-          </View>
-        </View>
-
-        {/* Preset food selector scroll */}
-        <View style={styles.cameraControlPanel}>
-          <Text style={styles.presetHeading}>POINT AT FOOD SUBJECT:</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.cameraPresetsScroll}
-            contentContainerStyle={styles.cameraPresetsContent}
+        {/* Viewfinder Area */}
+        <View style={{ flex: 1, borderRadius: 32, overflow: 'hidden', marginHorizontal: 12, marginBottom: 130, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' }}>
+          <CameraView 
+            style={{ flex: 1 }} 
+            facing={facing} 
+            enableTorch={flash === 'on'}
+            ref={cameraRef}
           >
-            {CAMERA_PRESETS.map((food, idx) => {
-              const isSelected = selectedPresetIndex === idx;
-              return (
-                <TouchableOpacity
-                  key={idx}
-                  style={[
-                    styles.cameraPresetChip,
-                    isSelected && styles.cameraPresetChipActive,
-                  ]}
-                  onPress={() => setSelectedPresetIndex(idx)}
-                >
-                  <Image source={{ uri: food.imageUrl }} style={styles.cameraPresetThumb} />
-                  <Text style={[
-                    styles.cameraPresetLabel,
-                    isSelected && styles.cameraPresetLabelActive,
-                  ]}>
-                    {food.name.split(' ')[0]}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+            {/* Top Overlays */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 16 }}>
+              {/* Online / Ready Pill */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.65)', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' }}>
+                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#10B981', marginRight: 8, shadowColor: '#10B981', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.8, shadowRadius: 6, elevation: 3 }} />
+                <Text style={{ color: '#FFFFFF', fontSize: 12, fontFamily: FONTS.roundedBold, letterSpacing: 0.5 }}>SQUI AI (Ready)</Text>
+              </View>
 
-          {/* Large circular Shutter button */}
-          <View style={styles.shutterContainer}>
-            <TouchableOpacity
-              style={styles.shutterBtn}
-              activeOpacity={0.85}
-              onPress={handleShutterSnap}
-            >
-              <View style={styles.shutterInnerRing} />
-            </TouchableOpacity>
-          </View>
+              {/* Flash Toggle */}
+              <TouchableOpacity onPress={toggleFlash} style={{ backgroundColor: 'rgba(0,0,0,0.65)', padding: 10, borderRadius: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' }}>
+                <IconFlash size={18} color={flash === 'on' ? '#F59E0B' : '#FFFFFF'} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Bottom Floating Warning/Info Box */}
+            <View style={{ position: 'absolute', bottom: 24, left: 24, right: 24 }}>
+              <View style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', borderWidth: 1.5, borderColor: '#10B981', padding: 16, borderRadius: 20, flexDirection: 'row', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 }}>
+                <IconSquiMascot size={32} color="#10B981" />
+                <View style={{ marginLeft: 14, flex: 1 }}>
+                  <Text style={{ color: '#FFFFFF', fontSize: 13, fontFamily: FONTS.roundedBold, marginBottom: 2 }}>Ready to Capture!</Text>
+                  <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, fontFamily: FONTS.roundedSemiBold }}>Center food in frame and snap</Text>
+                </View>
+              </View>
+            </View>
+          </CameraView>
+        </View>
+
+        {/* Bottom Controls */}
+        <View style={{ position: 'absolute', bottom: 35, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', paddingHorizontal: 30 }}>
+          <TouchableOpacity style={{ padding: 16, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 30, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' }} onPress={handlePickFromLibrary}>
+            <IconImage size={22} color="#FFFFFF" />
+          </TouchableOpacity>
+
+          {/* Shutter Button */}
+          <TouchableOpacity onPress={takeCustomPhoto} activeOpacity={0.8}>
+            <View style={{ width: 76, height: 76, borderRadius: 38, borderWidth: 4, borderColor: '#FFFFFF', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)' }}>
+              <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#FFFFFF' }} />
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={{ padding: 16, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 30, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' }} onPress={toggleCameraFacing}>
+            <IconRefresh size={22} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
       </View>
     );
