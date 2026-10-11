@@ -576,3 +576,18 @@ export const IconClose: React.FC<IconProps> = ({ size = 20, color = '#FFFFFF', s
   </View>
 );
 
+export const IconSquiCalories: React.FC<IconProps> = ({ size = 20, color = '#FFFFFF', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Path
+        d="M12 2c-.6 2.4-3.2 5-3.2 8.2 0 3.2 2.6 5.8 5.8 5.8s5.8-2.6 5.8-5.8c0-3.8-3-6.2-4-8.8-1 2-2 3-3 3-1 0-1.4-.6-1.4-2.4z"
+        fill={color}
+        fillOpacity={0.16}
+      />
+      <Path d="M12 2c-.6 2.4-3.2 5-3.2 8.2 0 3.2 2.6 5.8 5.8 5.8s5.8-2.6 5.8-5.8c0-3.8-3-6.2-4-8.8-1 2-2 3-3 3-1 0-1.4-.6-1.4-2.4z" />
+      <Path d="M12 17.5c-1.3 0-2.3-1-2.3-2.3 0-1 .6-1.8 1.4-2.1.2.5.6.9 1.1.9.6 0 1.1-.5 1.1-1.1 0-.2-.1-.4-.2-.6.8.5 1.2 1.3 1.2 2.2 0 1.7-1 3-2.3 3z" fill={color} fillOpacity={0.3} />
+    </Svg>
+  </View>
+);
+
+

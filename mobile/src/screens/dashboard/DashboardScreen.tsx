@@ -13,6 +13,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { MascotBanner } from '../../components/dashboard/MascotBanner';
 import { WeatherCard } from '../../components/dashboard/WeatherCard';
+import { CalorieCard } from '../../components/dashboard/CalorieCard';
 import { SquiLogo } from '../../components/common/SquiLogo';
 import { FONTS } from '../../constants/typography';
 import {
@@ -386,6 +387,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </LinearGradient>
           </TouchableOpacity>
         </View>
+
+        {/* Section Label: Daily Energy & Calories */}
+        <Text style={styles.sectionLabel}>Daily Energy & Calories</Text>
+        <CalorieCard />
 
         {/* Section: Today's Food Gallery (Wrapped in Parent Bento Card Container) */}
         {meals.length > 0 && (
