@@ -28,6 +28,14 @@ import { DailyNutrientDetailScreen } from '../nutrition/DailyNutrientDetailScree
 import { NotificationPopoverDrawer } from '../../components/common/NotificationPopoverDrawer';
 import { dashboardStyles as styles } from './Dashboard.styles';
 import { MealItem } from '../../types';
+import { useAuth } from '../../contexts/AuthContext';
+import {
+  logWaterIntake,
+  logWeight,
+  subscribeToDailyHydration,
+  subscribeToWeightTrend,
+  WeightEntry,
+} from '../../services/vitalsService';
 
 interface DashboardScreenProps {
   meals: MealItem[];
@@ -44,6 +52,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   setWaterIntakeMl,
   onNavigateToMeal,
 }) => {
+  const { user } = useAuth();
+  const userId = user?.id;
+  const [weightTrend, setWeightTrend] = useState<WeightEntry[]>([]);
   const [todayWeightKg, setTodayWeightKg] = useState(68.2);
   const [tempWeightInput, setTempWeightInput] = useState('68.2');
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
@@ -75,10 +86,41 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     return () => clearInterval(interval);
   }, [meals.length]);
 
+  // Realtime Firestore sync for hydration & weight trend
+  useEffect(() => {
+    if (!userId) return;
+    const unsubHydration = subscribeToDailyHydration(
+      userId,
+      (totalMl) => setWaterIntakeMl(totalMl),
+      (err) => console.warn('[Firestore] hydration listener:', err.message)
+    );
+    const unsubWeight = subscribeToWeightTrend(
+      userId,
+      (entries) => {
+        setWeightTrend(entries);
+        if (entries.length > 0) setTodayWeightKg(entries[0].weightKg);
+      },
+      8,
+      (err) => console.warn('[Firestore] weight listener:', err.message)
+    );
+    return () => {
+      unsubHydration();
+      unsubWeight();
+    };
+  }, [userId]);
+
   const handleSaveWater = () => {
     const parsed = parseInt(tempWaterInput, 10);
     if (!isNaN(parsed) && parsed > 0 && parsed <= 5000) {
-      setWaterIntakeMl((prev) => prev + parsed);
+      if (userId) {
+        // Listener updates the total; fall back to local state if the write fails.
+        logWaterIntake(userId, parsed).catch((err: Error) => {
+          console.warn('[Firestore] logWaterIntake failed:', err.message);
+          setWaterIntakeMl((prev) => prev + parsed);
+        });
+      } else {
+        setWaterIntakeMl((prev) => prev + parsed);
+      }
       setIsWaterModalOpen(false);
     }
   };
@@ -87,9 +129,22 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     const parsed = parseFloat(tempWeightInput);
     if (!isNaN(parsed) && parsed > 20 && parsed < 300) {
       setTodayWeightKg(parsed);
+      if (userId) {
+        logWeight(userId, parsed).catch((err: Error) =>
+          console.warn('[Firestore] logWeight failed:', err.message)
+        );
+      }
       setIsWeightModalOpen(false);
     }
   };
+
+  // Weight change vs oldest entry in the recent window (SQUI: awareness, not judgment)
+  const weightDeltaText = (() => {
+    if (weightTrend.length < 2) return 'Log weekly to see your trend';
+    const delta = weightTrend[0].weightKg - weightTrend[weightTrend.length - 1].weightKg;
+    if (Math.abs(delta) < 0.05) return '→ Steady this week';
+    return `${delta < 0 ? '↓' : '↑'} ${Math.abs(delta).toFixed(1)} kg this week`;
+  })();
 
 
   const totalSugar = meals.reduce((acc, m) => acc + (m.nutrition.sugarG || 0), 0);
@@ -245,7 +300,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <Text style={styles.bentoUnit}> kg</Text>
                   </Text>
                 </View>
-                <Text style={styles.bentoSubText}>↓ 0.2 kg vs last wk</Text>
+                <Text style={styles.bentoSubText}>{weightDeltaText}</Text>
               </View>
             </LinearGradient>
           </TouchableOpacity>
