@@ -32,6 +32,14 @@
       "expo-asset",
       "expo-font",
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow SQUI to access your camera to snap photos of your meals.",
+          "microphonePermission": "Allow SQUI to access your microphone",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "SQUI needs access to your photos so you can log meals from your gallery.",

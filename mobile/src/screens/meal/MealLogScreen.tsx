@@ -12,7 +12,7 @@ import {
   Modal,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { IconSquiSugar, IconSquiSodium, IconCameraPlus, IconBell, IconRefresh, IconImage, IconFlash, IconSquiMascot } from '../../components/common/Icons';
+import { IconSquiSugar, IconSquiSodium, IconCameraPlus, IconBell, IconRefresh, IconImage, IconFlash, IconSquiMascot, IconArrowLeft, IconClose } from '../../components/common/Icons';
 import * as ImagePicker from 'expo-image-picker';
 import { CameraView, CameraType, FlashMode, useCameraPermissions } from 'expo-camera';
 import { FONTS } from '../../constants/typography';
@@ -453,8 +453,11 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
       return (
         <View style={styles.cameraScreenBg}>
           <Text style={{color: 'white', textAlign: 'center', marginTop: 100, fontFamily: FONTS.roundedSemiBold}}>We need your permission to show the camera</Text>
-          <TouchableOpacity onPress={requestPermission} style={{marginTop: 20, padding: 10, backgroundColor: '#10B981', alignSelf: 'center', borderRadius: 8}}>
+          <TouchableOpacity onPress={requestPermission} style={{marginTop: 20, padding: 12, backgroundColor: '#10B981', alignSelf: 'center', borderRadius: 8}}>
             <Text style={{color: 'white', fontFamily: FONTS.roundedBold}}>Grant Permission</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveStep('GALLERY')} style={{marginTop: 16, padding: 10, alignSelf: 'center'}}>
+            <Text style={{color: 'rgba(255,255,255,0.7)', fontFamily: FONTS.roundedSemiBold}}>Back to Gallery</Text>
           </TouchableOpacity>
         </View>
       );
@@ -477,9 +480,12 @@ export const MealLogScreen: React.FC<MealLogScreenProps> = ({ meals = [], onMeal
       <View style={{ flex: 1, backgroundColor: '#121212' }}>
         {/* Top Header */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 60, paddingBottom: 20, zIndex: 10 }}>
+          <TouchableOpacity onPress={() => setActiveStep('GALLERY')} style={{ backgroundColor: 'rgba(255,255,255,0.08)', padding: 10, borderRadius: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' }}>
+            <IconArrowLeft size={18} color="#FFFFFF" />
+          </TouchableOpacity>
           <Text style={{ color: '#FFFFFF', fontSize: 18, fontFamily: FONTS.roundedBlack, letterSpacing: 0.5 }}>Food Nutrition Scan</Text>
-          <TouchableOpacity style={{ backgroundColor: 'rgba(255,255,255,0.08)', padding: 10, borderRadius: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' }}>
-            <IconBell size={18} color="#FFFFFF" />
+          <TouchableOpacity onPress={() => setActiveStep('GALLERY')} style={{ backgroundColor: 'rgba(255,255,255,0.08)', padding: 10, borderRadius: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' }}>
+            <IconClose size={18} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
 
