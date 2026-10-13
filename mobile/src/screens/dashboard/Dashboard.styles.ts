@@ -97,6 +97,44 @@ export const dashboardStyles = {
     marginBottom: 5,
     marginLeft: 4,
   },
+  sectionHeaderRow: {
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    alignItems: 'center' as const,
+    marginTop: 8,
+    marginBottom: 5,
+    paddingHorizontal: 4,
+  },
+  sectionLabelInRow: {
+    fontFamily: FONTS.roundedBlack,
+    fontSize: 11,
+    color: '#849C8D',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase' as const,
+  },
+  vitalsResetBadge: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    gap: 4.5,
+    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.20)',
+  },
+  vitalsResetPulseDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#10B981',
+  },
+  vitalsResetText: {
+    fontFamily: FONTS.roundedBold,
+    fontSize: 10,
+    color: '#059669',
+    letterSpacing: 0.2,
+  },
 
   // Vitals & Nutrients 2-Column Grid (Equal Dimensions & Balanced)
   statsRow: {

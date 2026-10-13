@@ -590,4 +590,14 @@ export const IconSquiCalories: React.FC<IconProps> = ({ size = 20, color = '#FFF
   </View>
 );
 
+export const IconClock: React.FC<IconProps> = ({ size = 16, color = '#1B432C', strokeWidth = 2 }) => (
+  <View style={{ width: size, height: size }}>
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <Circle cx="12" cy="12" r="10" />
+      <Path d="M12 6v6l4 2" />
+    </Svg>
+  </View>
+);
+
+
 

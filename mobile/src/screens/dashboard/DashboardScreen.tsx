@@ -9,6 +9,7 @@ import {
   Image,
   FlatList,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MascotBanner } from '../../components/dashboard/MascotBanner';
@@ -23,6 +24,7 @@ import {
   IconSquiSodium,
   IconPlus,
   IconBell,
+  IconClock,
 } from '../../components/common/Icons';
 import { DailyNutrientDetailScreen } from '../nutrition/DailyNutrientDetailScreen';
 import { NotificationPopoverDrawer } from '../../components/common/NotificationPopoverDrawer';
@@ -258,8 +260,25 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           mealCount={meals.length}
         />
 
-        {/* Section Label: Daily Vitals */}
-        <Text style={styles.sectionLabel}>Daily Vitals</Text>
+        {/* Section Header: Daily Vitals + Reset Timestamp */}
+        <View style={styles.sectionHeaderRow}>
+          <Text style={styles.sectionLabelInRow}>Daily Vitals</Text>
+          <TouchableOpacity
+            style={styles.vitalsResetBadge}
+            activeOpacity={0.7}
+            onPress={() => {
+              Alert.alert(
+                'Daily Reset Cycle',
+                'Your vitals and hydration tracker reset fresh at 12:00 AM every calendar day.',
+                [{ text: 'Understood' }]
+              );
+            }}
+          >
+            <View style={styles.vitalsResetPulseDot} />
+            <IconClock size={11} color="#059669" strokeWidth={2.2} />
+            <Text style={styles.vitalsResetText}>Today • Resets 12:00 AM</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Row 1: Watermarked Bento Vitals Cards */}
         <View style={styles.statsRow}>
